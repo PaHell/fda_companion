@@ -1,6 +1,8 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 
+/// <reference types="@sveltejs/kit" />
+
 import type { Icons } from "./lib/general/Icon.svelte";
 
 // and what to do when importing types
@@ -11,8 +13,7 @@ declare namespace App {
             name: string;
         }
         interface Theme {
-            id: string;
-            name: string;
+            text: string;
             class: string;
         }
         interface NavItem {

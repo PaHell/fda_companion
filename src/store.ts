@@ -1,42 +1,48 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment'; 
+import type { App } from './app'; 
 
 export const themes : App.General.Theme[] = [
     {
-      id: "dark",
-      name: "Dark",
+      text: "Creepy Darkness",
       class: "dark"
     },
     {
-      id: "light",
-      name: "Light",
+      text: "Eyeopening Brightness",
       class: "light"
     },
     {
-      id: "os",
-      name: "OS Preference",
+      text: "Operating System Preference",
       class: ""
     },
   ];
 export const theme = function() {
-    const {set, subscribe, update} = writable<App.General.Theme | undefined>();
+    const {set, subscribe} = writable<App.General.Theme | undefined>();
     if (browser) {
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-            const osPref = event.matches ? 'dark' : 'light';
-            setTheme(themes.find(t => t.id === osPref));
-        });
+      if ('theme' in localStorage) { // user set theme
+        const theme = themes.find(t => t.class === localStorage.theme);
+        if (theme) setTheme(theme);
+      } else {
+        setTheme(themes[2]); // os pref
+      }
     }
     function setTheme(theme: App.General.Theme) {
+        // update store
         set(theme);
         // clear all other theme classes
         document.documentElement.classList.remove(...themes.map(t => t.class).filter(t => t.length));
-        // save
-        localStorage.setItem("theme", theme.id);
+        // save & apply
+        if (theme.class) { // user set theme
+          document.documentElement.classList.add(theme.class);
+          localStorage.setItem("theme", theme.class);
+        } else { // os pref
+          document.documentElement.classList.add(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          localStorage.removeItem("theme");
+        }
         /// apply
-        if (theme.class) document.documentElement.classList.add(theme.class);
     }
     return {
-        set : setTheme,
+        set: setTheme,
         subscribe
     }
 }();
