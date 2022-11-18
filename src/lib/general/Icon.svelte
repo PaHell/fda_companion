@@ -1,6 +1,9 @@
 <script lang="ts" context="module">
 	export enum Icons {
-		Home = "home",
+		Home = "home-line",
+		Settings = "settings-2-line",
+		Menu = "menu-2-line",
+		FullScreen = "fullscreen-line",
 		SelectDown = "arrow-drop-down-line",
 		SelectSelected = "check-line",
 	};

@@ -15,6 +15,9 @@ const config = {
     adapter: staticAdapter({
       out: '/public'
     }),
+    alias: {
+      '$src': 'src',
+    }
   },
 };
 

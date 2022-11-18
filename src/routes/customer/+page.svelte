@@ -3,7 +3,7 @@
   import Select from '$lib/controls/Select.svelte';
     import SelectTheme from '$lib/SelectTheme.svelte';
   // PROPS
-  const locales : App.Locale[] = [
+  const locales : App.General.Locale[] = [
     {
       iso2: "deu",
       name: "Deutsch"
@@ -13,7 +13,7 @@
       name: "English"
     },
   ];
-  let locale : App.Locale | undefined = undefined;
+  let locale : App.General.Locale | undefined = undefined;
   // EVENTS
   // HOOKS
   // FUNCTIONS

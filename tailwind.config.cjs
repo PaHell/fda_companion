@@ -14,6 +14,26 @@ module.exports = {
     supports: {},
     colors: ({ colors }) => ({
       accent: colors.purple,
+      grayIcon: {
+        pri: colors.gray[700],
+        sec: colors.gray[500],
+        tri: colors.gray[300],
+      },
+      grayText: {
+        pri: colors.gray[900],
+        sec: colors.gray[700],
+        tri: colors.gray[500],
+      },
+      grayIconDark: {
+        pri: colors.gray[200],
+        sec: colors.gray[400],
+        tri: colors.gray[600],
+      },
+      grayTextDark: {
+        pri: colors.white,
+        sec: colors.gray[300],
+        tri: colors.gray[500],
+      },
       // default
       inherit: colors.inherit,
       current: colors.current,

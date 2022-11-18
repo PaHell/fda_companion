@@ -1,6 +1,6 @@
 @import "remixicon/fonts/remixicon.css";
 
-@import "./assets/text.postcss";
+@import "$src/assets/text.postcss";
 
 @tailwind base;
 @tailwind components;
@@ -8,8 +8,15 @@
 
 html,
 body {
+  @apply w-screen h-screen overflow-hidden;
 }
 
 body {
-  @apply bg-gray-100 dark:bg-gray-900;
+  @apply flex flex-col
+  bg-gray-100 dark:bg-gray-900;
+}
+
+a,
+button {
+  @apply cursor-pointer;
 }
