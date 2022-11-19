@@ -49,7 +49,7 @@
 			bind:this={ref}
 			bind:value
 			type="text"
-			{placeholder}
+			placeholder=""
 			{disabled}
 			on:input={onInput}
 			on:focus={onFocus}
@@ -58,25 +58,38 @@
 			{#if icon}
 				<Icon name={icon} />
 			{/if}
-			<p class="text placeholder">{placeholder}</p>
+			<p class="text placeholder" class:opacity-0={value?.length}>{placeholder}</p>
 		</div>
 	</div>
 </template>
 
 <style global lang="postcss">
 	.input {
-		@apply flex items-center justify-center flex-shrink-0
-        h-10 px-2 border rounded font-medium
-        select-none outline-0
-		transition-all;
+		@apply flex flex-col flex-shrink-0
+        h-10;
 
+        /* layout, div overlays input exactly
+         * and <input/> is before the styled content -> input:focus + *
+        */
 		& > input,
 		& > div {
-			@apply h-full;
+			@apply h-10;
+		}
+        & > div {
+			@apply -mt-10 pointer-events-none;
+            & > *:not(.icon):not(.placeholder) {
+                @apply pointer-events-auto;
+            }
 		}
 		
 		& > input {
-			@apply bg-red-500;
+			@apply px-2
+            border outline-0
+            shadow-sm rounded
+            font-medium select-none
+            transition-all
+            bg-gray-50 border-gray-300
+            dark:bg-gray-800 dark:border-gray-700;
 			&:not(.button-trans):focus {
 				@apply ring-2 ring-accent-500
 				ring-offset-2 ring-offset-gray-100
@@ -97,6 +110,7 @@
 		}
 
 		& > div {
+            @apply flex items-center;
 			& > .icon {
 				&:first-child:not(:last-child) {
 					@apply ml-2;
@@ -112,7 +126,8 @@
 				}
 
 				&.placeholder {
-					@apply text-grayText-tri dark:text-grayTextDark-tri;
+					@apply text-grayText-tri dark:text-grayTextDark-tri
+                    transition-opacity;
 				}
 			}
 		}
