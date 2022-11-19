@@ -1,41 +1,22 @@
 <script lang="ts">
   // IMPORT
-  import Select from '$lib/controls/Select.svelte';
-    import SelectTheme from '$lib/SelectTheme.svelte';
+  import SelectLanguage from "$src/lib/controls/locale/SelectLanguage.svelte";
+  import SelectTheme from "$src/lib/controls/theme/SelectTheme.svelte";
+  import { _ } from "svelte-i18n";
   // PROPS
-  const locales : App.Locale[] = [
-    {
-      iso2: "deu",
-      name: "Deutsch"
-    },
-    {
-      iso2: "eng",
-      name: "English"
-    },
-  ];
-  let locale : App.Locale | undefined = undefined;
   // EVENTS
   // HOOKS
   // FUNCTIONS
 </script>
 
 <template>
-  <SelectTheme/>
-  <Select bind:value={locale}
-  items={locales}>
-  <div slot="selected" let:item let:index>
-      <p class="text">{item.iso2}</p>
-      <p class="text caption">{item.name}</p>
-  </div>
-  <div slot="item" let:item let:index>
-    <p class="text">
-      <span class="caption">{index}.</span>
-      <span>{item.name}</span>
-      <span class="heading">({item.iso2})</span>
-    </p>
-  </div>
-    </Select>
+  <SelectTheme />
+  <h1 class="text heading">{$_("text")}</h1>
+  <SelectLanguage />
 </template>
 
 <style lang="postcss">
+  h1 {
+    @apply mt-8 pl-4;
+  }
 </style>

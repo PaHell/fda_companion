@@ -37,6 +37,7 @@
     value = item;
     index = _index;
     dispatch("change", { item, index });
+    opened = false;
   }
 </script>
 
@@ -50,7 +51,7 @@
       {#if value}
         <slot name="selected" item={value} {index} />
       {:else}
-        <p class="text">{valueUndefined}</p>
+        <p class="text secondary">{valueUndefined}</p>
       {/if}
       <Icon name={Icons.SelectDown} />
     </Button>
@@ -81,6 +82,11 @@
       &.active {
         @apply z-50;
       }
+
+      & > .text:not(.secondary) {
+        @apply text-grayText-pri dark:text-grayTextDark-pri;
+      }
+
       & > .icon {
         &:last-child {
           @apply indent-2 border-l;
@@ -105,6 +111,10 @@
             @apply justify-start w-full
                 rounded-none border-none;
             @apply shadow-none ring-0 ring-offset-0 !important;
+
+            & > .text:not(.secondary) {
+              @apply text-grayText-pri dark:text-grayTextDark-pri;
+            }
 
             & > .icon:last-child {
               @apply hidden;

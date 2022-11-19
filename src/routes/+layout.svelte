@@ -9,6 +9,13 @@
   import { goto, beforeNavigate, afterNavigate } from "$app/navigation";
   import { onMount } from "svelte";
   import { browser, dev, prerendering } from "$app/environment";
+  import { waitLocale, isLoading } from "svelte-i18n";
+  import { init as initLocale } from "$src/lib/controls/locale/store";
+
+  export async function load() {
+    // awaits for 'en' loaders
+    return waitLocale();
+  }
 </script>
 
 <script lang="ts">
@@ -34,6 +41,9 @@
       path: "/users",
     },
   ];
+
+  console.log("layout: init locale");
+  initLocale();
 
   let currentPath: string | undefined;
 
@@ -63,7 +73,11 @@
       {/each}
     </nav>
     <main>
-      <slot />
+      {#if $isLoading}
+        <p class="text heading">...</p>
+      {:else}
+        <slot />
+      {/if}
     </main>
   </div>
 </template>

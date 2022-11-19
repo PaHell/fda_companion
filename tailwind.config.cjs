@@ -21,8 +21,8 @@ module.exports = {
       },
       grayText: {
         pri: colors.gray[900],
-        sec: colors.gray[700],
-        tri: colors.gray[500],
+        sec: colors.gray[500],
+        tri: colors.gray[300],
       },
       grayIconDark: {
         pri: colors.gray[200],
@@ -31,8 +31,8 @@ module.exports = {
       },
       grayTextDark: {
         pri: colors.white,
-        sec: colors.gray[300],
-        tri: colors.gray[500],
+        sec: colors.gray[500],
+        tri: colors.gray[600],
       },
       // default
       inherit: colors.inherit,
