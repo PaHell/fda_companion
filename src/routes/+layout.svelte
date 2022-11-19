@@ -10,8 +10,7 @@
   import { onMount } from "svelte";
   import { browser, dev, prerendering } from "$app/environment";
   import { waitLocale, isLoading } from "svelte-i18n";
-  import { init as initLocale } from "$src/lib/controls/locale/store";
-
+  
   export async function load() {
     // awaits for 'en' loaders
     return waitLocale();
@@ -19,6 +18,7 @@
 </script>
 
 <script lang="ts">
+  import { initLocale, localeInitialized } from "$src/lib/controls/locale/store";
   const navItems: App.General.NavItem[] = [
     {
       title: "Home",
@@ -42,10 +42,10 @@
     },
   ];
 
+  let currentPath: string | undefined;
+
   console.log("layout: init locale");
   initLocale();
-
-  let currentPath: string | undefined;
 
   onMount(() => {
     currentPath = window.location.pathname;
@@ -73,10 +73,10 @@
       {/each}
     </nav>
     <main>
-      {#if $isLoading}
-        <p class="text heading">...</p>
+      {#if $localeInitialized}
+      <slot />
       {:else}
-        <slot />
+      <p class="text heading">...</p>
       {/if}
     </main>
   </div>

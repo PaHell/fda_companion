@@ -8,7 +8,6 @@
   <Select
     value={$locale}
     items={locales}
-    valueUndefined="Loading ..."
     on:change={(e) => locale.set(e.detail.item)}
   >
     <p slot="selected" let:item class="text">
