@@ -3,6 +3,8 @@
   import Button, { ButtonVariant } from "$lib/controls/Button.svelte";
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
   import { createEventDispatcher } from "svelte";
+  import { clickOutside } from "../click-outside";
+  import TextInput from "./TextInput.svelte";
   // TYPE
   type T = $$Generic;
   interface $$Slots {
@@ -27,26 +29,52 @@
   export let valueUndefined: string = "Nothing selected";
   export let index: number = -1;
   export let opened: boolean = false;
+  export let enableSearch: boolean = false;
+  // REFS
+  let refContainer: HTMLDivElement | undefined;
+  // DATA
+  let styleMenu = "";
+  let search = "";
   // EVENTS
   const dispatch = createEventDispatcher<{
     change: { item: T; index: number };
   }>();
   // HOOKS
   // FUNCTIONS
+  function toggleOpened() {
+    opened = !opened;
+    if (opened) updateStyle();
+  }
+  function onClickOutside() {
+    if (opened) opened = false;
+  }
   function select(item: T, _index: number) {
     value = item;
     index = _index;
     dispatch("change", { item, index });
     opened = false;
   }
+  function updateStyle() {
+    if (!refContainer) return;
+    const rect = refContainer.getBoundingClientRect();
+    styleMenu = `
+      top: ${rect.bottom + 2}px;
+      width: ${rect.width}px;
+    `;
+  }
 </script>
 
 <template>
-  <div class="select">
+  <div
+    class="select"
+    bind:this={refContainer}
+    use:clickOutside
+    on:click_outside={() => (opened = false)}
+  >
     <Button
       active={opened}
       variant={ButtonVariant.Secondary}
-      on:click={() => (opened = !opened)}
+      on:click={toggleOpened}
     >
       {#if value}
         <slot name="selected" item={value} {index} />
@@ -55,20 +83,23 @@
       {/if}
       <Icon name={Icons.SelectDown} />
     </Button>
-    <menu class:open={opened}>
+    <menu style={styleMenu} class:open={opened}>
+      {#if enableSearch}
+        <header>
+          <TextInput bind:value={search} placeholder="Search" />
+        </header>
+      {/if}
       <div>
-        <div>
-          {#each items as item, index}
-            <Button
-              variant={ButtonVariant.Transparent}
-              active={item == value}
-              on:click={() => select(item, index)}
-            >
-              <slot name="item" {item} {index} />
-              <Icon name={Icons.SelectSelected} />
-            </Button>
-          {/each}
-        </div>
+        {#each items as item, index}
+          <Button
+            variant={ButtonVariant.Transparent}
+            active={item == value}
+            on:click={() => select(item, index)}
+          >
+            <slot name="item" {item} {index} />
+            <Icon name={Icons.SelectSelected} />
+          </Button>
+        {/each}
       </div>
     </menu>
   </div>
@@ -94,42 +125,56 @@
       }
     }
     & > menu {
-      @apply h-0 relative;
+      @apply fixed z-40
+      flex flex-col
+      max-h-0 overflow-hidden
+      shadow rounded
+      border-gray-300 bg-gray-50
+      dark:border-gray-700 dark:bg-gray-800;
+      transition: max-height 0.3s ease-in-out;
+      will-change: max-height;
+
+      & > * {
+        @apply border border-inherit overflow-hidden;
+        &:first-child {
+          @apply rounded-t;
+        }
+        &:not(:first-child) {
+          @apply mt-[-1px];
+        }
+        &:last-child {
+          @apply rounded-b;
+        }
+      }
+
+      & > header {
+        @apply p-2 flex-shrink-0;
+      }
 
       & > div {
-        @apply max-h-0 overflow-hidden;
-        transition: max-height 0.3s ease-in-out;
-        will-change: max-height;
-
-        & > div {
-          @apply overflow-hidden
-                    py-2 border shadow rounded
-                    border-gray-300 bg-gray-50
-                    dark:border-gray-700 dark:bg-gray-800;
-
-          & .button {
-            @apply justify-start w-full
+        @apply flex-1 py-2 overflow-y-auto;
+        & .button {
+          @apply justify-start w-full
                 rounded-none border-none;
-            @apply shadow-none ring-0 ring-offset-0 !important;
+          @apply shadow-none ring-0 ring-offset-0 !important;
 
-            & > .text:not(.secondary) {
-              @apply text-grayText-pri dark:text-grayTextDark-pri;
-            }
+          & > .text:not(.secondary) {
+            @apply text-grayText-pri dark:text-grayTextDark-pri;
+          }
 
+          & > .icon:last-child {
+            @apply hidden;
+          }
+
+          &.active {
             & > .icon:last-child {
-              @apply hidden;
-            }
-
-            &.active {
-              & > .icon:last-child {
-                @apply block;
-              }
+              @apply block;
             }
           }
         }
       }
-      &.open > div {
-        @apply max-h-96 p-[4px] m-[-4px] mt-[-2.5px];
+      &.open {
+        @apply max-h-96 overflow-visible;
       }
     }
   }
