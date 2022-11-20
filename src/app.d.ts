@@ -22,4 +22,49 @@ declare namespace App {
             path: string;
         }
     }
+    namespace Models {
+
+
+                interface CustomerIn {
+            fname: string;
+            lname: string;
+            street: string;
+            house_number: number;
+            postal_code: string;
+            city: string;
+            country_iso3: string;
+            image: string;
+            company: string;
+        }
+
+        interface DatabaseElement {
+            id: string;
+        }
+
+        class Customer extends DatabaseElement {
+            fname: string;
+            lname: string;
+            street: string;
+            house_number: string;
+            postal_code: string;
+            country_iso3: string;
+            image: string;
+            company_id: string;
+            _company?: Company;
+        }
+
+        class Company extends DatabaseElement {
+            name: string;
+        }
+
+                class User extends DatabaseElement {
+            fname: string;
+            lname: string;
+            roles: string[];
+        }
+
+                        class ProductType extends DatabaseElement {
+            name: string;
+        }
+    }
 }

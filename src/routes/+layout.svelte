@@ -6,19 +6,16 @@
   import Button, { ButtonVariant } from "$src/lib/controls/Button.svelte";
   import { Icons } from "$src/lib/general/Icon.svelte";
   import Header from "$src/lib/Header.svelte";
-  import { goto, beforeNavigate, afterNavigate } from "$app/navigation";
+  import { goto, afterNavigate } from "$app/navigation";
   import { onMount } from "svelte";
-  import { browser, dev, prerendering } from "$app/environment";
-  import { waitLocale, isLoading } from "svelte-i18n";
-  
-  export async function load() {
-    // awaits for 'en' loaders
-    return waitLocale();
-  }
+  import {
+    initLocale,
+    localeInitialized,
+  } from "$src/lib/controls/locale/store";
 </script>
 
 <script lang="ts">
-  import { initLocale, localeInitialized } from "$src/lib/controls/locale/store";
+  let currentPath: string | undefined;
   const navItems: App.General.NavItem[] = [
     {
       title: "Home",
@@ -26,9 +23,9 @@
       path: "/",
     },
     {
-      title: "Product Types",
+      title: "Create Customer",
       icon: Icons.Home,
-      path: "/product_types",
+      path: "/customers/create",
     },
     {
       title: "Customers",
@@ -36,15 +33,22 @@
       path: "/customers/all",
     },
     {
+      title: "Product Types",
+      icon: Icons.Home,
+      path: "/product_types",
+    },
+    {
       title: "Users",
       icon: Icons.Home,
       path: "/users",
     },
+    {
+      title: "Settings",
+      icon: Icons.Home,
+      path: "/settings",
+    },
   ];
 
-  let currentPath: string | undefined;
-
-  console.log("layout: init locale");
   initLocale();
 
   onMount(() => {
@@ -74,9 +78,9 @@
     </nav>
     <main>
       {#if $localeInitialized}
-      <slot />
+        <slot />
       {:else}
-      <p class="text heading">...</p>
+        <p class="text heading">...</p>
       {/if}
     </main>
   </div>

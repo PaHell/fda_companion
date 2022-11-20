@@ -3,7 +3,7 @@
   import Button, { ButtonVariant } from "$lib/controls/Button.svelte";
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
   import { createEventDispatcher } from "svelte";
-  import { clickOutside } from "../click-outside";
+  import { clickOutside } from "../use";
   import TextInput from "./TextInput.svelte";
   // TYPE
   type T = $$Generic;
@@ -68,8 +68,7 @@
   <div
     class="select"
     bind:this={refContainer}
-    use:clickOutside
-    on:click_outside={() => (opened = false)}
+    use:clickOutside={() => (opened = false)}
   >
     <Button
       active={opened}

@@ -58,7 +58,7 @@
       {#if icon}
         <Icon name={icon} />
       {/if}
-      <p class="text placeholder" class:opacity-0={value?.length}>
+      <p class="text placeholder" class:opacity-0={value?.toString().length}>
         {placeholder}
       </p>
     </div>

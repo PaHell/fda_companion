@@ -55,7 +55,7 @@ export const initLocale : Function = function() {
 async function loadLocale(iso2: string) : Promise<any> {
     const value = get(dictionary)[iso2];
     if (value) return value;
-      return await fetch(`${window.location.href}locales/${iso2}.json`, {
+      return await fetch(`${window.location.origin}/locales/${iso2}.json`, {
         method: 'GET',
         mode: 'no-cors',
       })
