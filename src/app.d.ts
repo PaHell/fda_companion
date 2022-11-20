@@ -25,7 +25,7 @@ declare namespace App {
     namespace Models {
 
 
-                interface CustomerIn {
+        interface CustomerIn {
             fname: string;
             lname: string;
             street: string;
@@ -35,6 +35,14 @@ declare namespace App {
             country_iso3: string;
             image: string;
             company: string;
+        }
+
+        interface Country {
+            name: string;
+            demonym: string;
+            flag: string;
+            iso2: string;
+            iso3: string;
         }
 
         interface DatabaseElement {

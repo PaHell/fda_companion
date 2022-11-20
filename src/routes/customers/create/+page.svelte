@@ -2,6 +2,7 @@
   import TextInput from "$src/lib/controls/TextInput.svelte";
   import { Icons } from "$src/lib/general/Icon.svelte";
   import type { App } from "$src/app";
+    import SelectCountry from "$src/lib/controls/country/SelectCountry.svelte";
 
   // IMPORT
   // PROPS
@@ -17,6 +18,7 @@
     image: "",
     company: "",
   };
+  let country : App.Models.Country | undefined;
   // EVENTS
   // HOOKS
   // FUNCTIONS
@@ -25,31 +27,51 @@
 <template>
   <div class="vbox">
     <h1 class="text heading">Create Customer</h1>
-    <TextInput
-      bind:value={input.fname}
-      label="First Name"
-      icon={Icons.Home}
-      placeholder="Karen"
-    />
-    <TextInput bind:value={input.lname} label="Last Name" placeholder="Smith" />
+    <div class="flex space-x-2">
+      <div class="flex-1">
+        <TextInput
+          bind:value={input.fname}
+          label="First Name"
+          icon={Icons.Home}
+          placeholder="Karen"
+        />
+      </div>
+      <div class="flex-1">
+        <TextInput bind:value={input.lname} label="Last Name" placeholder="Smith" />
+      </div>
+    </div>
     <p class="text">Image Upload</p>
-    <TextInput
-      bind:value={input.street}
-      label="Street"
-      placeholder="Moonshine Ave"
-    />
-    <TextInput
-      bind:value={input.house_number}
-      label="Housenumber"
-      placeholder="42"
-    />
-    <TextInput
-      bind:value={input.postal_code}
-      label="Postal Code"
-      placeholder="34512"
-    />
-    <TextInput bind:value={input.city} label="City" placeholder="New Haven" />
-    <p class="text">Country Select</p>
+    <div class="flex space-x-2">
+      <div class="flex-[2]">
+        <TextInput
+          bind:value={input.street}
+          label="Street"
+          placeholder="Moonshine Ave"
+        />
+      </div>
+      <div class="flex-1">
+        <TextInput
+          bind:value={input.house_number}
+          label="Housenumber"
+          placeholder="42"
+        />
+      </div>
+    </div>
+    <div class="flex space-x-2">
+      <div class="flex-1">
+        <TextInput
+          bind:value={input.postal_code}
+          label="Postal Code"
+          placeholder="34512"
+        />
+      </div>
+      <div class="flex-1">
+        <TextInput bind:value={input.city} label="City" placeholder="New Haven" />
+      </div>
+      <div class="flex-1">
+        <SelectCountry bind:value={country} on:change={e => input.country_iso3 = e.detail.item.iso3}/>
+      </div>
+    </div>
     <TextInput
       bind:value={input.company}
       label="Company"
