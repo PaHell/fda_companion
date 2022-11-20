@@ -45,8 +45,12 @@
   .flag {
     @apply
     overflow-hidden
-    w-6 h-6
-    rounded;
+    w-6 h-6 rounded;
+    &:before {
+      content: "";
+      @apply block w-6 h-6 -mb-6 relative rounded;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.1);
+    }
     & > img {
       @apply h-6 object-cover;
     }
