@@ -17,6 +17,12 @@ body {
   bg-gray-100 dark:bg-gray-900;
 }
 
+* {
+  &::selection {
+      @apply text-white bg-accent-600;
+    }
+}
+
 a,
 button {
   @apply cursor-pointer;

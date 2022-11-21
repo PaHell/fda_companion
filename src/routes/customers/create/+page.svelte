@@ -2,7 +2,8 @@
   import TextInput from "$src/lib/controls/TextInput.svelte";
   import { Icons } from "$src/lib/general/Icon.svelte";
   import type { App } from "$src/app";
-    import SelectCountry from "$src/lib/controls/country/SelectCountry.svelte";
+  import SelectCountry from "$src/lib/controls/country/SelectCountry.svelte";
+  import PictureInput from "$src/lib/controls/PictureInput.svelte";
 
   // IMPORT
   // PROPS
@@ -18,7 +19,7 @@
     image: "",
     company: "",
   };
-  let country : App.Models.Country | undefined;
+  let country: App.Models.Country | undefined;
   // EVENTS
   // HOOKS
   // FUNCTIONS
@@ -37,10 +38,14 @@
         />
       </div>
       <div class="flex-1">
-        <TextInput bind:value={input.lname} label="Last Name" placeholder="Smith" />
+        <TextInput
+          bind:value={input.lname}
+          label="Last Name"
+          placeholder="Smith"
+        />
       </div>
     </div>
-    <p class="text">Image Upload</p>
+    <PictureInput />
     <div class="flex space-x-2">
       <div class="flex-[2]">
         <TextInput
@@ -69,10 +74,17 @@
         />
       </div>
       <div class="flex-1">
-        <TextInput bind:value={input.city} label="City" placeholder="New Haven" />
+        <TextInput
+          bind:value={input.city}
+          label="City"
+          placeholder="New Haven"
+        />
       </div>
       <div class="flex-1">
-        <SelectCountry bind:value={country} on:change={e => input.country_iso3 = e.detail.item.iso3}/>
+        <SelectCountry
+          bind:value={country}
+          on:change={(e) => (input.country_iso3 = e.detail.item.iso3)}
+        />
       </div>
     </div>
     <TextInput

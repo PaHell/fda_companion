@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
-    import { createEventDispatcher, onMount } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
 </script>
 
 <script lang="ts">
@@ -17,7 +17,7 @@
   export let type: string = "text";
   export let alignRight: boolean = false;
   export let disableTabIndex: boolean = false;
-    export let autofocus: boolean = false;
+  export let autofocus: boolean = false;
   export function focus() {
     ref?.focus();
   }
@@ -26,16 +26,16 @@
   type InputEvent = Event & { currentTarget: EventTarget & HTMLInputElement };
   const dispatch = createEventDispatcher<$$Events>();
   // LIFECYCLE
-  
+
   onMount(() => {
     if (autofocus) focus();
   });
 
   // USE
-  function typeAction(node : HTMLInputElement) {
-		node.type = type;
-	}
-// FUNCTIONS
+  function typeAction(node: HTMLInputElement) {
+    node.type = type;
+  }
+  // FUNCTIONS
   function onInput(event: InputEvent) {
     console.log(event.currentTarget);
     dispatch("change", event.currentTarget.value);
@@ -50,7 +50,11 @@
   {#if label}
     <p class="text label">{label}</p>
   {/if}
-  <div class="input input-{type}" class:right={alignRight} class:has-icon={!!icon}>
+  <div
+    class="input input-{type}"
+    class:right={alignRight}
+    class:has-icon={!!icon}
+  >
     <input
       bind:this={ref}
       bind:value
@@ -59,7 +63,7 @@
       {disabled}
       on:input={onInput}
       on:focus={onFocus}
-      tabindex={(disabled || disableTabIndex) ? -1 : 0}
+      tabindex={disabled || disableTabIndex ? -1 : 0}
     />
     <div>
       {#if icon}
@@ -100,9 +104,12 @@
 		caret-accent-500 dark:caret-accent-400
             transition-all
             bg-gray-50 border-gray-300
-            dark:bg-gray-800 dark:border-gray-700
-            appearance-none;
-            -webkit-appearance: none;
+            dark:bg-gray-800 dark:border-gray-700;
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        @apply appearance-none;
+      }
       &:hover {
         @apply shadow bg-white border-gray-300
             dark:bg-gray-700 dark:border-gray-700;
@@ -166,6 +173,5 @@
         padding-left: calc(24px + 1.25rem);
       }
     }
-
   }
 </style>
