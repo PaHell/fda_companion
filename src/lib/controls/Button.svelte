@@ -14,6 +14,7 @@
   export let disabled: boolean = false;
   export let active: boolean = false;
   export let css: string = "";
+  export let disableTabIndex: boolean = false;
 </script>
 
 <template>
@@ -23,6 +24,7 @@
     {disabled}
     class:active
     class="button button-{variant} {css}"
+    tabindex={(disabled || disableTabIndex) ? -1 : 0}
   >
     {#if icon}
       <Icon name={icon} />
@@ -132,7 +134,8 @@
 
     &.button-trans {
       @apply bg-transparent border-transparent shadow-none;
-      &:hover {
+      &:hover,
+      &:focus {
         @apply bg-gray-200 border-gray-100
 	  dark:bg-gray-700 dark:border-gray-800;
       }

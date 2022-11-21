@@ -18,6 +18,8 @@
   <Select
     bind:value={value}
     items={$countries}
+    searchKeysOrdered={["iso2", "iso3", "name", "demonym"]}
+    enableSearch={true}
     on:change
   >
     <svelte:fragment slot="selected" let:item>

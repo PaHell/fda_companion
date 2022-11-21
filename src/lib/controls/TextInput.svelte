@@ -1,38 +1,44 @@
 <script lang="ts" context="module">
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
+    import { createEventDispatcher, onMount } from "svelte";
 </script>
 
 <script lang="ts">
   // TYPE
-  interface $$Slots {
-    selected: {
-      item: T;
-      index: number;
-    };
-    item: {
-      item: T;
-      index: number;
-    };
-  }
   interface $$Events {
-    change: CustomEvent<{
-      item: T;
-      index: number;
-    }>;
+    change: typeof value;
   }
   // PROPS
-  export let value: string | undefined = undefined;
+  export let value: string | number | undefined = undefined;
   export let placeholder: string;
   export let icon: Icons | undefined = undefined;
   export let label: string | undefined = undefined;
   export let disabled: boolean = false;
-  // REF
+  export let type: string = "text";
+  export let alignRight: boolean = false;
+  export let disableTabIndex: boolean = false;
+    export let autofocus: boolean = false;
+  export function focus() {
+    ref?.focus();
+  }
+  // DATA
   let ref: HTMLInputElement | undefined;
-
   type InputEvent = Event & { currentTarget: EventTarget & HTMLInputElement };
+  const dispatch = createEventDispatcher<$$Events>();
+  // LIFECYCLE
+  
+  onMount(() => {
+    if (autofocus) focus();
+  });
 
+  // USE
+  function typeAction(node : HTMLInputElement) {
+		node.type = type;
+	}
+// FUNCTIONS
   function onInput(event: InputEvent) {
     console.log(event.currentTarget);
+    dispatch("change", event.currentTarget.value);
   }
 
   function onFocus(event: InputEvent) {
@@ -44,15 +50,16 @@
   {#if label}
     <p class="text label">{label}</p>
   {/if}
-  <div class="input" class:has-icon={!!icon}>
+  <div class="input input-{type}" class:right={alignRight} class:has-icon={!!icon}>
     <input
       bind:this={ref}
       bind:value
-      type="text"
+      use:typeAction
       placeholder=""
       {disabled}
       on:input={onInput}
       on:focus={onFocus}
+      tabindex={(disabled || disableTabIndex) ? -1 : 0}
     />
     <div>
       {#if icon}
@@ -93,7 +100,9 @@
 		caret-accent-500 dark:caret-accent-400
             transition-all
             bg-gray-50 border-gray-300
-            dark:bg-gray-800 dark:border-gray-700;
+            dark:bg-gray-800 dark:border-gray-700
+            appearance-none;
+            -webkit-appearance: none;
       &:hover {
         @apply shadow bg-white border-gray-300
             dark:bg-gray-700 dark:border-gray-700;
@@ -146,10 +155,17 @@
       }
     }
 
+    &.right {
+      & > input,
+      & > div > .placeholder {
+        @apply text-right;
+      }
+    }
     &.has-icon {
       & > input {
         padding-left: calc(24px + 1.25rem);
       }
     }
+
   }
 </style>

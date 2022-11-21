@@ -2,9 +2,10 @@
   // IMPORT
   import Button, { ButtonVariant } from "$lib/controls/Button.svelte";
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount, SvelteComponent } from "svelte";
+    import { debounce, searchByKeys } from "../helpers";
   import { clickOutside } from "../use";
-  import TextInput from "./TextInput.svelte";
+    import TextInput from "./TextInput.svelte";
   // TYPE
   type T = $$Generic;
   interface $$Slots {
@@ -30,23 +31,32 @@
   export let index: number = -1;
   export let opened: boolean = false;
   export let enableSearch: boolean = false;
+  export let searchPlaceholder: string = "Search";
+  export let searchKeysOrdered: (keyof T)[] = [];
   // REFS
   let refContainer: HTMLDivElement | undefined;
+  let refSearch: SvelteComponent | undefined;
   // DATA
+  const debouncedSearch = debounce((evt: CustomEvent<string>) => {
+    searchItems = searchByKeys(evt.detail, items, searchKeysOrdered);
+  }, Math.max(items.length * 1.25, 100));
+  console.log({countries: items.length});
+  
+  let searchItems: T[] = [];
+  let searchValue: string = "";
   let styleMenu = "";
-  let search = "";
   // EVENTS
   const dispatch = createEventDispatcher<{
     change: { item: T; index: number };
   }>();
-  // HOOKS
+  // LIFECYCLE
   // FUNCTIONS
   function toggleOpened() {
     opened = !opened;
-    if (opened) updateStyle();
-  }
-  function onClickOutside() {
-    if (opened) opened = false;
+    if (opened) {
+      refSearch?.focus();
+      updateStyle();
+    }
   }
   function select(item: T, _index: number) {
     value = item;
@@ -85,14 +95,15 @@
     <menu style={styleMenu} class:open={opened}>
       {#if enableSearch}
         <header>
-          <TextInput bind:value={search} placeholder="Search" />
+            <TextInput bind:this={refSearch} bind:value={searchValue} placeholder={searchPlaceholder} disableTabIndex={!opened} on:change={debouncedSearch}/>
         </header>
       {/if}
       <div>
-        {#each items as item, index}
+        {#each (searchValue ? searchItems : items) as item, index}
           <Button
             variant={ButtonVariant.Transparent}
             active={item == value}
+            disableTabIndex={!opened}
             on:click={() => select(item, index)}
           >
             <slot name="item" {item} {index} />

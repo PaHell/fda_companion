@@ -52,8 +52,10 @@
       <div class="flex-1">
         <TextInput
           bind:value={input.house_number}
-          label="Housenumber"
+          type="number"
+          label="House Number"
           placeholder="42"
+          alignRight
         />
       </div>
     </div>
@@ -61,6 +63,7 @@
       <div class="flex-1">
         <TextInput
           bind:value={input.postal_code}
+          type="number"
           label="Postal Code"
           placeholder="34512"
         />
