@@ -1,6 +1,7 @@
 <script lang="ts" context="module">
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
   import { createEventDispatcher, onMount } from "svelte";
+    import Button, { ButtonVariant } from "./Button.svelte";
 </script>
 
 <script lang="ts">
@@ -11,20 +12,27 @@
   // PROPS
   export let value: string | number | undefined = undefined;
 
+  let container: HTMLElement | undefined;
   let canvas: HTMLCanvasElement | undefined;
   let photo: HTMLImageElement | undefined;
   let video: HTMLVideoElement | undefined;
 
-  const width = 320;
-  let height = 0;
+  // height is always larger than width
+  let width = 0;
+  let height = 0; // this will be a fixed value from css
 
   let streaming = false;
   let error: string | undefined;
 
   onMount(() => {
+    if (!container || !video) return;
+    // apply css height
+    height = container.clientHeight;
+    // get video stream and show
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: false })
       .then((stream) => {
+        if (!video) return;
         video.srcObject = stream;
         video.play();
       })
@@ -32,13 +40,15 @@
         console.error(`An error occurred: ${err}`);
         error = err;
       });
+    // format video stream
     video.addEventListener(
       "canplay",
       (ev) => {
         if (!streaming) {
-          height = (video.videoHeight / video.videoWidth) * width;
-
-          video.setAttribute("width", width);
+          const video = ev.target as HTMLVideoElement;
+          //height = (video.videoHeight / video.videoWidth) * width;
+          width = (video.videoWidth / video.videoHeight) * height;
+          //video.setAttribute("width", width);
           video.setAttribute("height", height);
           canvas.setAttribute("width", width);
           canvas.setAttribute("height", height);
@@ -59,6 +69,7 @@
   }
 
   function takePicture() {
+    if (!video || !canvas || !photo) return;
     const context = canvas.getContext("2d");
     if (width && height) {
       canvas.width = width;
@@ -78,26 +89,47 @@
     <p class="text">{error}</p>
   {/if}
   <div class="picture-input">
-    <div class="camera">
+    <main bind:this={container}>
       <video id="video" bind:this={video}>
         <track kind="captions" />
         <p class="text">Video stream not available.</p>
       </video>
-      <button on:click={takePicture}>Take photo</button>
-    </div>
-    <canvas id="canvas" bind:this={canvas} />
-    <div class="output">
+      <canvas id="canvas" bind:this={canvas} />
       <img
         id="photo"
         bind:this={photo}
-        alt="The screen capture will appear in this box."
+        alt=""
       />
-    </div>
+    </main>
+    <footer>
+      <Button
+      text="Take photo"
+      icon={Icons.Home}
+      variant={ButtonVariant.Primary}
+      on:click={takePicture}
+      />
+    </footer>
   </div>
 </template>
 
 <style global lang="postcss">
   .picture-input {
-    @apply max-h-96 flex;
+    & > main,
+    & > main > * {
+      @apply h-72;
+    }    
+    & > main {
+      @apply w-72 relative overflow-hidden
+      rounded-full;
+      & > *:not(:last-child) {
+        @apply absolute w-[600px];
+      }
+      & > video {
+      }
+      & > canvas {
+      }
+      & > img {
+      }
+    }
   }
 </style>
