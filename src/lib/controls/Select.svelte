@@ -5,6 +5,7 @@
   import { createEventDispatcher, onMount, SvelteComponent } from "svelte";
     import { debounce, searchByKeys } from "../helpers";
   import { clickOutside } from "../use";
+    import Overlay, { OverlayOrientation } from "./Overlay.svelte";
     import TextInput from "./TextInput.svelte";
   // TYPE
   type T = $$Generic;
@@ -19,71 +20,49 @@
     };
   }
   interface $$Events {
-    change: CustomEvent<{
+    change: {
       item: T;
       index: number;
-    }>;
+    };
   }
   // PROPS
   export let items: T[] = [];
-  export let value: T | undefined;
+  export let value: T | undefined = undefined;
   export let valueUndefined: string = "Nothing selected";
   export let index: number = -1;
-  export let opened: boolean = false;
   export let enableSearch: boolean = false;
   export let searchPlaceholder: string = "Search";
   export let searchKeysOrdered: (keyof T)[] = [];
   // REFS
-  let refContainer: HTMLDivElement | undefined;
+  let refOverlay: SvelteComponent | undefined;
   let refSearch: SvelteComponent | undefined;
   // DATA
+  let opened: boolean = false;
   const debouncedSearch = debounce((evt: CustomEvent<string>) => {
     searchItems = searchByKeys(evt.detail, items, searchKeysOrdered);
   }, Math.max(items.length * 1.25, 100));
-  console.log({countries: items.length});
-  
   let searchItems: T[] = [];
   let searchValue: string = "";
-  let styleMenu = "";
   // EVENTS
-  const dispatch = createEventDispatcher<{
-    change: { item: T; index: number };
-  }>();
+  const dispatch = createEventDispatcher<$$Events>();
   // LIFECYCLE
   // FUNCTIONS
-  function toggleOpened() {
-    opened = !opened;
-    if (opened) {
-      refSearch?.focus();
-      updateStyle();
-    }
-  }
   function select(item: T, _index: number) {
+    if (!refOverlay) return;
     value = item;
     index = _index;
     dispatch("change", { item, index });
-    opened = false;
-  }
-  function updateStyle() {
-    if (!refContainer) return;
-    const rect = refContainer.getBoundingClientRect();
-    styleMenu = `
-      top: ${rect.bottom + 2}px;
-      width: ${rect.width}px;
-    `;
+    refOverlay.toggleOpened();
   }
 </script>
 
 <template>
-  <div
-    class="select"
-    bind:this={refContainer}
-    use:clickOutside={() => (opened = false)}
-  >
-    <Button
+  <Overlay bind:this={refOverlay} bind:opened orientation={OverlayOrientation.Bottom} css="select" on:open={refSearch?.focus}>
+    <svelte:fragment slot="item">
+      <Button
       active={opened}
       variant={ButtonVariant.Secondary}
-      on:click={toggleOpened}
+      on:click={refOverlay.toggleOpened}
     >
       {#if value}
         <slot name="selected" item={value} {index} />
@@ -92,7 +71,8 @@
       {/if}
       <Icon name={Icons.SelectDown} />
     </Button>
-    <menu style={styleMenu} class:open={opened}>
+    </svelte:fragment>
+    <svelte:fragment slot="menu">
       {#if enableSearch}
         <header>
             <TextInput bind:this={refSearch} bind:value={searchValue} placeholder={searchPlaceholder} disableTabIndex={!opened} on:change={debouncedSearch}/>
@@ -110,9 +90,8 @@
             <Icon name={Icons.SelectSelected} />
           </Button>
         {/each}
-      </div>
-    </menu>
-  </div>
+    </svelte:fragment>
+  </Overlay>
 </template>
 
 <style global lang="postcss">
@@ -135,17 +114,9 @@
       }
     }
     & > menu {
-      @apply fixed z-40
-      flex flex-col
-      max-h-0 overflow-hidden
-      shadow rounded
-      border-gray-300 bg-gray-50
-      dark:border-gray-700 dark:bg-gray-800;
-      transition: max-height 0.3s ease-in-out;
-      will-change: max-height;
 
       & > * {
-        @apply border border-inherit overflow-hidden;
+        @apply border border-inherit;
         &:first-child {
           @apply rounded-t;
         }
@@ -158,11 +129,11 @@
       }
 
       & > header {
-        @apply p-2 flex-shrink-0;
+        @apply p-2;
       }
 
       & > div {
-        @apply flex-1 py-2 overflow-y-auto;
+        @apply flex-1 py-2 overflow-y-auto overflow-x-hidden;
         & .button {
           @apply justify-start w-full
                 rounded-none border-none;
@@ -182,9 +153,6 @@
             }
           }
         }
-      }
-      &.open {
-        @apply max-h-96 overflow-visible;
       }
     }
   }
