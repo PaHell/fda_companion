@@ -1,18 +1,17 @@
 <script lang="ts" context="module">
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
   import { createEventDispatcher, onDestroy, onMount } from "svelte";
-    import { clickOutside } from "../use";
-    import Button, { ButtonVariant } from "./Button.svelte";
-    export enum OverlayOrientation {
-      Top = "top",
-      Bottom = "bottom",
-      Left = "left",
-      Right = "right",
-    }
+  import { clickOutside } from "../use";
+  import Button, { ButtonVariant } from "./Button.svelte";
+  export enum OverlayOrientation {
+    Top = "top",
+    Bottom = "bottom",
+    Left = "left",
+    Right = "right",
+  }
 </script>
 
 <script lang="ts">
-
   interface $$Slots {
     item: {};
     menu: {};
@@ -22,9 +21,10 @@
     close: {};
   }
 
-  export let css: string  = "";
-  export let opened: boolean  = false;
-  export let orientation: OverlayOrientation  = OverlayOrientation.Bottom;
+  export let css: string = "";
+  export let opened: boolean = false;
+  export let render: boolean = false;
+  export let orientation: OverlayOrientation = OverlayOrientation.Bottom;
 
   let refContainer: HTMLElement | undefined;
   let refMenu: HTMLElement | undefined;
@@ -44,6 +44,12 @@
 
   export function open() {
     if (!refMenu || opened) return;
+    // first view is lazy, items stay rendered afterwards
+    if (!render) {
+      render = true;
+      setTimeout(open, 0);
+      return;
+    }
     opened = true;
     updateStyle();
     dispatch("open");
@@ -61,7 +67,9 @@
         refMenu.style.top = `${rect.bottom + spaceFromOrigin}px`;
         refMenu.style.left = `${rect.left}px`;
         refMenu.style.width = `${rect.width}px`;
-        refMenu.style.maxHeight = `${window.innerHeight - rect.bottom - spaceFromScreen}px`;
+        refMenu.style.maxHeight = `${
+          window.innerHeight - rect.bottom - spaceFromScreen
+        }px`;
         break;
       case OverlayOrientation.Left:
         break;
@@ -69,14 +77,20 @@
         break;
     }
   }
-
 </script>
 
 <template>
-  <div bind:this={refContainer} class="overlay {css}" class:opened use:clickOutside={close}>
-    <slot name="item"></slot>
+  <div
+    bind:this={refContainer}
+    class="overlay {css}"
+    class:opened
+    use:clickOutside={close}
+  >
+    <slot name="item" />
     <menu class="overlay-{orientation}" bind:this={refMenu}>
-      <slot name="menu"></slot>
+      {#if render}
+        <slot name="menu" />
+      {/if}
     </menu>
   </div>
 </template>
@@ -96,7 +110,7 @@
       shadow rounded
       border-gray-300 bg-gray-50
       dark:border-gray-700 dark:bg-gray-800;
-      transition: max-height .2s linear;
+      transition: max-height 0.2s linear;
       will-change: max-height;
       &.overlay-top,
       &.overlay-bottom {

@@ -3,7 +3,7 @@
   import { countries } from "./store";
   import type { App } from "$src/app";
 
-  export let value : App.Models.Country | undefined = undefined;
+  export let value: App.Models.Country | undefined = undefined;
 
   interface $$Events {
     change: CustomEvent<{
@@ -16,15 +16,16 @@
 <template>
   <p class="text label">Country</p>
   <Select
-    bind:value={value}
+    bind:value
     items={$countries}
-    searchKeysOrdered={["iso2", "iso3", "name", "demonym"]}
+    searchKeysOrdered={["iso3", "name"]}
+    searchPlaceholder="Search country name or ISO3"
     enableSearch={true}
     on:change
   >
     <svelte:fragment slot="selected" let:item>
       <div class="flag">
-        <img src={item.flag} alt="Flag of {item.name} ({item.iso3})"/>
+        <img src={item.flag} alt="Flag of {item.name} ({item.iso3})" />
       </div>
       <p class="text">
         {item.name}
@@ -33,7 +34,10 @@
     </svelte:fragment>
     <svelte:fragment slot="item" let:item>
       <div class="flag">
-        <img src={item.flag} alt="Flag of {item.name} ({item.iso3})"/>
+        <img
+          src={item.flag}
+          alt="Flag of {item.name} ({item.iso2}, {item.iso3})"
+        />
       </div>
       <p class="text">
         {item.name}
@@ -45,13 +49,12 @@
 
 <style lang="postcss">
   .flag {
-    @apply
-    overflow-hidden
+    @apply overflow-hidden
     w-6 h-6 rounded;
     &:before {
       content: "";
       @apply block w-6 h-6 -mb-6 relative rounded;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.1);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
     }
     & > img {
       @apply h-6 object-cover;
