@@ -3,10 +3,10 @@
   import Button, { ButtonVariant } from "$lib/controls/Button.svelte";
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
   import { createEventDispatcher, onMount, SvelteComponent } from "svelte";
-    import { debounce, searchByKeys } from "../helpers";
+  import { debounce, searchByKeys } from "../helpers";
   import { clickOutside } from "../use";
-    import Overlay, { OverlayOrientation } from "./Overlay.svelte";
-    import TextInput from "./TextInput.svelte";
+  import Overlay, { OverlayOrientation } from "./Overlay.svelte";
+  import TextInput from "./TextInput.svelte";
   // TYPE
   type T = $$Generic;
   interface $$Slots {
@@ -33,6 +33,7 @@
   export let enableSearch: boolean = false;
   export let searchPlaceholder: string = "Search";
   export let searchKeysOrdered: (keyof T)[] = [];
+  export let searchDebounce: number = 75;
   // REFS
   let refOverlay: SvelteComponent | undefined;
   let refSearch: SvelteComponent | undefined;
@@ -40,7 +41,7 @@
   let opened: boolean = false;
   const debouncedSearch = debounce((evt: CustomEvent<string>) => {
     searchItems = searchByKeys(evt.detail, items, searchKeysOrdered);
-  }, Math.max(items.length * 1.25, 100));
+  }, searchDebounce);
   let searchItems: T[] = [];
   let searchValue: string = "";
   // EVENTS
@@ -54,32 +55,50 @@
     dispatch("change", { item, index });
     refOverlay.toggleOpened();
   }
+
+  function selectFirst() {
+    if (searchItems.length == 0) return;
+    select(searchItems[0], 0);
+  }
 </script>
 
 <template>
-  <Overlay bind:this={refOverlay} bind:opened orientation={OverlayOrientation.Bottom} css="select" on:open={refSearch?.focus}>
+  <Overlay
+    bind:this={refOverlay}
+    bind:opened
+    orientation={OverlayOrientation.Bottom}
+    css="select"
+    on:open={refSearch?.focus}
+  >
     <svelte:fragment slot="item">
       <Button
-      active={opened}
-      variant={ButtonVariant.Secondary}
-      on:click={refOverlay.toggleOpened}
-    >
-      {#if value}
-        <slot name="selected" item={value} {index} />
-      {:else}
-        <p class="text secondary">{valueUndefined}</p>
-      {/if}
-      <Icon name={Icons.SelectDown} />
-    </Button>
+        active={opened}
+        variant={ButtonVariant.Secondary}
+        on:click={refOverlay.toggleOpened}
+      >
+        {#if value}
+          <slot name="selected" item={value} {index} />
+        {:else}
+          <p class="text secondary">{valueUndefined}</p>
+        {/if}
+        <Icon name={Icons.SelectDown} />
+      </Button>
     </svelte:fragment>
     <svelte:fragment slot="menu">
       {#if enableSearch}
         <header>
-            <TextInput bind:this={refSearch} bind:value={searchValue} placeholder={searchPlaceholder} disableTabIndex={!opened} on:change={debouncedSearch}/>
+          <TextInput
+            bind:this={refSearch}
+            bind:value={searchValue}
+            placeholder={searchPlaceholder}
+            disableTabIndex={!opened}
+            on:change={debouncedSearch}
+            on:enter={selectFirst}
+          />
         </header>
       {/if}
       <div>
-        {#each (searchValue ? searchItems : items) as item, index}
+        {#each searchValue ? searchItems : items as item, index}
           <Button
             variant={ButtonVariant.Transparent}
             active={item == value}
@@ -90,7 +109,8 @@
             <Icon name={Icons.SelectSelected} />
           </Button>
         {/each}
-    </svelte:fragment>
+      </div></svelte:fragment
+    >
   </Overlay>
 </template>
 
@@ -114,7 +134,6 @@
       }
     }
     & > menu {
-
       & > * {
         @apply border border-inherit;
         &:first-child {

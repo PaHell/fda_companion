@@ -7,6 +7,7 @@
   // TYPE
   interface $$Events {
     change: typeof value;
+    enter: typeof value;
   }
   // PROPS
   export let value: string | number | undefined = undefined;
@@ -24,6 +25,9 @@
   // DATA
   let ref: HTMLInputElement | undefined;
   type InputEvent = Event & { currentTarget: EventTarget & HTMLInputElement };
+  type KeyEvent = KeyboardEvent & {
+    currentTarget: EventTarget & HTMLInputElement;
+  };
   const dispatch = createEventDispatcher<$$Events>();
   // LIFECYCLE
 
@@ -42,6 +46,14 @@
 
   function onFocus(event: InputEvent) {
     console.log(event.currentTarget);
+  }
+
+  function onKey(event: KeyEvent) {
+    switch (event.key) {
+      case "Enter":
+        dispatch("enter", event.currentTarget.value);
+        break;
+    }
   }
 </script>
 
@@ -62,6 +74,7 @@
       {disabled}
       on:input={onInput}
       on:focus={onFocus}
+      on:keydown={onKey}
       tabindex={disabled || disableTabIndex ? -1 : 0}
     />
     <div>
