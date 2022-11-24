@@ -1,6 +1,7 @@
 <script lang="ts" context="module">
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
   import { createEventDispatcher, onDestroy, onMount } from "svelte";
+    import { debounce } from "../helpers";
     import { clickOutside } from "../use";
     import Button, { ButtonVariant } from "./Button.svelte";
     export enum OverlayOrientation {
@@ -9,6 +10,8 @@
       Left = "left",
       Right = "right",
     }
+    const spaceFromOrigin = 2;
+    const spaceFromScreen = 8;
 </script>
 
 <script lang="ts">
@@ -30,6 +33,11 @@
   let refMenu: HTMLElement | undefined;
 
   const dispatch = createEventDispatcher<$$Events>();
+  const debouncedCalcPosition = debounce(calcPosition, 100);
+
+  onMount(() => {
+    calcPosition();
+  });
 
   export function toggleOpened() {
     opened ? close() : open();
@@ -39,28 +47,24 @@
     if (!refMenu || !opened) return;
     opened = false;
     refMenu.style.removeProperty("max-height");
+    refMenu.style.removeProperty("max-width");
     dispatch("close");
   }
 
   export function open() {
     if (!refMenu || opened) return;
     opened = true;
-    updateStyle();
+    updateSize();
     dispatch("open");
   }
 
-  function updateStyle() {
+  function updateSize() {
     if (!refContainer || !refMenu) return;
-    const spaceFromOrigin = 2;
-    const spaceFromScreen = 8;
     const rect = refContainer.getBoundingClientRect();
     switch (orientation) {
       case OverlayOrientation.Top:
         break;
       case OverlayOrientation.Bottom:
-        refMenu.style.top = `${rect.bottom + spaceFromOrigin}px`;
-        refMenu.style.left = `${rect.left}px`;
-        refMenu.style.width = `${rect.width}px`;
         refMenu.style.maxHeight = `${window.innerHeight - rect.bottom - spaceFromScreen}px`;
         break;
       case OverlayOrientation.Left:
@@ -70,7 +74,27 @@
     }
   }
 
+  function calcPosition() {
+    if (!refContainer || !refMenu) return;
+    const rect = refContainer.getBoundingClientRect();
+    switch (orientation) {
+      case OverlayOrientation.Top:
+        break;
+      case OverlayOrientation.Bottom:
+        refMenu.style.top = `${rect.bottom + spaceFromOrigin}px`;
+        refMenu.style.left = `${rect.left}px`;
+        refMenu.style.width = `${rect.width}px`;
+        break;
+      case OverlayOrientation.Left:
+        break;
+      case OverlayOrientation.Right:
+        break;
+    }
+  }
+
 </script>
+
+<svelte:window on:resize={debouncedCalcPosition} />
 
 <template>
   <div bind:this={refContainer} class="overlay {css}" class:opened use:clickOutside={close}>

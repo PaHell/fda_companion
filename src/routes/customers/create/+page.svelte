@@ -29,6 +29,10 @@
   <div class="vbox">
     <h1 class="text heading">Create Customer</h1>
     <div class="flex space-x-2">
+      <div class="w-56">
+        <p class="text label">Picture of you</p>
+        <PictureInput />
+      </div>
       <div class="flex-1">
         <TextInput
           bind:value={input.fname}
@@ -45,7 +49,6 @@
         />
       </div>
     </div>
-    <PictureInput />
     <div class="flex space-x-2">
       <div class="flex-[2]">
         <TextInput

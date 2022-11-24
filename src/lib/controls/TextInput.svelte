@@ -37,7 +37,6 @@
   }
   // FUNCTIONS
   function onInput(event: InputEvent) {
-    console.log(event.currentTarget);
     dispatch("change", event.currentTarget.value);
   }
 
