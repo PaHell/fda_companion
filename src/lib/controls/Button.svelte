@@ -105,13 +105,13 @@
     }
 
     &.button-pri {
-      @apply bg-accent-400 border-accent-500
+      @apply bg-accent-400 border-accent-500 dark:bg-accent-600 dark:border-accent-500
 			text-white;
       &:hover {
-        @apply bg-accent-500 border-accent-600 dark:border-accent-400;
+        @apply bg-accent-500 border-accent-600 dark:bg-accent-500 dark:border-accent-400;
       }
       &:active {
-        @apply bg-accent-600 border-accent-600 dark:border-accent-400;
+        @apply bg-accent-600 border-accent-600 dark:bg-accent-400 dark:border-accent-400;
       }
     }
 
