@@ -15,11 +15,11 @@
 <script lang="ts">
   // TYPE
   // PROPS
+  export let base64: string = "";
   let refOverlay: SvelteComponent | undefined;
   let container: HTMLElement | undefined;
   let canvas: HTMLCanvasElement | undefined;
   let video: HTMLVideoElement | undefined;
-  let photoSrc: string = "";
 
   let dynComp: HTMLElement;
 
@@ -32,6 +32,7 @@
   let error: string | undefined;
 
   onMount(() => {
+    console.log("onMount", container, video, canvas);
     if (!container) return;
     // css width
     width = container.clientWidth;
@@ -75,8 +76,7 @@
   
   function savePhoto() {
     if (!canvas) return;
-    const data = canvas.toDataURL("image/png");
-    photoSrc = data;
+    base64 = canvas.toDataURL("image/png");
     refOverlay?.close();
     clearCanvas();
   }
@@ -95,19 +95,21 @@
       <Button
       variant={ButtonVariant.Primary}
       on:click={refOverlay.toggleOpened}
+      css="picture-input-button"
       >
-      {#if photoSrc}
+      {#if base64}
           <img
             id="photo"
-            src={photoSrc}
+            src={base64}
             alt=""/>
           {:else}
-          <Icon name={Icons.Home} />
+          <Icon name={Icons.Home} large />
+          <p class="text">No Image</p>
         {/if}
       </Button>
     </svelte:fragment>
     <svelte:fragment slot="menu">
-      <div class="picture-input {currentState}" bind:this={container}>
+      <div class="picture-input-menu {currentState}" bind:this={container}>
         <video bind:this={video} style={styleVideoCanvas} on:canplay={onCanPlay}>
           <track kind="captions" />
           <p class="text">Video stream not available.</p>
@@ -142,7 +144,16 @@
 </template>
 
 <style global lang="postcss">
-  .picture-input {
+  .picture-input-button {
+    @apply w-48 h-48 flex-col justify-center items-center;
+    & > .icon {
+      @apply m-0 mb-2 text-accent-900 !important;
+    }
+    & > .text {
+      @apply flex-initial mb-2 text-accent-900;
+    }
+  }
+  .picture-input-menu {
     @apply w-96;
     & > main {
       & > video {
