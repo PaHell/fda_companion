@@ -3,6 +3,7 @@
   import Overlay, { OverlayOrientation } from "./Overlay.svelte";
   import { createEventDispatcher, onMount, SvelteComponent } from "svelte";
   import Button, { ButtonVariant } from "./Button.svelte";
+  import Alert, { AlertVariant } from "../general/Alert.svelte";
 
   enum State {
     Init,
@@ -14,18 +15,19 @@
 
 <script lang="ts">
   // TYPE
+
+
   // PROPS
   export let base64: string = "";
+  let previewBase64: string = "";
   let refOverlay: SvelteComponent | undefined;
-  let canvas: HTMLCanvasElement | undefined;
   let video: HTMLVideoElement | undefined;
   let stream: MediaStream | undefined;
 
-  let width = 320;
-  let height = 0;
+  let imageSize : [number, number] = [0, 0];
+  let displaySize : [number, number] = [0, 0];
 
   let currentState = State.Init;
-  let styleVideoCanvas = "";
   let error: string | undefined;
 
   onMount(() => {
@@ -33,15 +35,14 @@
   });
 
   function updateView(state: State) {
-    if (!canvas || !video) return;
+    if (!video) return;
     currentState = state;
-    canvas.hidden = state != State.Viewing;
     video.hidden = state != State.Streaming;
   }
 
   function init() {
-    if (!canvas || !video) return;
-    console.log("init", canvas, video);
+    if (!video) return;
+    console.log("init", video);
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: false })
       .then((_stream) => {
@@ -60,8 +61,8 @@
   }
 
   function destroy() {
-    if (!canvas || !video || !stream) return;
-    console.log("destroy", canvas, video);
+    if (!video || !stream) return;
+    console.log("destroy", video);
     video.pause();
     video.srcObject = null;
     stream.getTracks().forEach((track) => track.stop());
@@ -69,25 +70,26 @@
   }
 
   function clearCanvas() {
-    if (!canvas || !video) return;
-    const context = canvas.getContext("2d");
-    if (!context) return;
-    context.fillStyle = "#AAA";
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    if (!video) return;
     updateView(State.Streaming);
+    previewBase64 = "";
   }
 
   function takePicture() {
-    if (!canvas || !video) return;
+    if (!video) return;
+    var canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
     if (!context) return;
-    context.drawImage(video, 0, 0, video.clientWidth, video.clientHeight);
+    canvas.width = imageSize[0];
+    canvas.height = imageSize[1];
+    context.drawImage(video, 0, 0, imageSize[0], imageSize[1]);
+    previewBase64 = canvas.toDataURL("image/png");
     updateView(State.Viewing);
   }
 
   function savePhoto() {
-    if (!canvas) return;
-    base64 = canvas.toDataURL("image/png");
+    base64 = previewBase64;
+    previewBase64 = "";
     refOverlay?.close();
     clearCanvas();
   }
@@ -95,9 +97,8 @@
   function onCanPlay(event: Event & { currentTarget: HTMLVideoElement }) {
     console.log("onCanPlay", event);
     currentState = State.Streaming;
-    width = event.currentTarget.videoWidth;
-    height = event.currentTarget.videoHeight;
-    styleVideoCanvas = `width: ${width}px; height: ${height}px;`;
+    imageSize = [event.currentTarget.videoWidth, event.currentTarget.videoHeight];
+    displaySize = [event.currentTarget.clientWidth, event.currentTarget.clientHeight];
   }
 </script>
 
@@ -123,16 +124,16 @@
       </Button>
     </svelte:fragment>
     <svelte:fragment slot="menu">
+      {#if previewBase64}
+        <img id="photo" src={previewBase64} alt="" />
+      {/if}
       <video bind:this={video} on:canplay={onCanPlay}>
         <track kind="captions" />
         <p class="text">Video stream not available.</p>
       </video>
-      <canvas bind:this={canvas} />
       <footer>
         {#if currentState === State.Init}
-          <p class="text text-danger-light dark:text-danger-dark">
-            Camera could not ne loaded
-          </p>
+          <Alert variant={AlertVariant.Danger} icon={Icons.Home} title="Error!" text={error} />
         {:else if currentState === State.Streaming}
           <Button
             text="Take photo"

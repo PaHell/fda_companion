@@ -134,7 +134,7 @@
 
 <style global lang="postcss">
   .overlay {
-    & > *:not(menu) {
+    & > .active {
       @apply relative z-50;
     }
     & > menu {
