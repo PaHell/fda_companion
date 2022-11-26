@@ -19,10 +19,8 @@
   let refOverlay: SvelteComponent | undefined;
   let canvas: HTMLCanvasElement | undefined;
   let video: HTMLVideoElement | undefined;
+  let stream: MediaStream | undefined;
 
-  let dynComp: HTMLElement;
-
-  // height is always larger than width
   let width = 320;
   let height = 0;
 
@@ -31,42 +29,43 @@
   let error: string | undefined;
 
   onMount(() => {
-    init();
-    console.log("onMount", video, canvas);
-    if (!video) return;
-    // css width
-    width = video.clientWidth;
-    // get video stream and show
+    console.log("onMount");
+  });
+
+  function updateView(state: State) {
+    if (!canvas || !video) return;
+    currentState = state;
+    canvas.hidden = state != State.Viewing;
+    video.hidden = state != State.Streaming;
+  }
+
+  function init() {
+    if (!canvas || !video) return;
+    console.log("init", canvas, video);
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: false })
-      .then((stream) => {
-        if (!canvas || !video) return;
-        currentState = State.Streaming;
+      .then((_stream) => {
+        if (!video) return;
         console.log("setting video src", video);
+        stream = _stream;
         video.srcObject = stream;
         video.play();
-        canvas.hidden = true;
+        updateView(State.Streaming);
       })
       .catch((err) => {
         console.error(`An error occurred: ${err}`);
         error = err;
       });
-  });
-
-  function init() {
-    if (!canvas || !video) return;
-    console.log("init", canvas, video);
-    canvas.hidden = true;
-    video.hidden = true;
-    currentState = State.Init;
+    updateView(State.Init);
   }
 
   function destroy() {
-    if (!canvas || !video) return;
-    console.log("init", canvas, video);
-    canvas.hidden = true;
-    video.hidden = true;
-    currentState = State.Init;
+    if (!canvas || !video || !stream) return;
+    console.log("destroy", canvas, video);
+    video.pause();
+    video.srcObject = null;
+    stream.getTracks().forEach((track) => track.stop());
+    updateView(State.Init);
   }
 
   function clearCanvas() {
@@ -75,19 +74,15 @@
     if (!context) return;
     context.fillStyle = "#AAA";
     context.fillRect(0, 0, canvas.width, canvas.height);
-    canvas.hidden = true;
-    video.hidden = false;
-    currentState = State.Streaming;
+    updateView(State.Streaming);
   }
 
   function takePicture() {
     if (!canvas || !video) return;
     const context = canvas.getContext("2d");
     if (!context) return;
-    context.drawImage(video, 0, 0, width, height);
-    canvas.hidden = false;
-    video.hidden = true;
-    currentState = State.Viewing;
+    context.drawImage(video, 0, 0, video.clientWidth, video.clientHeight);
+    updateView(State.Viewing);
   }
 
   function savePhoto() {
@@ -100,9 +95,8 @@
   function onCanPlay(event: Event & { currentTarget: HTMLVideoElement }) {
     console.log("onCanPlay", event);
     currentState = State.Streaming;
-    height =
-      (event.currentTarget.videoHeight / event.currentTarget.videoWidth) *
-      width;
+    width = event.currentTarget.videoWidth;
+    height = event.currentTarget.videoHeight;
     styleVideoCanvas = `width: ${width}px; height: ${height}px;`;
   }
 </script>
@@ -129,12 +123,12 @@
       </Button>
     </svelte:fragment>
     <svelte:fragment slot="menu">
-      <video bind:this={video} style={styleVideoCanvas} on:canplay={onCanPlay}>
+      <video bind:this={video} on:canplay={onCanPlay}>
         <track kind="captions" />
         <p class="text">Video stream not available.</p>
       </video>
-      <canvas style={styleVideoCanvas} bind:this={canvas} />
-      <div>
+      <canvas bind:this={canvas} />
+      <footer>
         {#if currentState === State.Init}
           <p class="text text-danger-light dark:text-danger-dark">
             Camera could not ne loaded
@@ -162,7 +156,7 @@
         {:else if currentState === State.Error}
           <p class="text">Camera could not ne loaded</p>
         {/if}
-      </div>
+      </footer>
     </svelte:fragment>
   </Overlay>
 </template>
@@ -170,7 +164,12 @@
 <style global lang="postcss">
   .picture-input {
     & > .button {
-      @apply w-48 h-48 flex-col justify-center items-center rounded-full;
+      @apply w-48 h-48 p-0
+      flex-col justify-center items-center
+      rounded-full overflow-hidden;
+      & > img {
+        @apply object-cover min-h-full;
+      }
       & > .icon {
         @apply m-0 mb-1 text-accent-900 !important;
       }
@@ -181,15 +180,24 @@
     & > menu {
       @apply flex justify-items-stretch items-center;
       & > main {
-        @apply justify-center flex-shrink-0;
+        @apply items-center flex-shrink-0;
+
+        & > * {
+        @apply border-inherit;
+        &:last-child {
+          @apply border-t;
+        }
+      }
         & > video {
         }
         & > canvas {
         }
-        & > div {
-          @apply flex;
-          & > .text {
-            @apply p-2;
+        & > footer {
+          @apply w-full flex justify-center p-2 mt-[-1px] relative;
+          & > .button {
+            &:not(:last-child) {
+              @apply mr-2;
+            }
           }
         }
       }

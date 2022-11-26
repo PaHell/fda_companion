@@ -134,18 +134,10 @@
       }
     }
     & > menu > main {
-      @apply border-inherit;
-
       & > * {
-        @apply border border-inherit;
-        &:first-child {
-          @apply rounded-t;
-        }
+        @apply border-inherit;
         &:not(:first-child) {
-          @apply mt-[-1px];
-        }
-        &:last-child {
-          @apply rounded-b;
+          @apply border-t;
         }
       }
 

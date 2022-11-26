@@ -10,8 +10,6 @@
     Left = "left",
     Right = "right",
   }
-  const spaceFromOrigin = 2;
-  const spaceFromScreen = 8;
 </script>
 
 <script lang="ts">
@@ -29,8 +27,10 @@
   export let render: boolean = false;
   export let orientation: OverlayOrientation = OverlayOrientation.Bottom;
 
-  const maxWidthInRem = 24;
-  const maxHeightInRem = 24;
+  const spaceFromOrigin = .5;
+  const spaceFromScreen = .5;
+  const maxWidth = 20;
+  const maxHeight = 20;
 
   let refContainer: HTMLElement | undefined;
   let refMenu: HTMLElement | undefined;
@@ -74,18 +74,18 @@
       case OverlayOrientation.Top:
         break;
       case OverlayOrientation.Bottom:
-        const height = `min(${
-          window.innerHeight - rect.bottom - spaceFromScreen
-        }px, ${maxHeightInRem}rem)`;
+        const height = `min(calc(${
+          window.innerHeight - rect.bottom
+        }px - ${spaceFromOrigin + spaceFromScreen}rem), ${maxHeight}rem)`;
         refMenu.style.maxHeight = height;
         (refMenu.childNodes[0] as HTMLElement).style.height = height;
         break;
       case OverlayOrientation.Left:
         break;
       case OverlayOrientation.Right:
-        const width = `min(${
+        const width = `min(calc(${
           window.innerWidth - rect.right - spaceFromScreen
-        }px, ${maxWidthInRem}rem)`;
+        }px - ${spaceFromOrigin + spaceFromScreen}rem), ${maxWidth}rem)`;
         refMenu.style.maxWidth = width;
         (refMenu.childNodes[0] as HTMLElement).style.width = width;
         break;
@@ -99,7 +99,7 @@
       case OverlayOrientation.Top:
         break;
       case OverlayOrientation.Bottom:
-        refMenu.style.top = `${rect.bottom + spaceFromOrigin}px`;
+        refMenu.style.top = `calc(${rect.bottom}px + ${spaceFromOrigin}rem)`;
         refMenu.style.left = `${rect.left}px`;
         refMenu.style.width = `${rect.width}px`;
         break;
@@ -107,7 +107,7 @@
         break;
       case OverlayOrientation.Right:
         refMenu.style.top = `${rect.top}px`;
-        refMenu.style.left = `${rect.right + 2 * spaceFromOrigin}px`;
+        refMenu.style.left = `calc(${rect.right}px + ${spaceFromOrigin}rem)`;
         refMenu.style.minHeight = `${rect.height}px`;
         break;
     }
@@ -139,9 +139,7 @@
     }
     & > menu {
       @apply fixed z-40 overflow-hidden
-      shadow rounded
-      border-gray-300 bg-gray-50
-      dark:border-gray-700 dark:bg-gray-800;
+      shadow rounded;
       transition-timing-function: linear;
       transition-duration: 0.2s;
       transition-property: max-height, max-width;
@@ -150,7 +148,9 @@
         @apply hidden;
       }
       & > main {
-        @apply flex flex-col;
+        @apply flex flex-col rounded overflow-hidden
+        border border-gray-300 bg-gray-50
+      dark:border-gray-700 dark:bg-gray-800;
       }
       &.overlay-top,
       &.overlay-bottom {
@@ -159,18 +159,6 @@
       &.overlay-left,
       &.overlay-right {
         @apply max-w-0;
-      }
-      &.overlay-top > main {
-        @apply flex flex-col-reverse w-full;
-      }
-      &.overlay-bottom > main {
-        @apply flex flex-col w-full;
-      }
-      &.overlay-left > main {
-        @apply flex flex-row;
-      }
-      &.overlay-right > main {
-        @apply flex flex-row;
       }
     }
   }
