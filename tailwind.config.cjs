@@ -34,6 +34,18 @@ module.exports = {
         sec: colors.gray[500],
         tri: colors.gray[600],
       },
+      success: {
+        light: colors.emerald[600],
+        dark: colors.emerald[500],
+      },
+      warning: {
+        light: colors.amber[600],
+        dark: colors.amber[500],
+      },
+      danger: {
+        light: colors.red[600],
+        dark: colors.red[500],
+      },
       // default
       inherit: colors.inherit,
       current: colors.current,

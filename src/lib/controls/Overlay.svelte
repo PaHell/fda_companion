@@ -1,17 +1,17 @@
 <script lang="ts" context="module">
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
   import { createEventDispatcher, onDestroy, onMount } from "svelte";
-    import { debounce } from "../helpers";
-    import { clickOutside } from "../use";
-    import Button, { ButtonVariant } from "./Button.svelte";
-    export enum OverlayOrientation {
-      Top = "top",
-      Bottom = "bottom",
-      Left = "left",
-      Right = "right",
-    }
-    const spaceFromOrigin = 2;
-    const spaceFromScreen = 8;
+  import { debounce } from "../helpers";
+  import { clickOutside } from "../use";
+  import Button, { ButtonVariant } from "./Button.svelte";
+  export enum OverlayOrientation {
+    Top = "top",
+    Bottom = "bottom",
+    Left = "left",
+    Right = "right",
+  }
+  const spaceFromOrigin = 2;
+  const spaceFromScreen = 8;
 </script>
 
 <script lang="ts">
@@ -28,6 +28,9 @@
   export let opened: boolean = false;
   export let render: boolean = false;
   export let orientation: OverlayOrientation = OverlayOrientation.Bottom;
+
+  const maxWidthInRem = 24;
+  const maxHeightInRem = 24;
 
   let refContainer: HTMLElement | undefined;
   let refMenu: HTMLElement | undefined;
@@ -71,11 +74,20 @@
       case OverlayOrientation.Top:
         break;
       case OverlayOrientation.Bottom:
-        refMenu.style.maxHeight = `${window.innerHeight - rect.bottom - spaceFromScreen}px`;
+        const height = `min(${
+          window.innerHeight - rect.bottom - spaceFromScreen
+        }px, ${maxHeightInRem}rem)`;
+        refMenu.style.maxHeight = height;
+        (refMenu.childNodes[0] as HTMLElement).style.height = height;
         break;
       case OverlayOrientation.Left:
         break;
       case OverlayOrientation.Right:
+        const width = `min(${
+          window.innerWidth - rect.right - spaceFromScreen
+        }px, ${maxWidthInRem}rem)`;
+        refMenu.style.maxWidth = width;
+        (refMenu.childNodes[0] as HTMLElement).style.width = width;
         break;
     }
   }
@@ -94,10 +106,12 @@
       case OverlayOrientation.Left:
         break;
       case OverlayOrientation.Right:
+        refMenu.style.top = `${rect.top}px`;
+        refMenu.style.left = `${rect.right + 2 * spaceFromOrigin}px`;
+        refMenu.style.minHeight = `${rect.height}px`;
         break;
     }
   }
-
 </script>
 
 <svelte:window on:resize={debouncedCalcPosition} />
@@ -110,31 +124,34 @@
     use:clickOutside={close}
   >
     <slot name="item" />
-    <menu class="overlay-{orientation}" bind:this={refMenu}>
-      {#if render}
+    <menu class="overlay-{orientation}" bind:this={refMenu} class:render>
+      <main>
         <slot name="menu" />
-      {/if}
+      </main>
     </menu>
   </div>
 </template>
 
 <style global lang="postcss">
   .overlay {
-    @apply flex flex-col;
-    & > * {
-      @apply flex-shrink-0 flex-grow-0;
-    }
     & > *:not(menu) {
+      @apply relative z-50;
     }
     & > menu {
-      @apply fixed z-40
-      flex flex-col
-      max-h-0 overflow-hidden
+      @apply fixed z-40 overflow-hidden
       shadow rounded
       border-gray-300 bg-gray-50
       dark:border-gray-700 dark:bg-gray-800;
-      transition: max-height 0.2s linear;
-      will-change: max-height;
+      transition-timing-function: linear;
+      transition-duration: 0.2s;
+      transition-property: max-height, max-width;
+      will-change: max-height, max-width;
+      &:not(.render) > main {
+        @apply hidden;
+      }
+      & > main {
+        @apply flex flex-col;
+      }
       &.overlay-top,
       &.overlay-bottom {
         @apply max-h-0;
@@ -143,28 +160,17 @@
       &.overlay-right {
         @apply max-w-0;
       }
-      &.overlay-top {
-        @apply flex flex-col-reverse;
+      &.overlay-top > main {
+        @apply flex flex-col-reverse w-full;
       }
-      &.overlay-bottom {
-        @apply flex flex-col;
+      &.overlay-bottom > main {
+        @apply flex flex-col w-full;
       }
-      &.overlay-left {
+      &.overlay-left > main {
         @apply flex flex-row;
       }
-      &.overlay-right {
+      &.overlay-right > main {
         @apply flex flex-row;
-      }
-    }
-
-    &.opened > menu {
-      &.overlay-top,
-      &.overlay-bottom {
-        @apply max-h-96;
-      }
-      &.overlay-left,
-      &.overlay-right {
-        @apply max-w-[96];
       }
     }
   }

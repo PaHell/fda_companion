@@ -28,74 +28,83 @@
 <template>
   <div class="vbox">
     <h1 class="text heading">Create Customer</h1>
-    <div class="flex space-x-2">
-      <div class="w-56">
-        <p class="text label">Picture of you</p>
+    <div class="flex space-x-4">
+      <div class="flex-initial flex-shrink-0">
+        <p class="text label">&nbsp;</p>
         <PictureInput />
       </div>
       <div class="flex-1">
-        <TextInput
-          bind:value={input.fname}
-          label="First Name"
-          icon={Icons.Home}
-          placeholder="Karen"
-        />
-      </div>
-      <div class="flex-1">
-        <TextInput
-          bind:value={input.lname}
-          label="Last Name"
-          placeholder="Smith"
-        />
+        <div class="flex space-x-2">
+          <div class="flex-1">
+            <TextInput
+              bind:value={input.fname}
+              label="First Name"
+              icon={Icons.Home}
+              placeholder="Karen"
+            />
+          </div>
+          <div class="flex-1">
+            <TextInput
+              bind:value={input.lname}
+              label="Last Name"
+              placeholder="Smith"
+            />
+          </div>
+        </div>
+        <div class="flex space-x-2">
+          <div class="flex-1">
+            <TextInput
+              bind:value={input.company}
+              label="Company"
+              icon={Icons.Home}
+              placeholder="FDA Ltd."
+            />
+          </div>
+          <div class="flex-1" />
+        </div>
+        <div class="flex space-x-2">
+          <div class="flex-[2]">
+            <TextInput
+              bind:value={input.street}
+              label="Street"
+              placeholder="Moonshine Ave"
+            />
+          </div>
+          <div class="flex-1">
+            <TextInput
+              bind:value={input.house_number}
+              type="number"
+              label="House Number"
+              placeholder="42"
+              alignRight
+            />
+          </div>
+        </div>
+        <div class="flex space-x-2">
+          <div class="flex-1">
+            <TextInput
+              bind:value={input.postal_code}
+              type="number"
+              label="Postal Code"
+              placeholder="34512"
+            />
+          </div>
+          <div class="flex-1">
+            <TextInput
+              bind:value={input.city}
+              label="City"
+              placeholder="New Haven"
+            />
+          </div>
+          <div class="flex-1">
+            <SelectCountry
+              bind:value={country}
+              on:change={(e) => (input.country_iso3 = e.detail.item.iso3)}
+            />
+          </div>
+        </div>
       </div>
     </div>
-    <div class="flex space-x-2">
-      <div class="flex-[2]">
-        <TextInput
-          bind:value={input.street}
-          label="Street"
-          placeholder="Moonshine Ave"
-        />
-      </div>
-      <div class="flex-1">
-        <TextInput
-          bind:value={input.house_number}
-          type="number"
-          label="House Number"
-          placeholder="42"
-          alignRight
-        />
-      </div>
-    </div>
-    <div class="flex space-x-2">
-      <div class="flex-1">
-        <TextInput
-          bind:value={input.postal_code}
-          type="number"
-          label="Postal Code"
-          placeholder="34512"
-        />
-      </div>
-      <div class="flex-1">
-        <TextInput
-          bind:value={input.city}
-          label="City"
-          placeholder="New Haven"
-        />
-      </div>
-      <div class="flex-1">
-        <SelectCountry
-          bind:value={country}
-          on:change={(e) => (input.country_iso3 = e.detail.item.iso3)}
-        />
-      </div>
-    </div>
-    <TextInput
-      bind:value={input.company}
-      label="Company"
-      icon={Icons.Home}
-      placeholder="FDA Ltd."
-    />
   </div>
 </template>
 

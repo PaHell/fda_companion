@@ -1,15 +1,15 @@
 <script lang="ts" context="module">
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
-  import Overlay from "./Overlay.svelte";
+  import Overlay, { OverlayOrientation } from "./Overlay.svelte";
   import { createEventDispatcher, onMount, SvelteComponent } from "svelte";
-    import Button, { ButtonVariant } from "./Button.svelte";
+  import Button, { ButtonVariant } from "./Button.svelte";
 
-    enum State {
-      Init,
-      Error,
-      Streaming,
-      Viewing,
-    }
+  enum State {
+    Init,
+    Error,
+    Streaming,
+    Viewing,
+  }
 </script>
 
 <script lang="ts">
@@ -17,7 +17,6 @@
   // PROPS
   export let base64: string = "";
   let refOverlay: SvelteComponent | undefined;
-  let container: HTMLElement | undefined;
   let canvas: HTMLCanvasElement | undefined;
   let video: HTMLVideoElement | undefined;
 
@@ -25,17 +24,18 @@
 
   // height is always larger than width
   let width = 320;
-  let height = 0; 
+  let height = 0;
 
   let currentState = State.Init;
   let styleVideoCanvas = "";
   let error: string | undefined;
 
   onMount(() => {
-    console.log("onMount", container, video, canvas);
-    if (!container) return;
+    init();
+    console.log("onMount", video, canvas);
+    if (!video) return;
     // css width
-    width = container.clientWidth;
+    width = video.clientWidth;
     // get video stream and show
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: false })
@@ -52,6 +52,22 @@
         error = err;
       });
   });
+
+  function init() {
+    if (!canvas || !video) return;
+    console.log("init", canvas, video);
+    canvas.hidden = true;
+    video.hidden = true;
+    currentState = State.Init;
+  }
+
+  function destroy() {
+    if (!canvas || !video) return;
+    console.log("init", canvas, video);
+    canvas.hidden = true;
+    video.hidden = true;
+    currentState = State.Init;
+  }
 
   function clearCanvas() {
     if (!canvas || !video) return;
@@ -73,7 +89,7 @@
     video.hidden = true;
     currentState = State.Viewing;
   }
-  
+
   function savePhoto() {
     if (!canvas) return;
     base64 = canvas.toDataURL("image/png");
@@ -84,81 +100,98 @@
   function onCanPlay(event: Event & { currentTarget: HTMLVideoElement }) {
     console.log("onCanPlay", event);
     currentState = State.Streaming;
-    height = (event.currentTarget.videoHeight / event.currentTarget.videoWidth) * width;
+    height =
+      (event.currentTarget.videoHeight / event.currentTarget.videoWidth) *
+      width;
     styleVideoCanvas = `width: ${width}px; height: ${height}px;`;
   }
 </script>
 
 <template>
-  <Overlay bind:this={refOverlay}>
+  <Overlay
+    bind:this={refOverlay}
+    orientation={OverlayOrientation.Right}
+    on:open={init}
+    on:close={destroy}
+    css="picture-input"
+  >
     <svelte:fragment slot="item">
       <Button
-      variant={ButtonVariant.Primary}
-      on:click={refOverlay.toggleOpened}
-      css="picture-input-button"
+        variant={ButtonVariant.Primary}
+        on:click={refOverlay.toggleOpened}
       >
-      {#if base64}
-          <img
-            id="photo"
-            src={base64}
-            alt=""/>
-          {:else}
+        {#if base64}
+          <img id="photo" src={base64} alt="" />
+        {:else}
           <Icon name={Icons.Home} large />
           <p class="text">No Image</p>
         {/if}
       </Button>
     </svelte:fragment>
     <svelte:fragment slot="menu">
-      <div class="picture-input-menu {currentState}" bind:this={container}>
-        <video bind:this={video} style={styleVideoCanvas} on:canplay={onCanPlay}>
-          <track kind="captions" />
-          <p class="text">Video stream not available.</p>
-        </video>
-        <canvas style={styleVideoCanvas} bind:this={canvas} />
-        <div>
-          {#if currentState === State.Streaming}
+      <video bind:this={video} style={styleVideoCanvas} on:canplay={onCanPlay}>
+        <track kind="captions" />
+        <p class="text">Video stream not available.</p>
+      </video>
+      <canvas style={styleVideoCanvas} bind:this={canvas} />
+      <div>
+        {#if currentState === State.Init}
+          <p class="text text-danger-light dark:text-danger-dark">
+            Camera could not ne loaded
+          </p>
+        {:else if currentState === State.Streaming}
           <Button
-          text="Take photo"
-          icon={Icons.Home}
-          variant={ButtonVariant.Primary}
-          on:click={takePicture}
+            text="Take photo"
+            icon={Icons.Home}
+            variant={ButtonVariant.Primary}
+            on:click={takePicture}
           />
-          {:else if currentState === State.Viewing}
-            <Button
+        {:else if currentState === State.Viewing}
+          <Button
             text="Retake"
             icon={Icons.Home}
             variant={ButtonVariant.Secondary}
             on:click={clearCanvas}
-            />
-            <Button
+          />
+          <Button
             text="Save"
             icon={Icons.Home}
             variant={ButtonVariant.Primary}
             on:click={savePhoto}
-            />
-          {/if}
-          </div>
+          />
+        {:else if currentState === State.Error}
+          <p class="text">Camera could not ne loaded</p>
+        {/if}
       </div>
     </svelte:fragment>
   </Overlay>
 </template>
 
 <style global lang="postcss">
-  .picture-input-button {
-    @apply w-48 h-48 flex-col justify-center items-center;
-    & > .icon {
-      @apply m-0 mb-2 text-accent-900 !important;
-    }
-    & > .text {
-      @apply flex-initial mb-2 text-accent-900;
-    }
-  }
-  .picture-input-menu {
-    @apply w-96;
-    & > main {
-      & > video {
+  .picture-input {
+    & > .button {
+      @apply w-48 h-48 flex-col justify-center items-center rounded-full;
+      & > .icon {
+        @apply m-0 mb-1 text-accent-900 !important;
       }
-      & > canvas {
+      & > .text {
+        @apply flex-initial mb-2 text-accent-900;
+      }
+    }
+    & > menu {
+      @apply flex justify-items-stretch items-center;
+      & > main {
+        @apply justify-center flex-shrink-0;
+        & > video {
+        }
+        & > canvas {
+        }
+        & > div {
+          @apply flex;
+          & > .text {
+            @apply p-2;
+          }
+        }
       }
     }
   }

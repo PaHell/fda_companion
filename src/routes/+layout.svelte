@@ -116,7 +116,7 @@
     }
 
     & > main {
-      @apply flex-1 p-2;
+      @apply flex-1 p-4;
 
       & > *:not(:last-child) {
         @apply mb-2;

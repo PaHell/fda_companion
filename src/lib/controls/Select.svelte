@@ -133,7 +133,9 @@
         }
       }
     }
-    & > menu {
+    & > menu > main {
+      @apply border-inherit;
+
       & > * {
         @apply border border-inherit;
         &:first-child {
@@ -148,7 +150,7 @@
       }
 
       & > header {
-        @apply p-2;
+        @apply flex-shrink-0 p-2;
       }
 
       & > div {
