@@ -1,5 +1,5 @@
 <script lang="ts">
-  import TextInput from "$src/lib/controls/TextInput.svelte";
+  import TextInput, { ValidationRule } from "$src/lib/controls/TextInput.svelte";
   import { Icons } from "$src/lib/general/Icon.svelte";
   import type { App } from "$src/app";
   import SelectCountry from "$src/lib/controls/country/SelectCountry.svelte";
@@ -31,7 +31,7 @@
     <div class="flex space-x-4">
       <div class="flex-initial flex-shrink-0">
         <p class="text label">&nbsp;</p>
-        <PictureInput />
+        <PictureInput bind:value={input.image} />
       </div>
       <div class="flex-1">
         <div class="flex space-x-2">
@@ -41,6 +41,10 @@
               label="First Name"
               icon={Icons.Home}
               placeholder="Karen"
+              rules={[
+                [ValidationRule.Required],
+                [ValidationRule.Range, 2, 5]
+              ]}
             />
           </div>
           <div class="flex-1">
