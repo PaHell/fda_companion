@@ -1,41 +1,10 @@
 <script lang="ts" context="module">
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
-  import { createEventDispatcher, onMount } from "svelte";
+  import { createEventDispatcher, onMount, type ComponentConstructorOptions } from "svelte";
     import Alert, { AlertVariant } from "../general/Alert.svelte";
     import { debounce } from "../helpers";
-
-  export enum ValidationRule {
-    _MissingRuleFunction,
-    Required,
-    Range,
-    Email,
-  }
-
-  const validationStrings : [ValidationRule, string][] = [
-    [ValidationRule._MissingRuleFunction, "The rule function is missing."],
-    [ValidationRule.Required, "This field is required"],
-    [ValidationRule.Range, "This field must be between {min} and {max}"],
-    [ValidationRule.Email, "This field must be a valid email address"],
-  ];
-
-  const ruleFuncGroups : [ValidationRule, (val: string | number, ...args : number[]) => boolean][] = [
-    [ValidationRule.Required, (val) => !!val],
-    [ValidationRule.Range, (val, min, max) => typeof(val) == "number" ? val >= min && val <= max : val.length >= min && val.length <= max],
-    [ValidationRule.Email, (val) => val.toString().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/) !== null],
-  ];
-
-  function validate(value: string | number, ruleArgGroups: [ValidationRule, ...number[]][]) : [ValidationRule, ...number[]][] {
-    const invalidRules : [ValidationRule, ...number[]][] = [];
-    for (const ruleArgGroup of ruleArgGroups) {
-      const rule = ruleArgGroup[0];
-      const args = ruleArgGroup.slice(1);
-      const ruleFuncGroup = ruleFuncGroups.find((g) => g[0] === rule);
-      if (!ruleFuncGroup) invalidRules.push([ValidationRule._MissingRuleFunction]);
-      else if (!ruleFuncGroup[1](value, ...args)) invalidRules.push(ruleArgGroup);
-    }
-    return invalidRules;
-  }
-</script>
+    import { validate, type ValidationRuleName } from "../validate";
+  </script>
 
 <script lang="ts">
   // TYPE
@@ -53,7 +22,7 @@
   export let alignRight: boolean = false;
   export let disableTabIndex: boolean = false;
   export let autofocus: boolean = false;
-  export let rules: [ValidationRule, ...number[]][] = [];
+  export let rules: [ValidationRuleName, ...number[]][] = [];
 
   let validationErrors: [string, ...number[]][] = [];
 
@@ -68,12 +37,7 @@
   };
   const dispatch = createEventDispatcher<$$Events>();
   const debouncedValidate = debounce((val: typeof value) => {
-    validationErrors = validate(val, rules).reduce((acc, rule) => {
-      const ruleString = validationStrings.find((s) => s[0] === rule[0]);
-      if (!ruleString) acc.push(["Could not find string for error."]);
-      else acc.push([ruleString[1], ...rule.slice(1)]);
-      return acc;
-    }, [] as [string, ...number[]][]);
+    validationErrors = validate(val, rules);
   }, 100);
   // LIFECYCLE
 
@@ -135,7 +99,7 @@
   </div>
   {#if validationErrors.length}
   {#each validationErrors as error}
-  <Alert variant={AlertVariant.Danger} icon={Icons.Home} title="Error!" text={error.join(", ")}/>
+  <Alert variant={AlertVariant.Danger} title="Error!" text={error.join(", ")} transparent small/>
     {/each}
 {/if}
 </template>

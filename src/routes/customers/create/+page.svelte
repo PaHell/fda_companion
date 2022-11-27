@@ -1,9 +1,10 @@
 <script lang="ts">
-  import TextInput, { ValidationRule } from "$src/lib/controls/TextInput.svelte";
+  import TextInput from "$src/lib/controls/TextInput.svelte";
   import { Icons } from "$src/lib/general/Icon.svelte";
   import type { App } from "$src/app";
   import SelectCountry from "$src/lib/controls/country/SelectCountry.svelte";
   import PictureInput from "$src/lib/controls/PictureInput.svelte";
+    import { ValidationRuleName } from "$src/lib/validate";
 
   // IMPORT
   // PROPS
@@ -42,8 +43,8 @@
               icon={Icons.Home}
               placeholder="Karen"
               rules={[
-                [ValidationRule.Required],
-                [ValidationRule.Range, 2, 5]
+                [ValidationRuleName.Required],
+                [ValidationRuleName.Range, 2, 5]
               ]}
             />
           </div>

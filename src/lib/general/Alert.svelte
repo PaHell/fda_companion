@@ -12,11 +12,13 @@
   export let text: string | undefined = undefined;
   export let icon: Icons | undefined = undefined;
   export let variant: AlertVariant = AlertVariant.Success;
+  export let transparent: boolean = false;
+  export let small: boolean = false;
   export let css: string = "";
 </script>
 
 <template>
-  <div class="alert alert-{variant} {css}">
+  <div class="alert alert-{variant} {css}" class:alert-transparent={transparent} class:alert-small={small}>
     {#if icon}
     <Icon name={icon} />
     {/if}
@@ -40,7 +42,7 @@
 
     & > .icon {
       &:first-child:not(:last-child) {
-        @apply ml-2 text-inherit;
+        @apply ml-1 text-inherit;
       }
     }
     & > .text {
@@ -57,8 +59,26 @@
         }
       }
 
+      &:first-child:last-child {
+        @apply pl-1;
+      }
       &:last-child:not(:first-child) {
         @apply pr-3;
+      }
+    }
+
+    &.alert-transparent {
+      @apply bg-transparent border-transparent
+          dark:bg-transparent dark:border-transparent;
+    }
+
+    &.alert-small {
+      @apply py-1;
+      & > .icon {
+        @apply text-[18px];
+      }
+      & > .text {
+        @apply text-xs;
       }
     }
 

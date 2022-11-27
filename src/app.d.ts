@@ -3,11 +3,17 @@
 
 /// <reference types="@sveltejs/kit" />
 
-import type { Icons } from "./lib/general/Icon.svelte";
+import type { Icons } from "$lib/general/Icon.svelte";
+import { ValidationRuleName } from "$lib/validate";
 
 // and what to do when importing types
 declare namespace App {
     namespace General {
+        interface ValidationRule {
+            name: ValidationRuleName;
+            message: string;
+            predicate: (val: string | number, ...args : number[]) => boolean;
+        }
         interface Locale {
             iso2: string;
             name: string;
