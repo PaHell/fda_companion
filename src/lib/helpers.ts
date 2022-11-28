@@ -20,7 +20,7 @@ export function searchByKeys<T>(
     .map(([, item]) => item);
 }
 
-export function debounce(func: Function, wait: number, immediate: boolean = false) {
+export function debounce(func: Function, wait: number, immediate: boolean = false) : Function {
   var timeout: NodeJS.Timeout | null = null;
   return function executedFunction(this: any) {
     var context = this;

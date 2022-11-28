@@ -3,6 +3,7 @@
   import Button, { ButtonVariant } from "$lib/controls/Button.svelte";
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
   import { createEventDispatcher, onMount, SvelteComponent } from "svelte";
+    import { _ } from "svelte-i18n";
   import { debounce, searchByKeys } from "../helpers";
   import { clickOutside } from "../use";
   import Overlay, { OverlayOrientation } from "./Overlay.svelte";
@@ -28,8 +29,11 @@
   // PROPS
   export let items: T[] = [];
   export let value: T | undefined = undefined;
-  export let valueUndefined: string = "Nothing selected";
+  export let none: string | undefined = undefined;
   export let index: number = -1;
+  export let name: string;
+  export let searchName: string = "search";
+  export let hideLabel: boolean = false;
   export let enableSearch: boolean = false;
   export let searchPlaceholder: string = "Search";
   export let searchKeysOrdered: (keyof T)[] = [];
@@ -71,6 +75,9 @@
     on:open={refSearch?.focus}
   >
     <svelte:fragment slot="item">
+      {#if !hideLabel}
+      <p class="text label">{$_(`lib.controls.select.${name}`)}</p>
+      {/if}
       <Button
         active={opened}
         variant={ButtonVariant.Secondary}
@@ -79,7 +86,7 @@
         {#if value}
           <slot name="selected" item={value} {index} />
         {:else}
-          <p class="text secondary">{valueUndefined}</p>
+          <p class="text secondary">{$_(none ?? "lib.controls.select.none")}</p>
         {/if}
         <Icon name={Icons.SelectDown} />
       </Button>
@@ -90,10 +97,11 @@
           <TextInput
             bind:this={refSearch}
             bind:value={searchValue}
-            placeholder={searchPlaceholder}
+            name={searchName}
             disableTabIndex={!opened}
             on:change={debouncedSearch}
             on:enter={selectFirst}
+            hideLabel
           />
         </header>
       {/if}

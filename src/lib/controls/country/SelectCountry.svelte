@@ -14,13 +14,14 @@
 </script>
 
 <template>
-  <p class="text label">Country</p>
   <Select
     bind:value
+    name="country"
     items={$countries}
     searchKeysOrdered={["iso3", "name"]}
     searchPlaceholder="Search country name or ISO3"
     enableSearch={true}
+    searchName="search_country"
     on:change
   >
     <svelte:fragment slot="selected" let:item>

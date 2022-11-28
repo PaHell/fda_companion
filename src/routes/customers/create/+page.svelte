@@ -39,9 +39,8 @@
           <div class="flex-1">
             <TextInput
               bind:value={input.fname}
-              label="First Name"
+              name="first_name"
               icon={Icons.Home}
-              placeholder="Karen"
               rules={[
                 [ValidationRuleName.Required],
                 [ValidationRuleName.Range, 2, 5]
@@ -51,8 +50,7 @@
           <div class="flex-1">
             <TextInput
               bind:value={input.lname}
-              label="Last Name"
-              placeholder="Smith"
+              name="last_name"
             />
           </div>
         </div>
@@ -60,9 +58,8 @@
           <div class="flex-1">
             <TextInput
               bind:value={input.company}
-              label="Company"
+              name="company"
               icon={Icons.Home}
-              placeholder="FDA Ltd."
             />
           </div>
           <div class="flex-1" />
@@ -71,16 +68,14 @@
           <div class="flex-[2]">
             <TextInput
               bind:value={input.street}
-              label="Street"
-              placeholder="Moonshine Ave"
+              name="street"
             />
           </div>
           <div class="flex-1">
             <TextInput
               bind:value={input.house_number}
               type="number"
-              label="House Number"
-              placeholder="42"
+              name="house_number"
               alignRight
             />
           </div>
@@ -90,15 +85,13 @@
             <TextInput
               bind:value={input.postal_code}
               type="number"
-              label="Postal Code"
-              placeholder="34512"
+              name="postal_code"
             />
           </div>
           <div class="flex-1">
             <TextInput
               bind:value={input.city}
-              label="City"
-              placeholder="New Haven"
+              name="city"
             />
           </div>
           <div class="flex-1">

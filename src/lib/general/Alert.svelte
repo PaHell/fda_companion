@@ -1,5 +1,6 @@
 <script lang="ts" context="module">
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
+    import { _ } from "svelte-i18n";
   export enum AlertVariant {
     Success = "success",
     Warning = "warning",
@@ -24,8 +25,8 @@
     {/if}
     {#if text || title}
     <p class="text">
-      <span class="title">{title ?? ""}</span>
-      <span>{text ?? ""}</span>
+      <span class="title">{title ? $_(title) : ""}</span>
+      <span>{text ? $_(text) : ""}</span>
     </p>
     {/if}
     <slot/>

@@ -1,3 +1,57 @@
 {
-  "text": "Hello there."
+  "lib": {
+    "controls": {
+      "select": {
+        "none": "Nothing selected",
+        "theme": "Theme",
+        "language": "Language",
+        "country": "Country",
+        "placeholders": {
+          "country": "Search countries and ISO-3"
+        }
+      },
+      "text_input": {
+        "search_country": {
+          "placeholder": "Country or ISO-3"
+        },
+        "search": {
+          "label": "Search",
+          "placeholder": "Search..."
+        },
+        "first_name": {
+          "label": "First Name",
+          "placeholder": "Karen"
+        },
+        "last_name": {
+          "label": "Last Name",
+          "placeholder": "Smith"
+        },
+        "company": {
+          "label": "Company",
+          "placeholder": "FDA Ltd."
+        },
+        "street": {
+          "label": "Street",
+          "placeholder": "Moonshine Ave"
+        },
+        "house_number": {
+          "label": "House Number",
+          "placeholder": "42"
+        },
+        "postal_code": {
+          "label": "Postal Code",
+          "placeholder": "34512"
+        },
+        "city": {
+          "label": "City",
+          "placeholder": "New Haven"
+        }
+      }
+    },
+    "validation": {
+      "required": "This field is required",
+      "email": "This field must be a valid email",
+      "range": "This field must be between {0} and {1}"
+    }
+  }
 }

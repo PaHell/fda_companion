@@ -4,8 +4,8 @@
 </script>
 
 <template>
-  <p class="text label">Language</p>
   <Select
+    name="language"
     value={$locale}
     items={locales}
     on:change={(e) => locale.set(e.detail.item)}

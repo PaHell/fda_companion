@@ -4,11 +4,10 @@
 </script>
 
 <template>
-  <p class="text label">Theme</p>
   <Select
+    name="theme"
     value={$theme}
     items={themes}
-    valueUndefined="Loading ..."
     on:change={(e) => theme.set(e.detail.item)}
   >
     <p slot="selected" let:item class="text">{item.text}</p>

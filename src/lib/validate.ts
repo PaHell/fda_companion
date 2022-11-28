@@ -10,12 +10,12 @@ export enum ValidationRuleName {
 export const validationRules : App.General.ValidationRule[] = [
     {
       name: ValidationRuleName.Required,
-      message: "This field is required",
+      message: "required",
       predicate: val => !!val,
     },
     {
       name: ValidationRuleName.Email,
-      message: "This field must be a valid email address",
+      message: "email",
       predicate: val => {
         const regExpr = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return regExpr.test(String(val).toLowerCase());
@@ -23,7 +23,7 @@ export const validationRules : App.General.ValidationRule[] = [
     },
     {
       name: ValidationRuleName.Range,
-      message: "This field must be between {0} and {1}.",
+      message: "range",
       predicate: (val, min, max) => {
         return typeof(val) == "number" ? val >= min && val <= max : val.length >= min && val.length <= max;
       },

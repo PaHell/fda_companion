@@ -4,6 +4,7 @@
     import Alert, { AlertVariant } from "../general/Alert.svelte";
     import { debounce } from "../helpers";
     import { validate, type ValidationRuleName } from "../validate";
+    import { format, _ } from "svelte-i18n";
   </script>
 
 <script lang="ts">
@@ -11,12 +12,13 @@
   interface $$Events {
     change: typeof value;
     enter: typeof value;
+    validate: boolean;
   }
   // PROPS
   export let value: string | number;
-  export let placeholder: string;
+  export let name: string;
   export let icon: Icons | undefined = undefined;
-  export let label: string | undefined = undefined;
+  export let hideLabel: boolean = false;
   export let disabled: boolean = false;
   export let type: string = "text";
   export let alignRight: boolean = false;
@@ -31,13 +33,14 @@
   }
   // DATA
   let ref: HTMLInputElement | undefined;
-  type InputEvent = Event & { currentTarget: EventTarget & HTMLInputElement };
+  type InpEvent = InputEvent & { currentTarget: EventTarget & HTMLInputElement };
   type KeyEvent = KeyboardEvent & {
     currentTarget: EventTarget & HTMLInputElement;
   };
   const dispatch = createEventDispatcher<$$Events>();
   const debouncedValidate = debounce((val: typeof value) => {
     validationErrors = validate(val, rules);
+    dispatch("validate", validationErrors.length === 0);
   }, 100);
   // LIFECYCLE
 
@@ -50,12 +53,12 @@
     node.type = type;
   }
   // FUNCTIONS
-  function onInput(event: InputEvent) {
+  function onInput(event: InpEvent) {
     dispatch("change", event.currentTarget.value);
     debouncedValidate(event.currentTarget.value);
   }
 
-  function onFocus(event: InputEvent) {
+  function onFocus(event: InpEvent) {
     console.log(event.currentTarget);
   }
 
@@ -69,8 +72,10 @@
 </script>
 
 <template>
-  {#if label}
-    <p class="text label">{label}</p>
+  <div class="input-container">
+
+  {#if !hideLabel}
+    <p class="text label">{$_(`lib.controls.text_input.${name}.label`)}</p>
   {/if}
   <div
     class="input input-{type}"
@@ -83,6 +88,7 @@
       use:typeAction
       placeholder=""
       {disabled}
+      {name}
       on:input={onInput}
       on:focus={onFocus}
       on:keydown={onKey}
@@ -93,18 +99,31 @@
         <Icon name={icon} />
       {/if}
       <p class="text placeholder" class:opacity-0={value?.toString().length}>
-        {placeholder}
+        {$_(`lib.controls.text_input.${name}.placeholder`)}
       </p>
     </div>
   </div>
-  {#if validationErrors.length}
-  {#each validationErrors as error}
-  <Alert variant={AlertVariant.Danger} title="Error!" text={error.join(", ")} transparent small/>
-    {/each}
-{/if}
+  {#each validationErrors as [error, ...args]}
+    <Alert variant={AlertVariant.Danger} transparent small>
+
+      <p class="text">
+        <span class="title">Error!</span>
+        <span>{$format(`lib.validation.${error}`, {values: args})}</span>
+      </p>
+    </Alert>
+  {/each}
+</div>
 </template>
 
 <style global lang="postcss">
+  .input-container {
+    & > .input + .alert {
+      @apply pt-1;
+    }
+    & > .alert {
+      @apply py-0;
+    }
+  }
   .input {
     @apply flex flex-col flex-shrink-0
         h-10;

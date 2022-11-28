@@ -116,7 +116,7 @@
     }
 
     & > main {
-      @apply flex-1 p-4;
+      @apply flex-1 p-4 overflow-auto;
 
       & > *:not(:last-child) {
         @apply mb-2;
