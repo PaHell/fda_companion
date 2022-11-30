@@ -85,7 +85,7 @@
   >
     <svelte:fragment slot="item">
       <Button
-        variant={ButtonVariant.Primary}
+        variant={ButtonVariant.Secondary}
         on:click={refOverlay.toggleOpened}
       >
         {#if value}
@@ -145,10 +145,10 @@
         @apply object-cover min-h-full;
       }
       & > .icon {
-        @apply m-0 mb-1 text-accent-900 !important;
+        @apply m-0 mb-1 !important;
       }
       & > .text {
-        @apply flex-initial mb-2 text-accent-900;
+        @apply flex-initial mb-2;
       }
     }
     & > menu {
