@@ -29,7 +29,7 @@
 <template>
   <div class="vbox">
     <h1 class="text heading">Create Customer</h1>
-    <div class="flex space-x-4">
+    <div class="flex flex-col space-y-4">
       <div class="flex-initial flex-shrink-0">
         <p class="text label">&nbsp;</p>
         <PictureInput bind:value={input.image} />

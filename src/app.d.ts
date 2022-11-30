@@ -11,7 +11,7 @@ declare namespace App {
     namespace General {
         interface ValidationRule {
             name: ValidationRuleName;
-            message: string;
+            translationName: string;
             predicate: (val: string | number, ...args : number[]) => boolean;
         }
         interface Locale {

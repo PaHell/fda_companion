@@ -23,48 +23,53 @@
     {#if icon}
     <Icon name={icon} />
     {/if}
-    {#if text || title}
-    <p class="text">
-      <span class="title">{title ? $_(title) : ""}</span>
-      <span>{text ? $_(text) : ""}</span>
-    </p>
+    {#if title}
+      <p class="text">{title}</p>
     {/if}
-    <slot/>
+    <div>
+      {#if text}
+      <p class="text">{text}</p>
+      {/if}
+      <slot/>
+    </div>
   </div>
 </template>
 
 <style global lang="postcss">
   .alert {
-    @apply flex items-center justify-center flex-shrink-0
+    @apply flex items-start justify-center flex-shrink-0
         p-2 border rounded
         border-gray-300 bg-gray-100
         dark:border-gray-800 dark:bg-transparent
 		transition-all;
 
+    & > *:not(:last-child) {
+      @apply mr-1;
+    }
+
     & > .icon {
-      &:first-child:not(:last-child) {
-        @apply ml-1 text-inherit;
+      &:first-child {
+        @apply text-inherit;
       }
     }
+
     & > .text {
-      @apply flex-1 px-2 mb-[.5px] font-medium
+      @apply mb-[.5px]
 			overflow-ellipsis whitespace-nowrap overflow-hidden
-			text-left text-inherit;
+			text-left text-inherit font-medium;
 
-      & > span {
-        &.title {
-          @apply font-bold mr-1;
-        }
-        &:not(.title) {
-          @apply text-grayText-pri dark:text-grayTextDark-pri;
-        }
-      }
-
-      &:first-child:last-child {
+      &:first-child {
         @apply pl-1;
       }
-      &:last-child:not(:first-child) {
-        @apply pr-3;
+      &:not(:last-child) {
+      }
+    }
+
+    & > div {
+      @apply flex-1 mb-[.5px];
+
+      &:first-child {
+        @apply pl-1;
       }
     }
 
@@ -78,7 +83,8 @@
       & > .icon {
         @apply text-[18px];
       }
-      & > .text {
+      & > .text,
+      & > div > .text {
         @apply text-xs;
       }
     }

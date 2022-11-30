@@ -78,7 +78,7 @@
           window.innerHeight - rect.bottom
         }px - ${spaceFromOrigin + spaceFromScreen}rem), ${maxHeight}rem)`;
         refMenu.style.maxHeight = height;
-        (refMenu.childNodes[0] as HTMLElement).style.height = height;
+        //(refMenu.childNodes[0] as HTMLElement).style.height = height;
         break;
       case OverlayOrientation.Left:
         break;
@@ -87,7 +87,7 @@
           window.innerWidth - rect.right - spaceFromScreen
         }px - ${spaceFromOrigin + spaceFromScreen}rem), ${maxWidth}rem)`;
         refMenu.style.maxWidth = width;
-        (refMenu.childNodes[0] as HTMLElement).style.width = width;
+        //(refMenu.childNodes[0] as HTMLElement).style.width = width;
         break;
     }
   }
@@ -139,6 +139,7 @@
     }
     & > menu {
       @apply fixed z-40 overflow-hidden
+      flex justify-items-stretch items-stretch
       shadow rounded;
       transition-timing-function: linear;
       transition-duration: 0.2s;
@@ -148,7 +149,7 @@
         @apply hidden;
       }
       & > main {
-        @apply flex flex-col rounded overflow-hidden
+        @apply flex flex-col w-full rounded overflow-hidden
         border border-gray-300 bg-gray-50
       dark:border-gray-700 dark:bg-gray-800;
       }

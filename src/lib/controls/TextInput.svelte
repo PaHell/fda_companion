@@ -103,20 +103,21 @@
       </p>
     </div>
   </div>
-  {#each validationErrors as [error, ...args]}
-    <Alert variant={AlertVariant.Danger} transparent small>
-
-      <p class="text">
-        <span class="title">Error!</span>
-        <span>{$format(`lib.validation.${error}`, {values: args})}</span>
-      </p>
+  {#if validationErrors.length > 0}
+    <Alert variant={AlertVariant.Danger} title="Error!" transparent small>
+      {#each validationErrors as [error, ...args]}
+        <p class="text">{$format(`lib.validation.${error}`, {values: args})}</p>
+      {/each}
     </Alert>
-  {/each}
+  {/if}
 </div>
 </template>
 
 <style global lang="postcss">
   .input-container {
+    &:focus-within > .label {
+      @apply text-grayText-pri dark:text-grayTextDark-pri;
+    }
     & > .input + .alert {
       @apply pt-1;
     }

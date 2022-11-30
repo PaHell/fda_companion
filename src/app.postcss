@@ -19,8 +19,22 @@ body {
 
 * {
   &::selection {
-      @apply text-white bg-accent-600;
-    }
+    @apply text-white bg-accent-600;
+  }
+
+  /* For Chrome & Safari */
+  &::-webkit-scrollbar {
+    @apply w-1 h-1 dark:w-2 dark:h-2;
+  }
+  &::-webkit-scrollbar-thumb {
+    @apply bg-gray-500 dark:bg-gray-700;
+  }
+  &::-webkit-scrollbar-track {
+    @apply bg-gray-300 dark:bg-transparent;
+  }
+
+  /* Standard version (Firefox only for now) */
+  scrollbar-color: white transparent;
 }
 
 a,
