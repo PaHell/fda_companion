@@ -137,6 +137,7 @@
 
 <style global lang="postcss">
   .picture-input {
+    @apply w-48;
     & > .button {
       @apply w-48 h-48 p-0
       flex-col justify-center items-center

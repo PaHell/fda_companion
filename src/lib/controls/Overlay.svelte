@@ -69,7 +69,7 @@
 
   function updateSize() {
     if (!refContainer || !refMenu) return;
-    let rect = refContainer.getBoundingClientRect();
+    const rect = refContainer.getBoundingClientRect();
     switch (orientation) {
       case OverlayOrientation.Top:
         break;
@@ -83,8 +83,7 @@
       case OverlayOrientation.Left:
         break;
       case OverlayOrientation.Right:
-        rect = refContainer.children[0].getBoundingClientRect();
-        const width = `min(calc(${window.innerWidth - rect.right}px - ${spaceFromOrigin + spaceFromScreen}rem), ${maxWidth}rem)`;
+        const width = `min(calc(${window.innerWidth - refContainer.clientLeft + refContainer.clientWidth}px - ${spaceFromOrigin + spaceFromScreen}rem), ${maxWidth}rem)`;
         refMenu.style.maxWidth = width;
         (refMenu.childNodes[0] as HTMLElement).style.width = width;
         break;
@@ -93,19 +92,18 @@
 
   function calcPosition() {
     if (!refContainer || !refMenu) return;
-    let rect = refContainer.getBoundingClientRect();
+    const rect = refContainer.getBoundingClientRect();
     switch (orientation) {
       case OverlayOrientation.Top:
         break;
       case OverlayOrientation.Bottom:
         refMenu.style.top = `calc(${rect.bottom}px + ${spaceFromOrigin}rem)`;
-        refMenu.style.left = `${rect.left}px`;
-        refMenu.style.width = `${rect.width}px`;
+        refMenu.style.left = `${refContainer.getClientRects().item(0)?.left}px`;
+        refMenu.style.width = `${refContainer.clientWidth}px`;
         break;
       case OverlayOrientation.Left:
         break;
       case OverlayOrientation.Right:
-        rect = refContainer.children[0].getBoundingClientRect();
         refMenu.style.top = `${rect.top}px`;
         refMenu.style.left = `calc(${rect.right}px + ${spaceFromOrigin}rem)`;
         //refMenu.style.width = `${maxWidth}rem`;
