@@ -56,6 +56,7 @@
             <TextInput
               bind:value={input.company}
               name="company"
+              disabled={true}
               icon={Icons.Home}
             />
           </div>
@@ -104,6 +105,4 @@
 </template>
 
 <style lang="postcss">
-  main {
-  }
 </style>

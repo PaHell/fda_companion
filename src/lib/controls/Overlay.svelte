@@ -39,7 +39,7 @@
   const debouncedCalcPosition = debounce(calcPosition, 100);
 
   onMount(() => {
-    calcPosition();
+    debouncedCalcPosition();
   });
 
   export function toggleOpened() {

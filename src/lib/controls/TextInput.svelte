@@ -33,7 +33,7 @@
   }
   // DATA
   let ref: HTMLInputElement | undefined;
-  type InpEvent = InputEvent & { currentTarget: EventTarget & HTMLInputElement };
+  type InpEvent = Event & { currentTarget: EventTarget & HTMLInputElement };
   type KeyEvent = KeyboardEvent & {
     currentTarget: EventTarget & HTMLInputElement;
   };
@@ -172,19 +172,22 @@
         @apply pointer-events-none;
         @apply shadow-none
 			bg-gray-200 border-gray-300
-			dark:bg-gray-900 dark:border-gray-900 !important;
-        & > .text {
-          @apply text-grayText-tri dark:text-grayTextDark-tri !important;
-        }
-        & > .icon {
-          @apply text-grayIcon-tri dark:text-grayIconDark-tri !important;
-        }
+			dark:bg-gray-900 dark:border-gray-800 !important;
       }
     }
 
     & > input:focus + div {
       & > .icon {
-        @apply text-accent-500;
+        @apply text-grayIcon-pri dark:text-grayIconDark-pri;
+      }
+    }
+
+    & > input:disabled + div {
+      & > .text {
+        @apply text-grayText-tri dark:text-grayTextDark-tri !important;
+      }
+      & > .icon {
+        @apply text-grayIcon-tri dark:text-grayIconDark-tri !important;
       }
     }
 

@@ -38,6 +38,7 @@
   export let searchPlaceholder: string = "Search";
   export let searchKeysOrdered: (keyof T)[] = [];
   export let searchDebounce: number = 75;
+  export let disabled: boolean = false;
   // REFS
   let refOverlay: SvelteComponent | undefined;
   let refSearch: SvelteComponent | undefined;
@@ -80,6 +81,7 @@
       {/if}
       <Button
         active={opened}
+        {disabled}
         variant={ButtonVariant.Secondary}
         on:click={refOverlay.toggleOpened}
       >
