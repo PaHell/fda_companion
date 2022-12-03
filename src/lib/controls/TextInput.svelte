@@ -3,19 +3,22 @@
   import { createEventDispatcher, onMount, type ComponentConstructorOptions } from "svelte";
     import Alert, { AlertVariant } from "../general/Alert.svelte";
     import { debounce } from "../helpers";
-    import { validate, type ValidationRuleName } from "../validate";
+    import { validate as _validate, type ValidationRuleName } from "../validate";
     import { format, _ } from "svelte-i18n";
+    import type { stringify } from "postcss";
   </script>
 
-<script lang="ts">
+<script lang="ts" strictEvents>
   // TYPE
+  type T = $$Generic<string | number>;
   interface $$Events {
-    change: typeof value;
-    enter: typeof value;
+    change: T;
+    enter: T;
     validate: boolean;
   }
   // PROPS
-  export let value: string | number;
+  export let value: T;
+  export let convert: (str: string) => T = (str) => str as T;
   export let name: string;
   export let icon: Icons | undefined = undefined;
   export let hideLabel: boolean = false;
@@ -25,9 +28,10 @@
   export let disableTabIndex: boolean = false;
   export let autofocus: boolean = false;
   export let rules: [ValidationRuleName, ...number[]][] = [];
-
+  
+  let valueString: string;
   let validationErrors: [string, ...number[]][] = [];
-
+  
   export function focus() {
     ref?.focus();
   }
@@ -38,10 +42,8 @@
     currentTarget: EventTarget & HTMLInputElement;
   };
   const dispatch = createEventDispatcher<$$Events>();
-  const debouncedValidate = debounce((val: typeof value) => {
-    validationErrors = validate(val, rules);
-    dispatch("validate", validationErrors.length === 0);
-  }, 100);
+  const debouncedValidate = debounce(validate, 100);
+  const debouncedChange = debounce(() => dispatch("change", value), 100);
   // LIFECYCLE
 
   onMount(() => {
@@ -53,9 +55,18 @@
     node.type = type;
   }
   // FUNCTIONS
-  function onInput(event: InpEvent) {
-    dispatch("change", event.currentTarget.value);
-    debouncedValidate(event.currentTarget.value);
+  function validate() {
+    const errors = _validate(valueString, rules);
+    const validChanged = (validationErrors.length === 0) !== (errors.length === 0);
+    validationErrors = errors;
+    if (validChanged) dispatch("validate", validationErrors.length === 0);
+  }
+
+  function onChange(event: InpEvent) {
+    //valueString = event.currentTarget.value;
+    value = convert(valueString);
+    debouncedChange();
+    debouncedValidate();
   }
 
   function onFocus(event: InpEvent) {
@@ -65,7 +76,7 @@
   function onKey(event: KeyEvent) {
     switch (event.key) {
       case "Enter":
-        dispatch("enter", event.currentTarget.value);
+        dispatch("enter", convert(valueString));
         break;
     }
   }
@@ -84,12 +95,13 @@
   >
     <input
       bind:this={ref}
-      bind:value
+      bind:value={valueString}
       use:typeAction
       placeholder=""
       {disabled}
       {name}
-      on:input={onInput}
+      on:input={onChange}
+      on:change={onChange}
       on:focus={onFocus}
       on:keydown={onKey}
       tabindex={disabled || disableTabIndex ? -1 : 0}
@@ -98,7 +110,7 @@
       {#if icon}
         <Icon name={icon} />
       {/if}
-      <p class="text placeholder" class:opacity-0={value?.toString().length}>
+      <p class="text placeholder" class:opacity-0={valueString}>
         {$_(`lib.controls.text_input.${name}.placeholder`)}
       </p>
     </div>

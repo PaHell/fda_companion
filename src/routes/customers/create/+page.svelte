@@ -72,6 +72,7 @@
           <div class="flex-1">
             <TextInput
               bind:value={input.house_number}
+              convert={parseInt}
               type="number"
               name="house_number"
               alignRight

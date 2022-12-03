@@ -19,7 +19,6 @@
     name="country"
     items={$countries}
     searchKeysOrdered={["iso3", "name"]}
-    searchPlaceholder="Search country name or ISO3"
     enableSearch={true}
     searchName="search_country"
     on:change

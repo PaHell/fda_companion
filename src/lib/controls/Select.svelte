@@ -1,8 +1,8 @@
-<script lang="ts">
+<script lang="ts" strictEvents>
   // IMPORT
   import Button, { ButtonVariant } from "$lib/controls/Button.svelte";
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
-  import { createEventDispatcher, onMount, SvelteComponent } from "svelte";
+  import { createEventDispatcher, onMount, SvelteComponent, type ComponentEvents } from "svelte";
     import { _ } from "svelte-i18n";
   import { debounce, searchByKeys } from "../helpers";
   import { clickOutside } from "../use";
@@ -35,7 +35,6 @@
   export let searchName: string = "search";
   export let hideLabel: boolean = false;
   export let enableSearch: boolean = false;
-  export let searchPlaceholder: string = "Search";
   export let searchKeysOrdered: (keyof T)[] = [];
   export let searchDebounce: number = 75;
   export let disabled: boolean = false;
@@ -44,7 +43,7 @@
   let refSearch: SvelteComponent | undefined;
   // DATA
   let opened: boolean = false;
-  const debouncedSearch = debounce((evt: CustomEvent<string>) => {
+  const debouncedSearch = debounce((evt: ComponentEvents<TextInput<string>>["change"]) => {
     searchItems = searchByKeys(evt.detail, items, searchKeysOrdered);
   }, searchDebounce);
   let searchItems: T[] = [];
