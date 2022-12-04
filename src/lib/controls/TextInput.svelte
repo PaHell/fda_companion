@@ -18,8 +18,10 @@
   }
   // PROPS
   export let value: T;
-  export let convert: (str: string) => T = (str) => str as T;
+  export let parse: (str: string) => T = (str) => str as T;
+  export let serialize: (el: T) => string = el => el as string;
   export let name: string;
+  export let css: string = "";
   export let icon: Icons | undefined = undefined;
   export let hideLabel: boolean = false;
   export let disabled: boolean = false;
@@ -46,7 +48,19 @@
   const debouncedChange = debounce(() => dispatch("change", value), 100);
   // LIFECYCLE
 
+  $:() => {
+    console.log("$$$");
+    if (document.activeElement === ref) return;
+    const ser = serialize(value);
+    if (ser !== valueString) {
+      console.log("valueString", valueString, "ser", ser);
+      valueString = ser;
+      debouncedValidate();
+    }
+  }
+
   onMount(() => {
+    valueString = serialize(value);
     if (autofocus) focus();
   });
 
@@ -64,7 +78,7 @@
 
   function onChange(event: InpEvent) {
     //valueString = event.currentTarget.value;
-    value = convert(valueString);
+    value = parse(valueString);
     debouncedChange();
     debouncedValidate();
   }
@@ -76,14 +90,14 @@
   function onKey(event: KeyEvent) {
     switch (event.key) {
       case "Enter":
-        dispatch("enter", convert(valueString));
+        dispatch("enter", parse(valueString));
         break;
     }
   }
 </script>
 
 <template>
-  <div class="input-container">
+  <div class="input-container {css}">
 
   {#if !hideLabel}
     <p class="text label">{$_(`lib.controls.text_input.${name}.label`)}</p>
@@ -130,6 +144,10 @@
     &:focus-within > .label {
       @apply text-grayText-pri dark:text-grayTextDark-pri;
     }
+    & > .label {
+      @apply overflow-hidden w-full
+      whitespace-nowrap text-ellipsis;
+    }
     & > .input + .alert {
       @apply pt-1;
     }
@@ -146,7 +164,7 @@
         */
     & > input,
     & > div {
-      @apply h-10;
+      @apply h-10 min-w-0;
     }
     & > div {
       @apply -mt-10 pointer-events-none;
@@ -156,7 +174,7 @@
     }
 
     & > input {
-      @apply px-4
+      @apply px-3
             border outline-0
             shadow-sm rounded
             font-medium select-none
@@ -206,13 +224,12 @@
     & > div {
       @apply flex items-center px-2;
       & > .icon {
-        @apply pl-1
+        @apply ml-1
 	  text-grayIcon-sec dark:text-grayIconDark-sec;
       }
       & > .text {
-        @apply flex-1 px-2 mb-[.5px] font-medium
-				overflow-ellipsis whitespace-nowrap overflow-hidden
-				text-left;
+        @apply flex-1 px-1 mb-[.5px] font-medium
+				text-ellipsis whitespace-nowrap overflow-hidden text-left;
 
         &:last-child:not(:first-child) {
           @apply pr-3;
@@ -233,7 +250,7 @@
     }
     &.has-icon {
       & > input {
-        padding-left: calc(24px + 1.25rem);
+        padding-left: calc(21px + 1rem);
       }
     }
   }

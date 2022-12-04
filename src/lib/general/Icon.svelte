@@ -21,9 +21,9 @@
 
 <style global lang="postcss">
   .icon {
-    @apply block text-[24px] leading-none;
+    @apply w-[21px] block text-[24px] leading-none indent-[-2px];
     &.large {
-      @apply text-[36px];
+      @apply w-[36px] text-[36px] indent-0;
     }
   }
 </style>

@@ -1,13 +1,18 @@
 .hbox {
     @apply flex items-center;
-    & > *:not(:last-child) {
-        @apply mr-2;
+    & > * {
+        @apply flex-1 min-w-0;
+        &:not(:last-child) {
+            @apply mr-4;
+        }
     }
 }
 
 .vbox {
     @apply flex flex-col w-full;
-    & > *:not(:last-child) {
-        @apply mb-2;
+    & > * {
+        &:not(:last-child) {
+            @apply mb-4;
+        }
     }
 }

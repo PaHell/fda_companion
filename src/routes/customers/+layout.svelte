@@ -15,6 +15,6 @@
 
 <style lang="postcss">
   main {
-    @apply flex justify-center items-center;
+    @apply p-4;
   }
 </style>

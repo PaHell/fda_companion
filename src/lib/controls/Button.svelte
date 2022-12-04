@@ -8,6 +8,8 @@
 </script>
 
 <script lang="ts">
+    import { _ } from "svelte-i18n";
+
   export let text: string | undefined = undefined;
   export let icon: Icons | undefined = undefined;
   export let variant: ButtonVariant = ButtonVariant.Secondary;
@@ -30,7 +32,7 @@
       <Icon name={icon} />
     {/if}
     {#if text}
-      <p class="text">{text}</p>
+      <p class="text">{$_(text)}</p>
     {/if}
     <slot />
   </button>
@@ -48,16 +50,16 @@
     }
     & > .icon {
       &:first-child:not(:last-child) {
-        @apply ml-2;
+        @apply ml-1;
       }
     }
     & > .text {
-      @apply flex-1 px-2 mb-[.5px] font-medium
+      @apply flex-1 px-1 mb-[.5px] font-medium
 			overflow-ellipsis whitespace-nowrap overflow-hidden
 			text-left;
 
       &:last-child:not(:first-child) {
-        @apply pr-3;
+        @apply pr-2;
       }
     }
 
@@ -105,8 +107,11 @@
     }
 
     &.button-pri {
-      @apply bg-accent-400 border-accent-500 dark:bg-accent-600 dark:border-accent-500
-			text-white;
+      @apply bg-accent-400 border-accent-500
+      dark:bg-accent-600 dark:border-accent-500;
+      & > * {
+        @apply text-white dark:text-white;
+      }
       &:hover {
         @apply bg-accent-500 border-accent-600 dark:bg-accent-500 dark:border-accent-400;
       }

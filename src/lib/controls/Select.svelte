@@ -138,7 +138,7 @@
 
       & > .icon {
         &:last-child {
-          @apply indent-2 border-l;
+          @apply pl-2 box-content border-l;
         }
       }
     }

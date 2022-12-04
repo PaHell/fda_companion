@@ -16,6 +16,7 @@
 
 <script lang="ts">
   export let value: string | undefined = undefined;
+  export let css: string = "";
   let preview: string | undefined;
 
   let refOverlay: SvelteComponent | undefined;
@@ -81,7 +82,7 @@
     orientation={OverlayOrientation.Right}
     on:open={onOpen}
     on:close={onClose}
-    css="picture-input"
+    css="picture-input {css}"
   >
     <svelte:fragment slot="item">
       <Button

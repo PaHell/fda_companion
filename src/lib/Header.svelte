@@ -1,13 +1,20 @@
 <script lang="ts">
+    import { fullscreen } from "$src/store";
     import Button from "./controls/Button.svelte";
     import { Icons } from "./general/Icon.svelte";
 
-
-    // IMPORT
-    // PROPS
-    // EVENTS
-    // HOOKS
-    // FUNCTIONS
+    function openFullscreen() {
+        var elem = document.documentElement;
+        fullscreen.update(val => {
+            // inverse
+            if (!val) {
+                elem.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+            return !val;
+        });
+    }
 </script>
   
 <template>
@@ -16,8 +23,7 @@
         <div>
             <p class="text font-bold">{import.meta.env.VITE_APP_NAME}</p>
         </div>
-        <Button icon={Icons.FullScreen} />
-        <Button icon={Icons.Settings} />
+        <Button icon={Icons.FullScreen} on:click={openFullscreen} active={$fullscreen} />
     </header>
 </template>
   

@@ -61,6 +61,7 @@
 </script>
 
 <template>
+  {#if $localeInitialized}
   <Header />
   <div id="content">
     <nav>
@@ -77,13 +78,12 @@
       {/each}
     </nav>
     <main>
-      {#if $localeInitialized}
         <slot />
-      {:else}
-        <p class="text heading">...</p>
-      {/if}
-    </main>
-  </div>
+      </main>
+    </div>
+    {:else}
+      <p class="text heading">...</p>
+    {/if}
 </template>
 
 <style global lang="postcss">
@@ -116,7 +116,7 @@
     }
 
     & > main {
-      @apply flex-1 p-4 overflow-auto;
+      @apply flex-1 overflow-auto;
 
       & > *:not(:last-child) {
         @apply mb-2;
