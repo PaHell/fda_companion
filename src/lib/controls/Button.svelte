@@ -17,6 +17,7 @@
   export let active: boolean = false;
   export let css: string = "";
   export let disableTabIndex: boolean = false;
+  export let rtl: boolean = false;
 </script>
 
 <template>
@@ -25,6 +26,7 @@
     type="button"
     {disabled}
     class:active
+    class:rtl
     class="button button-{variant} {css}"
     tabindex={(disabled || disableTabIndex) ? -1 : 0}
   >
@@ -54,12 +56,28 @@
       }
     }
     & > .text {
-      @apply flex-1 px-1 mb-[.5px] font-medium
+      @apply px-1 mb-[.5px] font-medium
 			overflow-ellipsis whitespace-nowrap overflow-hidden
 			text-left;
 
-      &:last-child:not(:first-child) {
-        @apply pr-2;
+      &:last-child {
+        @apply flex-1 pr-2;
+      }
+
+    }
+
+    &.rtl {
+      @apply flex-row-reverse;
+      & > .text {
+        @apply text-right;
+        &:last-child {
+          @apply pr-1 pl-2;
+        }
+      }
+      & > .icon {
+        &:first-child:not(:last-child) {
+          @apply mr-1 ml-0;
+        }
       }
     }
 

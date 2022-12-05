@@ -33,4 +33,27 @@
                 text-grayText-sec dark:text-grayTextDark-sec;
     }
 
+
+}
+
+.link {
+    @apply px-2 -mx-2
+    text-accent-600 dark:text-accent-500
+    transition-all;
+
+    &:hover,
+    &:focus {
+        @apply text-accent-700 dark:text-accent-400;
+    }
+
+    &:focus {
+        @apply outline-none ring-2 ring-offset-[3px] rounded
+        bg-gray-100 dark:bg-gray-900
+        ring-accent-500
+        ring-offset-gray-100 dark:ring-offset-gray-900;
+    }
+
+    &:active {
+        @apply text-grayText-pri dark:text-grayTextDark-pri;
+    }
 }

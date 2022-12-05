@@ -85,14 +85,18 @@
         />
         <Checkbox
           icon={Icons.Home}
-          text="accept_agb"
           bind:value={acceptTerms}
-          css="col-span-2"/>
+          css="col-span-2">
+          <p class="text">I accept the </p>
+          <a class="link" href="https://google.com" target="_BLANK">Terms and Conditions</a>
+          <p class="text">.</p>
+        </Checkbox>
       <Button
         icon={Icons.Home}
         text="Create"
         variant={ButtonVariant.Primary}
         on:click={() => console.log(input)}
+        rtl
         />
   </div>
 </template>

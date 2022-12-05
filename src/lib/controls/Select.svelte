@@ -132,13 +132,27 @@
         @apply z-50;
       }
 
-      & > .text:not(.secondary) {
-        @apply text-grayText-pri dark:text-grayTextDark-pri;
+      & > .text {
+        &:not(.secondary) {
+          @apply text-grayText-pri dark:text-grayTextDark-pri;
+        }
+        &:first-child {
+          @apply flex-1;
+        }
       }
 
       & > .icon {
         &:last-child {
-          @apply pl-2 box-content border-l;
+          @apply pl-2 box-content border-l
+        border-gray-300 dark:border-gray-600;
+        }
+      }
+
+      &:hover {
+        & > .icon {
+          &:last-child {
+            @apply border-gray-300 dark:border-gray-500;
+          }
         }
       }
     }
