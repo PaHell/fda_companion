@@ -12,6 +12,7 @@
     initLocale,
     localeInitialized,
   } from "$src/lib/controls/locale/store";
+    import FullscreenLoading from "$src/lib/general/FullscreenLoading.svelte";
 </script>
 
 <script lang="ts">
@@ -82,7 +83,7 @@
       </main>
     </div>
     {:else}
-      <p class="text heading">...</p>
+      <FullscreenLoading/>
     {/if}
 </template>
 
