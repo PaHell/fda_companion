@@ -50,7 +50,7 @@
     },
   ];
 
-  initLocale();
+  //initLocale();
 
   onMount(() => {
     currentPath = window.location.pathname;
