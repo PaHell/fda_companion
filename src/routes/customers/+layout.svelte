@@ -8,13 +8,8 @@
 </script>
 
 <template>
-  <main>
-    <slot />
-  </main>
+  <slot />
 </template>
 
 <style lang="postcss">
-  main {
-    @apply p-4;
-  }
 </style>

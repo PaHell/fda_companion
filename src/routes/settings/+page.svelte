@@ -4,9 +4,16 @@
 </script>
 
 <template>
-  <SelectTheme />
-  <SelectLanguage />
+  <div id="settings">
+    <h1 class="text heading col-span-2">Settings</h1>
+    <SelectTheme />
+    <SelectLanguage />
+  </div>
 </template>
 
 <style lang="postcss">
+    #settings {
+    @apply min-w-0 grid grid-cols-2 gap-4
+    items-center;
+  }
 </style>

@@ -50,7 +50,7 @@
     },
   ];
 
-  //initLocale();
+  initLocale();
 
   onMount(() => {
     currentPath = window.location.pathname;
@@ -117,11 +117,7 @@
     }
 
     & > main {
-      @apply flex-1 overflow-auto;
-
-      & > *:not(:last-child) {
-        @apply mb-2;
-      }
+      @apply flex-1 overflow-auto p-4;
     }
   }
 </style>

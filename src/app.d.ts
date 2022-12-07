@@ -5,6 +5,7 @@
 
 import type { Icons } from "$lib/general/Icon.svelte";
 import { ValidationRuleName } from "$lib/validate";
+import type { SvelteComponent } from "svelte";
 
 // and what to do when importing types
 declare namespace App {
@@ -26,6 +27,15 @@ declare namespace App {
             title: string;
             icon: Icons;
             path: string;
+        }
+        interface TableContext<T> {
+            registerColumn: (name: string) => void;
+            changed: (item: T) => void;
+        }
+        interface RowContext<T> {
+            item: T;
+            index: number;
+            changed: () => void;
         }
     }
     namespace Models {
@@ -51,7 +61,7 @@ declare namespace App {
             iso3: string;
         }
 
-        interface DatabaseElement {
+        class DatabaseElement {
             id: string;
         }
 
@@ -71,13 +81,14 @@ declare namespace App {
             name: string;
         }
 
-                class User extends DatabaseElement {
+        class User extends DatabaseElement {
+            username: string;
             fname: string;
             lname: string;
             roles: string[];
         }
 
-                        class ProductType extends DatabaseElement {
+        class ProductType extends DatabaseElement {
             name: string;
         }
     }
