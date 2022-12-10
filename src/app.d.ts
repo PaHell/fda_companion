@@ -4,6 +4,7 @@
 /// <reference types="@sveltejs/kit" />
 
 import type { Icons } from "$lib/general/Icon.svelte";
+import { RowState } from "$lib/table/Row.svelte";
 import { ValidationRuleName } from "$lib/validate";
 import type { SvelteComponent } from "svelte";
 
@@ -30,12 +31,14 @@ declare namespace App {
         }
         interface TableContext<T> {
             registerColumn: (name: string) => void;
-            changed: (item: T) => void;
+            getRowContext: (item: T, index: number, changed: () => void) => RowContext<T>;
         }
         interface RowContext<T> {
             item: T;
             index: number;
-            changed: () => void;
+            state: RowState;
+            initialState: RowState;
+            changed: (state?: RowState) => void;
         }
     }
     namespace Models {

@@ -48,14 +48,15 @@
   const debouncedChange = debounce(() => dispatch("change", value), 100);
   // LIFECYCLE
 
-  $:() => {
-    console.log("$$$");
-    if (document.activeElement === ref) return;
-    const ser = serialize(value);
-    if (ser !== valueString) {
-      console.log("valueString", valueString, "ser", ser);
-      valueString = ser;
-      debouncedValidate();
+  $: {
+    if (document.activeElement !== ref) {
+      console.warn("$$$ TextInput");
+      const ser = serialize(value);
+      if (ser !== valueString) {
+        console.log("valueString", valueString, "ser", ser);
+        valueString = ser;
+        debouncedValidate();
+      }
     }
   }
 

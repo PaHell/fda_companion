@@ -6,24 +6,21 @@
 
     type T = $$Generic;
     interface $$Slots {
-        default: {
-            context: App.General.RowContext<T>,
-        };
+        default: {};
     }
 
     export let title: string = "";
     
     const table = getContext<App.General.TableContext<T>>("table");
-    const context = getContext<App.General.RowContext<T>>("row");
     onMount(() => {
         table.registerColumn(title);
-        //item = row.item;
     });
+
 </script>
   
 <template>
     <td>
-        <slot {context}/>
+        <slot/>
     </td>
 </template>
   
