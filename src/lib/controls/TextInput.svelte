@@ -142,8 +142,11 @@
 
 <style global lang="postcss">
   .input-container {
-    &:focus-within > .label {
-      @apply text-grayText-pri dark:text-grayTextDark-pri;
+    &:focus-within {
+      @apply relative;
+      & > .label {
+        @apply text-grayText-pri dark:text-grayTextDark-pri;
+      }
     }
     & > .label {
       @apply overflow-hidden w-full

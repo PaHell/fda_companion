@@ -29,8 +29,13 @@ declare namespace App {
             icon: Icons;
             path: string;
         }
+        interface Column {
+            title: string;
+            width: string;
+            css: string;
+        }
         interface TableContext<T> {
-            registerColumn: (name: string) => void;
+            registerColumn: (name: string, width: string, css: string) => void;
             getRowContext: (item: T, index: number, changed: () => void) => RowContext<T>;
         }
         interface RowContext<T> {

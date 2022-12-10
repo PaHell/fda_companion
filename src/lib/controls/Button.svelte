@@ -60,7 +60,7 @@
 			overflow-ellipsis whitespace-nowrap overflow-hidden
 			text-left;
 
-      &:last-child {
+      &:last-child:not(:first-child) {
         @apply flex-1 pr-2;
       }
 

@@ -10,16 +10,18 @@
     }
 
     export let title: string = "";
+    export let width: string = "auto";
+    export let css: string = "";
     
     const table = getContext<App.General.TableContext<T>>("table");
     onMount(() => {
-        table.registerColumn(title);
+        table.registerColumn(title, width, css);
     });
 
 </script>
   
 <template>
-    <td>
+    <td class={css}>
         <slot/>
     </td>
 </template>

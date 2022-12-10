@@ -14,7 +14,7 @@
     }
     export let items: T[] = [];
     export let css: string = "";
-    let columns: string[] = [];
+    let columns: App.General.Column[] = [];
     let contexts: App.General.RowContext<T>[] = [];
     setContext<App.General.TableContext<T>>("table", {
         registerColumn,
@@ -40,9 +40,13 @@
         console.log("Table Changed", JSON.stringify(item));
     }
 
-    function registerColumn(title: string) {
-        if (columns.includes(title)) return;
-        columns.push(title);
+    function registerColumn(title: string, width: number, css: string) {
+        if (columns.find(c => c.title == title)) return;
+        columns.push({
+            title,
+            width,
+            css
+        });
         columns = columns;
     }
 
@@ -74,7 +78,7 @@
             <tr>
                 <th class="state"></th>
                 {#each columns as column}
-                    <th>{column}</th>
+                    <th style="width: {column.width};">{column.title}</th>
                 {/each}
             </tr>
         </thead>
@@ -102,7 +106,7 @@
 
         & th,
         & td {
-            @apply px-2 border-b
+            @apply border-b
             border-gray-300 dark:border-gray-700;
             &:not(:last-child):not(.state) {
                 @apply border-r;
@@ -114,17 +118,39 @@
             &:first-child {
                 @apply rounded-tl;
             }
+            &:not(.state) {
+                @apply px-3;
+            }
             &.state {
-                @apply w-2;
+                @apply w-6;
             }
         }
         & td {
-            @apply h-12 text-grayText-pri dark:text-grayTextDark-pri
+            @apply p-0 text-grayText-pri dark:text-grayTextDark-pri
             font-normal text-left text-base;
+            height: calc(2.5rem - 2px);
             &.state {
                 & > div {
-                    @apply w-2 h-2 rounded-full;
+                    @apply w-2 h-2 mx-auto rounded-full;
                 }
+            }
+            & > .input-container {
+                & > .label {
+                    @apply hidden;
+                }
+                & > .input {
+                    & > input {
+                        @apply border-0 rounded-none;
+                    }
+                }
+            }
+            & > .text {
+                @apply px-3;
+            }
+            & > .button {
+                @apply m-[-1px] h-10 rounded-none;
+                width: calc(100% + 2px);
+                height: calc(100% + 2px);
             }
         }
 

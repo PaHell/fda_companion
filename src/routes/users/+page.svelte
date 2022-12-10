@@ -47,8 +47,11 @@
     <h1 class="text heading col-span-2">All Users</h1>
     <p class="text">{JSON.stringify(users[0])}</p>
     <Table bind:items={users} css="col-span-2" let:ctx>
-      <Column title="ID">
+      <Column title="ID" width="5%" css="bg-danger-500">
         <p class="text">{ctx.item.id}</p>
+      </Column>
+      <Column title="Username Val">
+        <p class="text">{ctx.item?.username}</p>
       </Column>
       <Column title="Username">
         <TextInput
@@ -60,7 +63,6 @@
           name="street"
           css="col-span-2"
           />
-        <p class="text">{ctx.item?.username}</p>
       </Column>
       <Column title="First name">
         <p class="text">{ctx.item.fname}</p>
