@@ -47,6 +47,10 @@
         select-none outline-0
 		transition-all;
 
+    &:focus {
+      @apply relative;
+    }
+
     & * {
       @apply border-inherit text-inherit transition-colors;
     }

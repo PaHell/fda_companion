@@ -12,11 +12,12 @@
     export let title: string = "";
     export let width: string = "auto";
     export let css: string = "";
-    
-    const table = getContext<App.General.TableContext<T>>("table");
-    onMount(() => {
+
+    const context = getContext<App.General.RowContext<T>>("row");
+    if (context.index === 0) {
+        const table = getContext<App.General.TableContext<T>>("table");
         table.registerColumn(title, width, css);
-    });
+    }
 
 </script>
   

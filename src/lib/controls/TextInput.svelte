@@ -160,8 +160,7 @@
     }
   }
   .input {
-    @apply flex flex-col flex-shrink-0
-        h-10;
+    @apply flex flex-col flex-shrink-0;
 
     /* layout, div overlays input exactly
          * and <input/> is before the styled content -> input:focus + *

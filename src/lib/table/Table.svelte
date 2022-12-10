@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onDestroy, setContext, SvelteComponent } from 'svelte';
+    import { onDestroy, onMount, setContext, SvelteComponent } from 'svelte';
     import Column from './Column.svelte';
     import type { App } from "$src/app";
     import Row, { RowState } from './Row.svelte';
@@ -21,6 +21,15 @@
         getRowContext,
     });
 
+    onMount(() => {
+        if (items.length === 0) {
+            addItem();
+            setTimeout(() => {
+                items = [];
+            });
+        }
+    });
+
     function addItem() {
         const item = {} as T;
         items.push(item);
@@ -37,11 +46,14 @@
     function onRowChanged(item: T, index: number, state: RowState) {
         const context = contexts[index];
         context.state = state;
+        if (state != RowState.Remove) {
+            context.initialState = state;
+        }
+        items = contexts.map(ctx => ctx.item);
         console.log("Table Changed", JSON.stringify(item));
     }
 
-    function registerColumn(title: string, width: number, css: string) {
-        if (columns.find(c => c.title == title)) return;
+    function registerColumn(title: string, width: string, css: string) {
         columns.push({
             title,
             width,
@@ -84,8 +96,8 @@
         </thead>
         <tbody>
             {#each items as item, index}
-                <Row bind:item {index} let:context>
-                    <slot ctx={context}/>
+                <Row {item} {index}>
+                    <slot ctx={contexts[index]}/>
                 </Row>
             {/each}
         </tbody>
@@ -106,7 +118,7 @@
 
         & th,
         & td {
-            @apply border-b
+            @apply border-b box-content
             border-gray-300 dark:border-gray-700;
             &:not(:last-child):not(.state) {
                 @apply border-r;
@@ -126,7 +138,7 @@
             }
         }
         & td {
-            @apply p-0 text-grayText-pri dark:text-grayTextDark-pri
+            @apply h-10 p-0 m-0 text-grayText-pri dark:text-grayTextDark-pri
             font-normal text-left text-base;
             height: calc(2.5rem - 2px);
             &.state {
@@ -134,13 +146,16 @@
                     @apply w-2 h-2 mx-auto rounded-full;
                 }
             }
+            & > * {
+                @apply m-[-1px];
+            }
             & > .input-container {
                 & > .label {
                     @apply hidden;
                 }
                 & > .input {
                     & > input {
-                        @apply border-0 rounded-none;
+                        @apply rounded-none;
                     }
                 }
             }
@@ -148,9 +163,10 @@
                 @apply px-3;
             }
             & > .button {
-                @apply m-[-1px] h-10 rounded-none;
-                width: calc(100% + 2px);
-                height: calc(100% + 2px);
+                @apply rounded-none;
+                &:first-child:last-child {
+                    width: calc(100% + 2px);
+                }
             }
         }
 

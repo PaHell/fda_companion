@@ -23,15 +23,14 @@
 
     type T = $$Generic;
     interface $$Slots {
-        default: {
-            context: App.General.RowContext<T>,
-        };
+        default: {};
     }
     export let item: T;
     export let index: number = -1;
 
     const table = getContext<App.General.TableContext<T>>("table");
     let context = table.getRowContext(item, index, changed);
+    setContext<App.General.RowContext<T>>("row", context);
 
     function changed() {
         console.log("Row Changed");
@@ -44,7 +43,7 @@
         <td class="state">
             <div></div>
         </td>
-        <slot {context}/>
+        <slot/>
     </tr>
 </template>
   
