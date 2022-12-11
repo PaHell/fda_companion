@@ -36,7 +36,7 @@
     }
     // sort by first column
     if (columns.length) {
-      sortByColumn(columns[0]);
+      //sortByColumn(columns[0]);
     }
   });
 

@@ -1,9 +1,16 @@
+<svelte:options accessors={true} immutable={true} />
+
 <script lang="ts" strictEvents>
   // IMPORT
   import Button, { ButtonVariant } from "$lib/controls/Button.svelte";
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
-  import { createEventDispatcher, onMount, SvelteComponent, type ComponentEvents } from "svelte";
-    import { _ } from "svelte-i18n";
+  import {
+    createEventDispatcher,
+    onMount,
+    SvelteComponent,
+    type ComponentEvents,
+  } from "svelte";
+  import { _ } from "svelte-i18n";
   import { debounce, searchByKeys } from "../helpers";
   import { clickOutside } from "../use";
   import Overlay, { OverlayOrientation } from "./Overlay.svelte";
@@ -43,21 +50,29 @@
   let refSearch: SvelteComponent | undefined;
   // DATA
   let opened: boolean = false;
-  const debouncedSearch = debounce((evt: ComponentEvents<TextInput<string>>["change"]) => {
-    searchItems = searchByKeys(evt.detail, items, searchKeysOrdered);
-  }, searchDebounce);
+  const debouncedSearch = debounce(
+    (evt: ComponentEvents<TextInput<string>>["change"]) => {
+      searchItems = searchByKeys(evt.detail, items, searchKeysOrdered);
+    },
+    searchDebounce
+  );
   let searchItems: T[] = [];
   let searchValue: string = "";
   // EVENTS
   const dispatch = createEventDispatcher<$$Events>();
   // LIFECYCLE
+  $: {
+    console.warn("$$$ Select");
+  }
   // FUNCTIONS
-  function select(item: T, _index: number) {
+  function select(item: T, _index: number, userCall: boolean = true) {
     if (!refOverlay) return;
     value = item;
     index = _index;
-    dispatch("change", { item, index });
-    refOverlay.toggleOpened();
+    if (userCall) {
+      dispatch("change", { item, index });
+      refOverlay.toggleOpened();
+    }
   }
 
   function selectFirst() {
@@ -76,7 +91,7 @@
   >
     <svelte:fragment slot="item">
       {#if !hideLabel}
-      <p class="text label">{$_(`lib.controls.select.${name}`)}</p>
+        <p class="text label">{$_(`lib.controls.select.${name}`)}</p>
       {/if}
       <Button
         active={opened}

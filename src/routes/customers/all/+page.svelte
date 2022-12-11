@@ -99,6 +99,7 @@
 <template>
   <div id="users">
     <h1 class="text heading col-span-2">All Customers</h1>
+
     <Table bind:items={customers} css="col-span-2" let:ctx>
       <Column title="ID" width="4rem" css="" sortByKey="id">
         <p class="text secondary font-mono text-right">{ctx.item.id ?? "-"}</p>
@@ -141,7 +142,7 @@
         css="font-mono"
         sortByKey="postal_code"
       >
-        <p class="text text-right">{ctx.index}</p>
+        <p class="text text-right">{ctx.item.postal_code}</p>
       </Column>
       <Column title="Address" width="15%" sortByKey="street">
         <p class="text">

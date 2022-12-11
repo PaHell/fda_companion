@@ -16,13 +16,14 @@
 
   const dispatch = createEventDispatcher<$$Events>();
 
-  onMount(() => {
+  $: {
+    console.warn("$$$ SelectCountry");
     if (value) {
       iso3 = value.iso3;
     } else if (iso3) {
       value = $countries.find((c) => c.iso3 === iso3);
     }
-  });
+  }
 
   function onChange(event: $$Events["change"]) {
     value = event.detail.item;
