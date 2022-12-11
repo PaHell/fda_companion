@@ -14,6 +14,9 @@
         "search_country": {
           "placeholder": "Country or ISO-3"
         },
+        "search_company": {
+          "placeholder": "Company names"
+        },
         "search": {
           "label": "Search",
           "placeholder": "Search..."
@@ -46,6 +49,13 @@
           "label": "City",
           "placeholder": "New Haven"
         }
+      }
+    },
+    "table": {
+      "row_state": {
+        "modified": "Modified",
+        "added": "Added",
+        "deleted": "Deleted"
       }
     },
     "validation": {

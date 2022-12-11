@@ -12,7 +12,7 @@
     initLocale,
     localeInitialized,
   } from "$src/lib/controls/locale/store";
-    import FullscreenLoading from "$src/lib/general/FullscreenLoading.svelte";
+  import FullscreenLoading from "$src/lib/general/FullscreenLoading.svelte";
 </script>
 
 <script lang="ts">
@@ -63,28 +63,28 @@
 
 <template>
   {#if $localeInitialized}
-  <Header />
-  <div id="content">
-    <nav>
-      {#each navItems as item}
-        <Button
-          text={item.title}
-          icon={item.icon}
-          variant={currentPath === item.path
-            ? ButtonVariant.Secondary
-            : ButtonVariant.Transparent}
-          on:click={() => goto(item.path)}
-          active={currentPath === item.path}
-        />
-      {/each}
-    </nav>
-    <main>
+    <Header />
+    <div id="content">
+      <nav>
+        {#each navItems as item}
+          <Button
+            text={item.title}
+            icon={item.icon}
+            variant={currentPath === item.path
+              ? ButtonVariant.Secondary
+              : ButtonVariant.Transparent}
+            on:click={() => goto(item.path)}
+            active={currentPath === item.path}
+          />
+        {/each}
+      </nav>
+      <main>
         <slot />
       </main>
     </div>
-    {:else}
-      <FullscreenLoading/>
-    {/if}
+  {:else}
+    <FullscreenLoading />
+  {/if}
 </template>
 
 <style global lang="postcss">

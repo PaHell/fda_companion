@@ -1,14 +1,14 @@
 <script lang="ts">
   import type { App } from "$src/app";
-    import Button, { ButtonVariant } from "$src/lib/controls/Button.svelte";
-    import TextInput from "$src/lib/controls/TextInput.svelte";
-    import { Icons } from "$src/lib/general/Icon.svelte";
-    import Column from "$src/lib/table/Column.svelte";
-    import { RowState } from "$src/lib/table/Row.svelte";
-    import Table from "$src/lib/table/Table.svelte";
-    import { getContext } from "svelte";
-    import { claim_text } from "svelte/internal";
-    import { get } from "svelte/store";
+  import Button, { ButtonVariant } from "$src/lib/controls/Button.svelte";
+  import TextInput from "$src/lib/controls/TextInput.svelte";
+  import { Icons } from "$src/lib/general/Icon.svelte";
+  import Column from "$src/lib/table/Column.svelte";
+  import { RowState } from "$src/lib/table/Row.svelte";
+  import Table from "$src/lib/table/Table.svelte";
+  import { getContext } from "svelte";
+  import { claim_text } from "svelte/internal";
+  import { get } from "svelte/store";
 
   let users: App.Models.User[] = [
     {
@@ -56,13 +56,13 @@
       <Column title="Username">
         <TextInput
           value={ctx.item.username}
-          on:change={event => {
+          on:change={(event) => {
             ctx.item.username = event.detail;
             ctx.changed();
           }}
           name="street"
           css="col-span-2"
-          />
+        />
       </Column>
       <Column title="First name">
         <p class="text">{ctx.item.fname}</p>
@@ -72,20 +72,24 @@
       </Column>
       <Column title="Actions">
         <Button
-          text={ctx.state == RowState.Remove ? "Keep" : "Remove"}
+          text={ctx.state == RowState.Deleted ? "Keep" : "Remove"}
           variant={ButtonVariant.Secondary}
           on:click={() => {
-            ctx.changed(ctx.state == RowState.Remove ? ctx.initialState : RowState.Remove);
+            ctx.changed(
+              ctx.state == RowState.Deleted
+                ? ctx.initialState
+                : RowState.Deleted
+            );
           }}
-          />
+        />
       </Column>
     </Table>
   </div>
 </template>
 
 <style lang="postcss">
-    #users {
-      @apply min-w-0 grid grid-cols-2 gap-4
+  #users {
+    @apply min-w-0 grid grid-cols-2 gap-4
       items-center;
-    }
+  }
 </style>

@@ -1,198 +1,320 @@
 <script lang="ts">
-    import { onDestroy, onMount, setContext, SvelteComponent } from 'svelte';
-    import Column from './Column.svelte';
-    import type { App } from "$src/app";
-    import Row, { RowState } from './Row.svelte';
-    import { writable, type Writable } from 'svelte/store';
-    import Button from '../controls/Button.svelte';
+  import { onDestroy, onMount, setContext, SvelteComponent } from "svelte";
+  import Column from "./Column.svelte";
+  import type { App } from "$src/app";
+  import Row, { classes, RowState, translations } from "./Row.svelte";
+  import { writable, type Writable } from "svelte/store";
+  import Button, { ButtonVariant } from "../controls/Button.svelte";
+  import Icon, { Icons } from "../general/Icon.svelte";
+  import { _ } from "svelte-i18n";
 
-    type T = $$Generic;
-    interface $$Slots {
-        default: {
-            ctx: App.General.RowContext<T>,
-        };
+  type T = $$Generic<{}>;
+  interface $$Slots {
+    default: {
+      ctx: App.General.RowContext<T>;
+    };
+  }
+  export let items: T[] = [];
+  export let css: string = "";
+  let columns: App.General.Column<T>[] = [];
+  let activeColumn: App.General.Column<T> | null = null;
+  let columnSortedAsc: boolean = false;
+  let contexts: App.General.RowContext<T>[] = [];
+  let counters: [RowState, number][] = [];
+  setContext<App.General.TableContext<T>>("table", {
+    registerColumn,
+    getRowContext,
+  });
+
+  onMount(() => {
+    // handle no items and thead columns
+    if (items.length === 0) {
+      addItem();
+      setTimeout(() => {
+        items = [];
+      });
     }
-    export let items: T[] = [];
-    export let css: string = "";
-    let columns: App.General.Column[] = [];
-    let contexts: App.General.RowContext<T>[] = [];
-    setContext<App.General.TableContext<T>>("table", {
-        registerColumn,
-        getRowContext,
+    // sort by first column
+    if (columns.length) {
+      sortByColumn(columns[0]);
+    }
+  });
+
+  function addItem() {
+    const item = {} as T;
+    items.push(item);
+    contexts.push({
+      item,
+      index: items.length - 1,
+      state: RowState.Added,
+      initialState: RowState.Added,
+      changed: () => {},
     });
+    items = items;
+    onRowChanged(item, items.length - 1, RowState.Added);
+  }
 
-    onMount(() => {
-        if (items.length === 0) {
-            addItem();
-            setTimeout(() => {
-                items = [];
-            });
-        }
+  function sortByColumn(column: App.General.Column<T>) {
+    // toggle order or set column
+    if (!column.sortKey) return;
+    const key = column.sortKey;
+    if (activeColumn === column) columnSortedAsc = !columnSortedAsc;
+    else {
+      activeColumn = column;
+      columnSortedAsc = false;
+    }
+    console.log("Sort by", column.sortKey, columnSortedAsc);
+    console.log(items.map((item) => item.id));
+    // sort items
+    let _contexts = contexts;
+    items = [];
+    contexts = [];
+    _contexts = _contexts.sort((a, b) => {
+      let score = 0;
+      const _a = String(a.item[key]);
+      const _b = String(b.item[key]);
+      if (_a < _b) score = -1;
+      else if (_a > _b) score = 1;
+      return score * (columnSortedAsc ? 1 : -1);
     });
+    _contexts.forEach((ctx, index) => (ctx.index = index));
+    contexts = _contexts;
+    items = contexts.map((ctx) => ctx.item);
+    console.log(items.map((item) => item.id));
+  }
 
-    function addItem() {
-        const item = {} as T;
-        items.push(item);
-        contexts.push({
-            item,
-            index: items.length - 1,
-            state: RowState.Added,
-            initialState: RowState.Added,
-            changed: () => { }
-        });
-        items = items;
-    }
+  function saveChanges() {
+    console.warn("Save Changes", JSON.stringify(items));
+  }
 
-    function onRowChanged(item: T, index: number, state: RowState) {
-        const context = contexts[index];
-        context.state = state;
-        if (state != RowState.Remove) {
-            context.initialState = state;
-        }
-        items = contexts.map(ctx => ctx.item);
-        console.log("Table Changed", JSON.stringify(item));
+  function onRowChanged(item: T, index: number, state: RowState) {
+    const context = contexts[index];
+    context.state = state;
+    if (state != RowState.Deleted) {
+      context.initialState = state;
     }
+    counters = Object.values(RowState)
+      .filter((state) => state !== RowState.Unmodified)
+      .map((state) => {
+        const count = contexts.filter((ctx) => ctx.state === state).length;
+        return [state, count] as [RowState, number];
+      });
+    items = contexts.map((ctx) => ctx.item);
+    console.log("Table Changed", JSON.stringify(item));
+  }
 
-    function registerColumn(title: string, width: string, css: string) {
-        columns.push({
-            title,
-            width,
-            css
-        });
-        columns = columns;
-    }
+  function registerColumn(
+    title: string,
+    width: string,
+    css: string,
+    sortKey: keyof T | null
+  ) {
+    columns.push({
+      title,
+      width,
+      css,
+      sortKey,
+    } as App.General.Column<T>);
+    columns = columns;
+  }
 
-    function getRowContext(item: T, index: number, _changed: () => void) {
-        const changed = (state: RowState = RowState.Modified) => {
-            _changed();
-            onRowChanged(item, index, state);
-        };
-        if (contexts[index]) {
-            contexts[index].item = item;
-            //contexts[index].index = index;
-            contexts[index].changed = changed;
-            return contexts[index];
-        }
-        contexts[index] = {
-            item,
-            index,
-            state: RowState.Unmodified,
-            initialState: RowState.Unmodified,
-            changed
-        };
-        return contexts[index];
+  function getRowContext(item: T, index: number, _changed: () => void) {
+    const changed = (state: RowState = RowState.Modified) => {
+      _changed();
+      onRowChanged(item, index, state);
+    };
+    if (contexts[index]) {
+      contexts[index].item = item;
+      //contexts[index].index = index;
+      contexts[index].changed = changed;
+      return contexts[index];
     }
+    contexts[index] = {
+      item,
+      index,
+      state: RowState.Unmodified,
+      initialState: RowState.Unmodified,
+      changed,
+    };
+    return contexts[index];
+  }
 </script>
-  
+
 <template>
-    <table class="table {css}">
-        <thead>
-            <tr>
-                <th class="state"></th>
-                {#each columns as column}
-                    <th style="width: {column.width};">{column.title}</th>
-                {/each}
-            </tr>
-        </thead>
-        <tbody>
-            {#each items as item, index}
-                <Row {item} {index}>
-                    <slot ctx={contexts[index]}/>
-                </Row>
-            {/each}
-        </tbody>
+  <div class="table-container {css}">
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="state" />
+          {#each columns as col}
+            <th style="width: {col.width};">
+              {#if col.sortKey}
+                <Button
+                  variant={ButtonVariant.Secondary}
+                  active={activeColumn === col}
+                  on:click={() => sortByColumn(col)}
+                >
+                  <p class="text flex-1">{$_(col.title)}</p>
+                  <Icon
+                    name={activeColumn === col && columnSortedAsc
+                      ? Icons.OrderByAsc
+                      : Icons.OrderByDesc}
+                  />
+                </Button>
+              {:else}
+                <p class="text secondary">{$_(col.title)}</p>
+              {/if}
+            </th>
+          {/each}
+        </tr>
+      </thead>
+      <tbody>
+        {#each items as item, index}
+          <Row {item} {index}>
+            <slot ctx={contexts[index]} />
+          </Row>
+        {/each}
+      </tbody>
     </table>
-    <div>
-        <Button
-            text="Add"
-            on:click={addItem}
-            />
-    </div>
+    <footer>
+      <Button
+        icon={Icons.Add}
+        text="Add"
+        variant={ButtonVariant.Secondary}
+        on:click={addItem}
+      />
+      <div class="flex-1" />
+      {#each counters as [state, count]}
+        {#if count > 0}
+          <p class="text badge {classes[state]}">
+            {count}
+            {$_("lib.table.row_state." + translations[state])}
+          </p>
+        {/if}
+      {/each}
+      <Button
+        icon={Icons.SaveChanges}
+        text="Save"
+        variant={ButtonVariant.Primary}
+        on:click={saveChanges}
+      />
+    </footer>
+  </div>
 </template>
-  
+
 <style global lang="postcss">
-    .table {
-        @apply border border-separate border-spacing-0 rounded
+  .table-container > footer {
+    @apply flex space-x-2 items-center mt-2;
+    & > .badge {
+      @apply flex items-center text-sm font-semibold;
+      &:not(:last-of-type):after {
+        content: "";
+        @apply block w-1 h-1 ml-2 rounded-full bg-gray-400 dark:bg-gray-600;
+      }
+      &.added {
+        @apply text-success-light dark:text-success-dark;
+      }
+      &.modified {
+        @apply text-warning-light dark:text-warning-dark;
+      }
+      &.deleted {
+        @apply text-danger-light dark:text-danger-dark;
+      }
+    }
+    & > .button {
+      &:last-child {
+        @apply ml-4;
+      }
+    }
+  }
+  .table {
+    @apply border border-separate border-spacing-0
+        w-full table-fixed rounded
         bg-gray-100 dark:bg-gray-800
         border-gray-300 dark:border-gray-700;
 
-        & th,
-        & td {
-            @apply border-b box-content
-            border-gray-300 dark:border-gray-700;
-            &:not(:last-child):not(.state) {
-                @apply border-r;
-            }
-        }
-        & th {
-            @apply h-10 text-grayText-sec dark:text-grayTextDark-sec
-            font-semibold text-left;
-            &:first-child {
-                @apply rounded-tl;
-            }
-            &:not(.state) {
-                @apply px-3;
-            }
-            &.state {
-                @apply w-6;
-            }
-        }
-        & td {
-            @apply h-10 p-0 m-0 text-grayText-pri dark:text-grayTextDark-pri
-            font-normal text-left text-base;
-            height: calc(2.5rem - 2px);
-            &.state {
-                & > div {
-                    @apply w-2 h-2 mx-auto rounded-full;
-                }
-            }
-            & > * {
-                @apply m-[-1px];
-            }
-            & > .input-container {
-                & > .label {
-                    @apply hidden;
-                }
-                & > .input {
-                    & > input {
-                        @apply rounded-none;
-                    }
-                }
-            }
-            & > .text {
-                @apply px-3;
-            }
-            & > .button {
-                @apply rounded-none;
-                &:first-child:last-child {
-                    width: calc(100% + 2px);
-                }
-            }
-        }
-
-        & > thead {
-            & > tr {
-            }
-        }
-        & > tbody {
-            & > tr {
-                @apply transition-colors;
-                &:last-child > td {
-                    @apply border-b-0;
-                }
-                &.unmodified > td.state > div {
-                    @apply bg-gray-300 dark:bg-gray-700;
-                } 
-                &.modified > td.state > div {
-                    @apply bg-orange-500 dark:bg-orange-400;
-                } 
-                &.added > td.state > div {
-                    @apply bg-blue-600 dark:bg-blue-500;
-                }
-                &.remove > td.state > div {
-                    @apply bg-red-600 dark:bg-red-500;
-                }
-            }
-        }
+    & th {
+      &:first-child {
+        @apply rounded-tl;
+      }
+      & > .text {
+        @apply font-semibold;
+      }
+      &.state {
+        @apply w-6;
+      }
     }
+    & th,
+    & td {
+      @apply p-0 m-0 text-grayText-pri dark:text-grayTextDark-pri
+            border-b box-content
+            font-normal text-left text-base
+            border-gray-300 dark:border-gray-700;
+      height: calc(2.5rem - 2px);
+      &:not(:last-child) {
+        @apply border-r;
+      }
+      &.state {
+        & > div {
+          @apply w-2 h-2 mx-auto rounded-full;
+        }
+      }
+      & > * {
+        @apply m-[-1px];
+      }
+      & > .input-container {
+        & > .label {
+          @apply hidden;
+        }
+        & > .input {
+          & > input {
+            @apply rounded-none;
+          }
+        }
+      }
+      & > .text {
+        @apply px-3 whitespace-nowrap overflow-hidden text-ellipsis;
+      }
+      & > .button {
+        @apply rounded-none;
+        &:first-child:last-child {
+          width: calc(100% + 2px);
+        }
+      }
+
+      & > .select {
+        & > .label {
+          @apply hidden;
+        }
+        & > .button {
+          @apply rounded-none;
+        }
+      }
+    }
+
+    & > thead {
+      & > tr {
+      }
+    }
+    & > tbody {
+      & > tr {
+        @apply transition-colors;
+        &:last-child > td {
+          @apply border-b-0;
+        }
+        &.unmodified > td.state > div {
+          @apply bg-gray-300 dark:bg-gray-700;
+        }
+        &.modified > td.state > div {
+          @apply bg-warning-light dark:bg-warning-dark;
+        }
+        &.added > td.state > div {
+          @apply bg-success-light dark:bg-success-dark;
+        }
+        &.deleted > td.state > div {
+          @apply bg-danger-light dark:bg-danger-dark;
+        }
+      }
+    }
+  }
 </style>

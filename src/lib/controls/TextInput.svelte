@@ -1,12 +1,16 @@
 <script lang="ts" context="module">
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
-  import { createEventDispatcher, onMount, type ComponentConstructorOptions } from "svelte";
-    import Alert, { AlertVariant } from "../general/Alert.svelte";
-    import { debounce } from "../helpers";
-    import { validate as _validate, type ValidationRuleName } from "../validate";
-    import { format, _ } from "svelte-i18n";
-    import type { stringify } from "postcss";
-  </script>
+  import {
+    createEventDispatcher,
+    onMount,
+    type ComponentConstructorOptions,
+  } from "svelte";
+  import Alert, { AlertVariant } from "../general/Alert.svelte";
+  import { debounce } from "../helpers";
+  import { validate as _validate, type ValidationRuleName } from "../validate";
+  import { format, _ } from "svelte-i18n";
+  import type { stringify } from "postcss";
+</script>
 
 <script lang="ts" strictEvents>
   // TYPE
@@ -19,7 +23,7 @@
   // PROPS
   export let value: T;
   export let parse: (str: string) => T = (str) => str as T;
-  export let serialize: (el: T) => string = el => el as string;
+  export let serialize: (el: T) => string = (el) => el as string;
   export let name: string;
   export let css: string = "";
   export let icon: Icons | undefined = undefined;
@@ -30,24 +34,19 @@
   export let disableTabIndex: boolean = false;
   export let autofocus: boolean = false;
   export let rules: [ValidationRuleName, ...number[]][] = [];
-  
-  let valueString: string;
-  let validationErrors: [string, ...number[]][] = [];
-  
+  export let keyFocusSwitch: boolean = true;
   export function focus() {
     ref?.focus();
   }
   // DATA
-  let ref: HTMLInputElement | undefined;
-  type InpEvent = Event & { currentTarget: EventTarget & HTMLInputElement };
-  type KeyEvent = KeyboardEvent & {
-    currentTarget: EventTarget & HTMLInputElement;
-  };
-  const dispatch = createEventDispatcher<$$Events>();
-  const debouncedValidate = debounce(validate, 100);
-  const debouncedChange = debounce(() => dispatch("change", value), 100);
-  // LIFECYCLE
+  let valueString: string;
+  let validationErrors: [string, ...number[]][] = [];
+  let initialValidation = false;
 
+  let ref: HTMLInputElement | undefined;
+  const dispatch = createEventDispatcher<$$Events>();
+  const debouncedChange = debounce(() => onChange(), 100);
+  // LIFECYCLE
   $: {
     if (document.activeElement !== ref) {
       console.warn("$$$ TextInput");
@@ -55,43 +54,63 @@
       if (ser !== valueString) {
         console.log("valueString", valueString, "ser", ser);
         valueString = ser;
-        debouncedValidate();
+        //onChange();
       }
     }
   }
-
   onMount(() => {
     valueString = serialize(value);
     if (autofocus) focus();
   });
-
   // USE
   function typeAction(node: HTMLInputElement) {
     node.type = type;
   }
   // FUNCTIONS
-  function validate() {
+  function validate(submit = true) {
+    initialValidation = true;
     const errors = _validate(valueString, rules);
-    const validChanged = (validationErrors.length === 0) !== (errors.length === 0);
+    const validChanged =
+      (validationErrors.length === 0) !== (errors.length === 0);
     validationErrors = errors;
-    if (validChanged) dispatch("validate", validationErrors.length === 0);
+    if (submit && validChanged)
+      dispatch("validate", validationErrors.length === 0);
   }
 
-  function onChange(event: InpEvent) {
-    //valueString = event.currentTarget.value;
+  function onChange(submit = true) {
     value = parse(valueString);
-    debouncedChange();
-    debouncedValidate();
+    if (submit) dispatch("change", value);
+    validate(submit);
   }
 
-  function onFocus(event: InpEvent) {
-    console.log(event.currentTarget);
+  function onFocus() {
+    if (!initialValidation) validate();
   }
 
-  function onKey(event: KeyEvent) {
+  function changeFocus(direction: number) {
+    // get all focusable elements
+    const elements = Array.from(
+      document.querySelectorAll("input, button, select, textarea")
+    ) as HTMLElement[];
+    // get index of currently focused element
+    const index = elements.indexOf(document.activeElement as HTMLElement);
+    // focus directional element
+    elements[index + direction].focus();
+  }
+
+  function onKey(
+    event: KeyboardEvent & {
+      currentTarget: EventTarget & HTMLInputElement;
+    }
+  ) {
     switch (event.key) {
       case "Enter":
-        dispatch("enter", parse(valueString));
+        onChange(false);
+        dispatch("enter", value);
+        if (keyFocusSwitch) changeFocus(1);
+        break;
+      case "Escape":
+        if (keyFocusSwitch) changeFocus(-1);
         break;
     }
   }
@@ -99,45 +118,46 @@
 
 <template>
   <div class="input-container {css}">
-
-  {#if !hideLabel}
-    <p class="text label">{$_(`lib.controls.text_input.${name}.label`)}</p>
-  {/if}
-  <div
-    class="input input-{type}"
-    class:right={alignRight}
-    class:has-icon={!!icon}
-  >
-    <input
-      bind:this={ref}
-      bind:value={valueString}
-      use:typeAction
-      placeholder=""
-      {disabled}
-      {name}
-      on:input={onChange}
-      on:change={onChange}
-      on:focus={onFocus}
-      on:keydown={onKey}
-      tabindex={disabled || disableTabIndex ? -1 : 0}
-    />
-    <div>
-      {#if icon}
-        <Icon name={icon} />
-      {/if}
-      <p class="text placeholder" class:opacity-0={valueString}>
-        {$_(`lib.controls.text_input.${name}.placeholder`)}
-      </p>
+    {#if !hideLabel}
+      <p class="text label">{$_(`lib.controls.text_input.${name}.label`)}</p>
+    {/if}
+    <div
+      class="input input-{type}"
+      class:right={alignRight}
+      class:has-icon={!!icon}
+    >
+      <input
+        bind:this={ref}
+        bind:value={valueString}
+        use:typeAction
+        placeholder=""
+        {disabled}
+        {name}
+        on:input={debouncedChange}
+        on:change={debouncedChange}
+        on:focus={onFocus}
+        on:keydown={onKey}
+        tabindex={disabled || disableTabIndex ? -1 : 0}
+      />
+      <div>
+        {#if icon}
+          <Icon name={icon} />
+        {/if}
+        <p class="text placeholder" class:opacity-0={valueString}>
+          {$_(`lib.controls.text_input.${name}.placeholder`)}
+        </p>
+      </div>
     </div>
+    {#if validationErrors.length > 0}
+      <Alert variant={AlertVariant.Danger} title="Error!" transparent small>
+        {#each validationErrors as [error, ...args]}
+          <p class="text">
+            {$format(`lib.validation.${error}`, { values: args })}
+          </p>
+        {/each}
+      </Alert>
+    {/if}
   </div>
-  {#if validationErrors.length > 0}
-    <Alert variant={AlertVariant.Danger} title="Error!" transparent small>
-      {#each validationErrors as [error, ...args]}
-        <p class="text">{$format(`lib.validation.${error}`, {values: args})}</p>
-      {/each}
-    </Alert>
-  {/if}
-</div>
 </template>
 
 <style global lang="postcss">

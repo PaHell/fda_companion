@@ -14,7 +14,7 @@ declare namespace App {
         interface ValidationRule {
             name: ValidationRuleName;
             translationName: string;
-            predicate: (val: string | number, ...args : number[]) => boolean;
+            predicate: (val: string | number, ...args: number[]) => boolean;
         }
         interface Locale {
             iso2: string;
@@ -29,13 +29,14 @@ declare namespace App {
             icon: Icons;
             path: string;
         }
-        interface Column {
+        interface Column<T> {
             title: string;
             width: string;
             css: string;
+            sortKey: (keyof T) | null;
         }
         interface TableContext<T> {
-            registerColumn: (name: string, width: string, css: string) => void;
+            registerColumn: (name: string, width: string, css: string, sortKey: (keyof T) | null) => void;
             getRowContext: (item: T, index: number, changed: () => void) => RowContext<T>;
         }
         interface RowContext<T> {
@@ -47,19 +48,6 @@ declare namespace App {
         }
     }
     namespace Models {
-
-
-        interface CustomerIn {
-            fname: string;
-            lname: string;
-            street: string;
-            house_number: number;
-            postal_code: string;
-            city: string;
-            country_iso3: string;
-            image: string;
-            company: string;
-        }
 
         interface Country {
             name: string;
@@ -77,7 +65,7 @@ declare namespace App {
             fname: string;
             lname: string;
             street: string;
-            house_number: string;
+            house_number: number;
             postal_code: string;
             country_iso3: string;
             image: string;

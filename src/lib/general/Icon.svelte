@@ -6,6 +6,12 @@
     FullScreen = "fullscreen-line",
     SelectDown = "arrow-drop-down-line",
     SelectSelected = "check-line",
+    Delete = "delete-bin-line",
+    UndoDelete = "arrow-go-back-line",
+    SaveChanges = "save-line",
+    Add = "add-line",
+    OrderByAsc = "arrow-drop-up-line",
+    OrderByDesc = "arrow-drop-down-line",
   }
 </script>
 

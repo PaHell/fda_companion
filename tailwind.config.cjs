@@ -35,8 +35,8 @@ module.exports = {
         tri: colors.gray[600],
       },
       success: {
-        light: colors.emerald[600],
-        dark: colors.emerald[500],
+        light: colors.blue[600],
+        dark: colors.blue[500],
       },
       warning: {
         light: colors.amber[600],

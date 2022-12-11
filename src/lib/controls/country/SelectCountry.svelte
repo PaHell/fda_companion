@@ -2,8 +2,33 @@
   import Select from "$lib/controls/Select.svelte";
   import { countries } from "./store";
   import type { App } from "$src/app";
+  import { createEventDispatcher, onMount } from "svelte";
+
+  interface $$Events {
+    change: CustomEvent<{
+      item: App.Models.Country;
+      index: number;
+    }>;
+  }
 
   export let value: App.Models.Country | undefined = undefined;
+  export let iso3: string | undefined = undefined;
+
+  const dispatch = createEventDispatcher<$$Events>();
+
+  onMount(() => {
+    if (value) {
+      iso3 = value.iso3;
+    } else if (iso3) {
+      value = $countries.find((c) => c.iso3 === iso3);
+    }
+  });
+
+  function onChange(event: $$Events["change"]) {
+    value = event.detail.item;
+    iso3 = event.detail.item.iso3;
+    dispatch("change", event.detail);
+  }
 
   interface $$Events {
     change: CustomEvent<{
@@ -21,13 +46,13 @@
     searchKeysOrdered={["iso3", "name"]}
     enableSearch={true}
     searchName="search_country"
-    on:change
+    on:change={onChange}
   >
     <svelte:fragment slot="selected" let:item>
       <div class="flag">
         <img src={item.flag} alt="Flag of {item.name} ({item.iso3})" />
       </div>
-      <p class="text">
+      <p class="text flex-1">
         {item.name}
         <span class="secondary">({item.iso3})</span>
       </p>
@@ -61,10 +86,10 @@
   }
 
   .flag:before {
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
   }
 
   .dark .flag:before {
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   }
 </style>
