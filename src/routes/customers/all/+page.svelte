@@ -15,8 +15,9 @@
       fname: "Xi",
       lname: "Jin Ping",
       street: "Tsingato St",
-      house_number: 5,
+      house_number: "5",
       postal_code: "45123",
+      city: "Beijing",
       country_iso3: "CHN",
       image: "https://picsum.photos/200/300",
       company_id: "1",
@@ -26,8 +27,9 @@
       fname: "Joe",
       lname: "Biden",
       street: "Main St",
-      house_number: 80,
+      house_number: "80a",
       postal_code: "89345",
+      city: "Washington",
       country_iso3: "USA",
       image: "https://picsum.photos/200/300",
       company_id: "2",
@@ -37,19 +39,9 @@
       fname: "Olaf",
       lname: "Scholz",
       street: "Bundesstraße",
-      house_number: 42,
+      house_number: "42",
       postal_code: "34598",
-      country_iso3: "DEU",
-      image: "https://picsum.photos/200/300",
-      company_id: "3",
-    },
-    {
-      id: "3",
-      fname: "Olaf",
-      lname: "Scholz",
-      street: "Bundesstraße",
-      house_number: 41,
-      postal_code: "34598",
+      city: "Berlin",
       country_iso3: "DEU",
       image: "https://picsum.photos/200/300",
       company_id: "3",
@@ -59,8 +51,9 @@
       fname: "Vladimir",
       lname: "Putin",
       street: "Red Place",
-      house_number: 45,
+      house_number: "45/5",
       postal_code: "12345",
+      city: "Moscow",
       country_iso3: "RUS",
       image: "https://picsum.photos/200/300",
       company_id: "4",
@@ -112,7 +105,6 @@
             ctx.changed();
           }}
           name="first_name"
-          css="col-span-2"
           autofocus={ctx.state == RowState.Added}
         />
       </Column>
@@ -124,7 +116,6 @@
             ctx.changed();
           }}
           name="last_name"
-          css="col-span-2"
         />
       </Column>
       <Column title="Country" width="20%" sortByKey="country_iso3">
@@ -142,7 +133,16 @@
         css="font-mono"
         sortByKey="postal_code"
       >
-        <p class="text text-right">{ctx.item.postal_code}</p>
+      <TextInput
+        value={ctx.item.postal_code}
+        on:change={(event) => {
+          ctx.item.postal_code = event.detail;
+          ctx.changed();
+        }}
+        type="number"
+        name="postal_code"
+        alignRight
+      />
       </Column>
       <Column title="Address" width="15%" sortByKey="street">
         <p class="text">
@@ -171,19 +171,6 @@
             <p class="text">{item.name}</p>
           </svelte:fragment>
         </Select>
-      </Column>
-      <Column title="" width="2.25rem">
-        <Button
-          icon={ctx.state == RowState.Deleted ? Icons.UndoDelete : Icons.Delete}
-          variant={ButtonVariant.Secondary}
-          on:click={() => {
-            ctx.changed(
-              ctx.state == RowState.Deleted
-                ? ctx.initialState
-                : RowState.Deleted
-            );
-          }}
-        />
       </Column>
     </Table>
   </div>

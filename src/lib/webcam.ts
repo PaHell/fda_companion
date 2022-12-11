@@ -15,7 +15,6 @@ export class Webcam {
     this._video.setAttribute("muted", "true");
     const self = this;
     this._video.addEventListener("canplay", (event: Event) => {
-      console.log({thus: this, self});
       self._width = (event.target as HTMLVideoElement).videoWidth;
       self._height = (event.target as HTMLVideoElement).videoHeight;
     });

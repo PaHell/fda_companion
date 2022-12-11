@@ -61,9 +61,6 @@
   // EVENTS
   const dispatch = createEventDispatcher<$$Events>();
   // LIFECYCLE
-  $: {
-    console.warn("$$$ Select");
-  }
   // FUNCTIONS
   function select(item: T, _index: number, userCall: boolean = true) {
     if (!refOverlay) return;
@@ -126,7 +123,6 @@
           <Button
             variant={ButtonVariant.Transparent}
             active={item == value}
-            disableTabIndex={!opened}
             on:click={() => select(item, index)}
           >
             <slot name="item" {item} {index} />

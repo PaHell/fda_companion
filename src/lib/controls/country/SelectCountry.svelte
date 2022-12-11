@@ -17,10 +17,8 @@
   const dispatch = createEventDispatcher<$$Events>();
 
   $: {
-    console.warn("$$$ SelectCountry");
-    if (value) {
-      iso3 = value.iso3;
-    } else if (iso3) {
+    if (iso3 != value?.iso3) {
+      console.warn("$$$ SelectCountry, updating value");
       value = $countries.find((c) => c.iso3 === iso3);
     }
   }

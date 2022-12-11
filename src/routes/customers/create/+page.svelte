@@ -12,11 +12,11 @@
   // IMPORT
   // PROPS
   // DATA
-  let input: App.Models.CustomerIn = {
+  let input: App.Models.CustomerInput = {
     fname: "",
     lname: "",
     street: "",
-    house_number: 0,
+    house_number: "",
     postal_code: "",
     city: "",
     country_iso3: "",
@@ -64,9 +64,6 @@
           />
         <TextInput
           bind:value={input.house_number}
-          parse={parseInt}
-          serialize={String}
-          type="number"
           name="house_number"
           alignRight
         />

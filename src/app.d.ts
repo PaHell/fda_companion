@@ -57,6 +57,18 @@ declare namespace App {
             iso3: string;
         }
 
+        class CustomerInput {
+            fname: string;
+            lname: string;
+            street: string;
+            house_number: string;
+            postal_code: string;
+            city: string;
+            country_iso3: string;
+            image: string;
+            company: string;
+        }
+
         class DatabaseElement {
             id: string;
         }
@@ -65,8 +77,9 @@ declare namespace App {
             fname: string;
             lname: string;
             street: string;
-            house_number: number;
+            house_number: string;
             postal_code: string;
+            city: string;
             country_iso3: string;
             image: string;
             company_id: string;
@@ -81,7 +94,12 @@ declare namespace App {
             username: string;
             fname: string;
             lname: string;
-            roles: string[];
+            role_id: string;
+            _role?: Role;
+        }
+
+        class Role extends DatabaseElement {
+            name: string;
         }
 
         class ProductType extends DatabaseElement {

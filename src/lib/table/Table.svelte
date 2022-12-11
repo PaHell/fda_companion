@@ -36,7 +36,7 @@
     }
     // sort by first column
     if (columns.length) {
-      //sortByColumn(columns[0]);
+      sortByColumn(columns[0]);
     }
   });
 
@@ -63,8 +63,6 @@
       activeColumn = column;
       columnSortedAsc = false;
     }
-    console.log("Sort by", column.sortKey, columnSortedAsc);
-    console.log(items.map((item) => item.id));
     // sort items
     let _contexts = contexts;
     items = [];
@@ -80,7 +78,6 @@
     _contexts.forEach((ctx, index) => (ctx.index = index));
     contexts = _contexts;
     items = contexts.map((ctx) => ctx.item);
-    console.log(items.map((item) => item.id));
   }
 
   function saveChanges() {
@@ -88,6 +85,7 @@
   }
 
   function onRowChanged(item: T, index: number, state: RowState) {
+    console.log("Table Changed", {item});
     const context = contexts[index];
     context.state = state;
     if (state != RowState.Deleted) {
@@ -100,7 +98,6 @@
         return [state, count] as [RowState, number];
       });
     items = contexts.map((ctx) => ctx.item);
-    console.log("Table Changed", JSON.stringify(item));
   }
 
   function registerColumn(
@@ -172,6 +169,19 @@
         {#each items as item, index}
           <Row {item} {index}>
             <slot ctx={contexts[index]} />
+            <Column title="" width="2.25rem">
+              <Button
+                icon={contexts[index].state == RowState.Deleted ? Icons.UndoDelete : Icons.Delete}
+                variant={ButtonVariant.Secondary}
+                on:click={() => {
+                  contexts[index].changed(
+                    contexts[index].state == RowState.Deleted
+                      ? contexts[index].initialState
+                      : RowState.Deleted
+                  );
+                }}
+              />
+            </Column>
           </Row>
         {/each}
       </tbody>
@@ -230,7 +240,7 @@
   .table {
     @apply border border-separate border-spacing-0
         w-full table-fixed rounded
-        bg-gray-100 dark:bg-gray-800
+        bg-gray-100 dark:bg-gray-900
         border-gray-300 dark:border-gray-700;
 
     & th {

@@ -49,10 +49,9 @@
   // LIFECYCLE
   $: {
     if (document.activeElement !== ref) {
-      console.warn("$$$ TextInput");
       const ser = serialize(value);
       if (ser !== valueString) {
-        console.log("valueString", valueString, "ser", ser);
+        console.warn("$$$ TextInput value =", ser);
         valueString = ser;
         //onChange();
       }

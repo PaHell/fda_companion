@@ -122,9 +122,11 @@
     use:clickOutside={close}
   >
     <slot name="item" />
-    <menu class="overlay-{orientation}" bind:this={refMenu} class:render>
+    <menu class="overlay-{orientation}" bind:this={refMenu}>
       <main>
-        <slot name="menu" />
+        {#if render}
+          <slot name="menu" />
+        {/if}
       </main>
     </menu>
   </div>
@@ -143,9 +145,6 @@
       transition-duration: 0.2s;
       transition-property: max-height, max-width;
       will-change: max-height, max-width;
-      &:not(.render) > main {
-        @apply hidden;
-      }
       & > main {
         @apply flex flex-col w-full rounded overflow-hidden
         border border-gray-300 bg-gray-50

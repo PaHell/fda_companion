@@ -6,9 +6,7 @@
         "theme": "Theme",
         "language": "Language",
         "country": "Country",
-        "placeholders": {
-          "country": "Search countries and ISO-3"
-        }
+        "role": "Role"
       },
       "text_input": {
         "search_country": {
@@ -20,6 +18,13 @@
         "search": {
           "label": "Search",
           "placeholder": "Search..."
+        },
+        "username": {
+          "label": "Username"
+        },
+        "product_type": {
+          "label": "Product Type Name",
+          "placeholder": "Marketing"
         },
         "first_name": {
           "label": "First Name",

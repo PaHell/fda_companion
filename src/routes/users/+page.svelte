@@ -16,44 +16,57 @@
       username: "jdoe",
       fname: "John",
       lname: "Doe",
-      roles: [],
+      role_id: "1",
     },
     {
       id: "2",
       username: "jnapls",
       fname: "John",
       lname: "Appleseed",
-      roles: [],
+      role_id: "2",
     },
     {
       id: "3",
       username: "redesiigner",
       fname: "Patrick",
       lname: "Hellebrand",
-      roles: [],
+      role_id: "1",
     },
     {
       id: "4",
       username: "blauschleim",
       fname: "Maria",
       lname: "Theresa",
-      roles: [],
+      role_id: "2",
     },
   ];
+
+  let roles: App.Models.Role[] = [
+    {
+      id: "1",
+      name: "Admin",
+    },
+    {
+      id: "2",
+      name: "User",
+    },
+  ];
+
+  users.forEach((user) => {
+    user._role = roles.find(
+      (role) => role.id == user.role_id
+    );
+  });
 </script>
 
 <template>
   <div id="users">
     <h1 class="text heading col-span-2">All Users</h1>
-    <p class="text">{JSON.stringify(users[0])}</p>
     <Table bind:items={users} css="col-span-2" let:ctx>
-      <Column title="ID" width="5%" css="bg-danger-500">
-        <p class="text">{ctx.item.id}</p>
+      <Column title="ID" width="4rem" css="" sortByKey="id">
+        <p class="text secondary font-mono text-right">{ctx.item.id ?? "-"}</p>
       </Column>
-      <Column title="Username Val">
-        <p class="text">{ctx.item?.username}</p>
-      </Column>
-      <Column title="Username">
+      <Column title="lib.controls.text_input.username.label">
         <TextInput
           value={ctx.item.username}
           on:change={(event) => {
@@ -61,27 +74,30 @@
             ctx.changed();
           }}
           name="street"
-          css="col-span-2"
         />
       </Column>
-      <Column title="First name">
-        <p class="text">{ctx.item.fname}</p>
-      </Column>
-      <Column title="Last name">
-        <p class="text">{ctx.item.lname}</p>
-      </Column>
-      <Column title="Actions">
-        <Button
-          text={ctx.state == RowState.Deleted ? "Keep" : "Remove"}
-          variant={ButtonVariant.Secondary}
-          on:click={() => {
-            ctx.changed(
-              ctx.state == RowState.Deleted
-                ? ctx.initialState
-                : RowState.Deleted
-            );
+      <Column title="lib.controls.text_input.first_name.label">
+        <TextInput
+          value={ctx.item.fname}
+          on:change={(event) => {
+            ctx.item.fname = event.detail;
+            ctx.changed();
           }}
+          name="first_name"
         />
+      </Column>
+      <Column title="lib.controls.text_input.last_name.label">
+        <TextInput
+          value={ctx.item.lname}
+          on:change={(event) => {
+            ctx.item.lname = event.detail;
+            ctx.changed();
+          }}
+          name="last_name"
+        />
+      </Column>
+      <Column title="lib.controls.select.role">
+        <p class="text">{ctx.item._role?.name}</p>
       </Column>
     </Table>
   </div>

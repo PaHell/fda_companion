@@ -25,19 +25,14 @@
 
   let currentState = State.Init;
 
-  onMount(() => {
-    console.log("onMount");
-    if (!video) return;
-    webcam = new Webcam(video);
-  });
-
   onDestroy(() => {
     if (!webcam) return;
     webcam.destroyStream();
   });
 
   function onOpen() {
-    if (!webcam) return;
+    if (!video) return;
+    webcam = new Webcam(video);
     currentState = State.Init;
     webcam.createStream().then(() => {
       currentState = State.Streaming;
@@ -150,7 +145,7 @@
         @apply m-0 mb-1 !important;
       }
       & > .text {
-        @apply flex-initial mb-2;
+        @apply flex-initial mb-2 !important;
       }
     }
     & > menu {
