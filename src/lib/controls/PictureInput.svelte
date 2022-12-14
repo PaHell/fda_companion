@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
-  import Overlay, { OverlayOrientation } from "./Overlay.svelte";
+  import Overlay, { OverlayPosition } from "./Overlay.svelte";
   import { createEventDispatcher, onDestroy, onMount, SvelteComponent } from "svelte";
   import Button, { ButtonVariant } from "./Button.svelte";
   import Alert, { AlertVariant } from "../general/Alert.svelte";
@@ -74,7 +74,7 @@
 <template>
   <Overlay
     bind:this={refOverlay}
-    orientation={OverlayOrientation.Right}
+    position={OverlayPosition.Right}
     on:open={onOpen}
     on:close={onClose}
     css="picture-input {css}"

@@ -93,7 +93,7 @@
 
     & > nav {
       @apply w-72 border-r p-2
-      border-gray-300 dark:border-gray-700;
+      border-gray-300 dark:border-gray-800;
 
       & > .button {
         @apply w-full h-16;

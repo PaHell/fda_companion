@@ -1,17 +1,15 @@
 <script lang="ts">
     import { fullscreen } from "$src/store";
     import Button from "./controls/Button.svelte";
+    import Overlay, { OverlayPosition } from "./controls/Overlay.svelte";
+    import PinCodeInput from "./controls/PinCodeInput.svelte";
     import { Icons } from "./general/Icon.svelte";
 
+    let pin = "";
+    let refOverlay: Overlay;
+
     function openFullscreen() {
-        var elem = document.documentElement;
         fullscreen.update(val => {
-            // inverse
-            if (!val) {
-                elem.requestFullscreen();
-            } else {
-                document.exitFullscreen();
-            }
             return !val;
         });
     }
@@ -20,10 +18,17 @@
 <template>
     <header id="header">
         <Button icon={Icons.Menu} />
-        <div>
+        <main>
             <p class="text font-bold">{import.meta.env.VITE_APP_NAME}</p>
-        </div>
-        <Button icon={Icons.FullScreen} on:click={openFullscreen} active={$fullscreen} />
+        </main>
+        <Overlay bind:this={refOverlay} position={OverlayPosition.Bottom} css="overlay-pin">
+            <svelte:fragment slot="item">
+                <Button icon={Icons.ScreenLock} on:click={refOverlay.toggleOpened} active={$fullscreen} />
+            </svelte:fragment>
+            <svelte:fragment slot="menu">
+                <PinCodeInput bind:value={pin}/>
+            </svelte:fragment>
+        </Overlay>
     </header>
 </template>
   
@@ -31,9 +36,9 @@
     #header {
         @apply flex justify-center items-center
         p-2 border-b
-        border-gray-300 dark:border-gray-700;
+        border-gray-300 dark:border-gray-800;
 
-        & > div {
+        & > main {
             @apply flex-1 flex justify-center items-center;
         }
 
@@ -41,4 +46,11 @@
             @apply ml-2;
         }
     }
+
+    .overlay-pin {
+        & > menu > main {
+            @apply p-2;
+        }
+    }
+
 </style>

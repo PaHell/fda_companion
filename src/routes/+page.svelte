@@ -1,4 +1,5 @@
 <script lang="ts">
+    import PinCodeInput from "$src/lib/controls/PinCodeInput.svelte";
     import TextInput from "$src/lib/controls/TextInput.svelte";
   import Alert, { AlertVariant } from "$src/lib/general/Alert.svelte";
     import { Icons } from "$src/lib/general/Icon.svelte";

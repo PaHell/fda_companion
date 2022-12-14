@@ -13,7 +13,7 @@
   import { _ } from "svelte-i18n";
   import { debounce, searchByKeys } from "../helpers";
   import { clickOutside } from "../use";
-  import Overlay, { OverlayOrientation } from "./Overlay.svelte";
+  import Overlay, { OverlayPosition } from "./Overlay.svelte";
   import TextInput from "./TextInput.svelte";
   // TYPE
   type T = $$Generic;
@@ -82,7 +82,7 @@
   <Overlay
     bind:this={refOverlay}
     bind:opened
-    orientation={OverlayOrientation.Bottom}
+    position={OverlayPosition.Bottom}
     css="select"
     on:open={refSearch?.focus}
   >

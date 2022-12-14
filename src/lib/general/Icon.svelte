@@ -12,6 +12,20 @@
     Add = "add-line",
     OrderByAsc = "arrow-drop-up-line",
     OrderByDesc = "arrow-drop-down-line",
+    DeleteBack = "delete-back-2-line",
+    ScreenLock = "lock-2-fill",
+    ScreenUnlock = "lock-unlock-fill",
+    Number1 = "number-1",
+    Number2 = "number-2",
+    Number3 = "number-3",
+    Number4 = "number-4",
+    Number5 = "number-5",
+    Number6 = "number-6",
+    Number7 = "number-7",
+    Number8 = "number-8",
+    Number9 = "number-9",
+    Number0 = "number-0",
+    NumberPlaceholder = "asterisk",
   }
 </script>
 

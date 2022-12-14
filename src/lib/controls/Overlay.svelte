@@ -4,7 +4,7 @@
   import { debounce } from "../helpers";
   import { clickOutside } from "../use";
   import Button, { ButtonVariant } from "./Button.svelte";
-  export enum OverlayOrientation {
+  export enum OverlayPosition {
     Top = "top",
     Bottom = "bottom",
     Left = "left",
@@ -22,15 +22,17 @@
     close: {};
   }
 
+  export let position: OverlayPosition = OverlayPosition.Bottom;
   export let css: string = "";
-  export let opened: boolean = false;
-  export let render: boolean = false;
-  export let orientation: OverlayOrientation = OverlayOrientation.Bottom;
 
-  const spaceFromOrigin = .5;
-  const spaceFromScreen = .5;
-  const maxWidth = 20;
-  const maxHeight = 20;
+  let opened: boolean = false;
+  let render: boolean = false;
+
+  const pxSpaceOrigin = 8;
+  const pxSpaceScreen = 8;
+  const pxMinW = 256;
+  const pxMaxW = 480;
+  const pxMaxH = 256;
 
   let refContainer: HTMLElement | undefined;
   let refMenu: HTMLElement | undefined;
@@ -47,7 +49,7 @@
   }
 
   export function close() {
-    if (!refMenu || !opened) return;
+    if (!refMenu || !open) return;
     opened = false;
     refMenu.style.removeProperty("max-height");
     refMenu.style.removeProperty("max-width");
@@ -70,42 +72,60 @@
   function updateSize() {
     if (!refContainer || !refMenu) return;
     const rect = refContainer.getBoundingClientRect();
-    switch (orientation) {
-      case OverlayOrientation.Top:
+    switch (position) {
+      case OverlayPosition.Top: {
         break;
-      case OverlayOrientation.Bottom:
-        const height = `min(calc(${
-          window.innerHeight - rect.bottom
-        }px - ${spaceFromOrigin + spaceFromScreen}rem), ${maxHeight}rem)`;
+      }
+      case OverlayPosition.Bottom: {
+        const maxAvail = window.innerHeight - rect.bottom - pxSpaceOrigin - pxSpaceScreen;
+        const height = Math.min(maxAvail, pxMaxH) + "px";
         refMenu.style.maxHeight = height;
-        (refMenu.childNodes[0] as HTMLElement).style.height = height;
+        //(refMenu.childNodes[0] as HTMLElement).style.height = height;
         break;
-      case OverlayOrientation.Left:
+      }
+      case OverlayPosition.Left: {
+        const width = `min(calc(${window.innerWidth - refContainer.clientLeft + refContainer.clientWidth}px - ${pxSpaceOrigin + pxSpaceScreen}rem), ${maxWidth}rem)`;
+          refMenu.style.maxWidth = width;
+          (refMenu.childNodes[0] as HTMLElement).style.width = width;
         break;
-      case OverlayOrientation.Right:
-        const width = `min(calc(${window.innerWidth - refContainer.clientLeft + refContainer.clientWidth}px - ${spaceFromOrigin + spaceFromScreen}rem), ${maxWidth}rem)`;
+      }
+      case OverlayPosition.Right: {
+        const width = `min(calc(${window.innerWidth - refContainer.clientLeft + refContainer.clientWidth}px - ${pxSpaceOrigin + pxSpaceScreen}rem), ${maxWidth}rem)`;
         refMenu.style.maxWidth = width;
         (refMenu.childNodes[0] as HTMLElement).style.width = width;
         break;
+      }
     }
   }
 
   function calcPosition() {
     if (!refContainer || !refMenu) return;
     const rect = refContainer.getBoundingClientRect();
-    switch (orientation) {
-      case OverlayOrientation.Top:
+    switch (position) {
+      case OverlayPosition.Top:
         break;
-      case OverlayOrientation.Bottom:
-        refMenu.style.top = `calc(${rect.bottom}px + ${spaceFromOrigin}rem)`;
-        refMenu.style.left = `${refContainer.getClientRects().item(0)?.left}px`;
-        refMenu.style.width = `${refContainer.clientWidth}px`;
+      case OverlayPosition.Bottom:
+        refMenu.style.top = (rect.bottom + pxSpaceOrigin) + "px";
+        let width = Math.min(Math.max(rect.width, pxMinW), pxMaxW);
+        refMenu.style.width = width + "px";
+        const widthAvail = window.innerWidth - rect.left - pxSpaceScreen;
+        console.log({ width, widthAvail });
+        if (rect.left + width < widthAvail) {
+          refMenu.style.left = rect.left + "px";
+          console.log("left", rect.left);
+        } else {
+          refMenu.style.left = (rect.right - width) + "px";
+          console.log("right", rect.right);
+        }
         break;
-      case OverlayOrientation.Left:
-        break;
-      case OverlayOrientation.Right:
+      case OverlayPosition.Left:
         refMenu.style.top = `${rect.top}px`;
-        refMenu.style.left = `calc(${rect.right}px + ${spaceFromOrigin}rem)`;
+        refMenu.style.right = `calc(${window.innerWidth - rect.left}px + ${pxSpaceOrigin}rem)`;
+        //refMenu.style.width = `${maxWidth}rem`;
+        break;
+      case OverlayPosition.Right:
+        refMenu.style.top = `${rect.top}px`;
+        refMenu.style.left = `calc(${rect.right}px + ${pxSpaceOrigin}rem)`;
         //refMenu.style.width = `${maxWidth}rem`;
         break;
     }
@@ -118,11 +138,11 @@
   <div
     bind:this={refContainer}
     class="overlay {css}"
-    class:opened
+    class:open
     use:clickOutside={close}
   >
     <slot name="item" />
-    <menu class="overlay-{orientation}" bind:this={refMenu}>
+    <menu class="overlay-{position}" bind:this={refMenu}>
       <main>
         {#if render}
           <slot name="menu" />
