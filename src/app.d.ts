@@ -29,6 +29,10 @@ declare namespace App {
             icon: Icons;
             path: string;
         }
+        interface ScreenLock {
+            locked: boolean;
+            pin: string;
+        }
         interface Column<T> {
             title: string;
             width: string;

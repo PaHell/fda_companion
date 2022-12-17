@@ -3,16 +3,18 @@
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
   import { _ } from "svelte-i18n";
   import type { App } from "$src/app";
+    import { createEventDispatcher } from "svelte";
 
   interface $$Events {
+    complete: string;
   }
 
-  export let value: string = "";
   export let length: number = 4;
-
-  let values: number[] = Array(10).fill(0).map((_, i) => i % 10);
+  let value: string = "";
+  let values: number[] = Array(10).fill(0).map((_, i) => (i + 1) % 10);
 
   const icons : Icons[] = [
+    Icons.Number0,
     Icons.Number1,
     Icons.Number2,
     Icons.Number3,
@@ -22,15 +24,36 @@
     Icons.Number7,
     Icons.Number8,
     Icons.Number9,
-    Icons.Number0,
   ];
 
-  function enter(i: number) {
+  const dispatch = createEventDispatcher<$$Events>();
+
+  export function enter(i: number) {
     value += i;
+    if (value.length === length) {
+      // execute later, so user sees the last number
+      setTimeout(() => {
+        dispatch("complete", value);
+        value = "";
+      }, 0);
+    }
   }
 
-  function remove() {
+  export function remove() {
     value = value.slice(0, -1);
+  }
+
+  export function onKey(e: KeyboardEvent) {
+    switch (e.key) {
+      case "Backspace":
+        remove();
+        break;
+      default:
+        if (e.key >= "0" && e.key <= "9") {
+          enter(parseInt(e.key));
+        }
+        break;
+    }
   }
 
 </script>

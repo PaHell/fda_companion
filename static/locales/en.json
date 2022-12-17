@@ -63,6 +63,10 @@
         "deleted": "Deleted"
       }
     },
+    "screen_lock": {
+      "lock": "Lock Screen",
+      "unlock": "Unlock"
+    },
     "validation": {
       "required": "This field is required",
       "email": "This field must be a valid email",
