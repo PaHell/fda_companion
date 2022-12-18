@@ -5,8 +5,7 @@
   import SelectCountry from "$src/lib/controls/country/SelectCountry.svelte";
   import PictureInput from "$src/lib/controls/PictureInput.svelte";
     import { ValidationRuleName } from "$src/lib/validate";
-    import { fullscreen } from "$src/store";
-    import Button, { ButtonVariant } from "$src/lib/controls/Button.svelte";
+    import Button, { ButtonAlignment, ButtonVariant } from "$src/lib/controls/Button.svelte";
     import Checkbox from "$src/lib/controls/Checkbox.svelte";
 
   // IMPORT
@@ -31,7 +30,7 @@
 </script>
 
 <template>
-  <div id="customer_create" class:fullscreen={$fullscreen}>
+  <div id="customer_create">
     <h1 class="text heading col-span-3">Create Customer</h1>
     <div class="col-span-3 hbox">
       <PictureInput bind:value={input.image} css="flex-initial self-end"/>
@@ -92,8 +91,8 @@
         icon={Icons.Home}
         text="Create"
         variant={ButtonVariant.Primary}
+        align={ButtonAlignment.Center}
         on:click={() => console.log(input)}
-        rtl
         />
   </div>
 </template>

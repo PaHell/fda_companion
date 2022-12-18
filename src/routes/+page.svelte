@@ -1,10 +1,9 @@
 <script lang="ts">
-    import PinCodeInput from "$src/lib/controls/PinCodeInput.svelte";
-    import TextInput from "$src/lib/controls/TextInput.svelte";
+  import TextInput from "$src/lib/controls/TextInput.svelte";
   import Alert, { AlertVariant } from "$src/lib/general/Alert.svelte";
-    import { Icons } from "$src/lib/general/Icon.svelte";
-    import { ValidationRuleName } from "$src/lib/validate";
-import { _ } from "svelte-i18n";
+  import { Icons } from "$src/lib/general/Icon.svelte";
+  import { ValidationRuleName } from "$src/lib/validate";
+  import { _ } from "svelte-i18n";
 
   let value = "";
 </script>

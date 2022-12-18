@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { screenLock } from "$src/store";
-    import Button, { ButtonVariant } from "./controls/Button.svelte";
-    import Overlay, { OverlayPosition } from "./controls/Overlay.svelte";
-    import PinCodeInput from "./controls/PinCodeInput.svelte";
-    import { Icons } from "./general/Icon.svelte";
+    import { screenLock } from "./store";
+    import Button, { ButtonVariant } from "../Button.svelte";
+    import Overlay, { OverlayPosition } from "../Overlay.svelte";
+    import PinCodeInput from "./PinCodeInput.svelte";
+    import { Icons } from "$lib/general/Icon.svelte";
 
     let refOverlay: Overlay;
     let refPinInput: PinCodeInput;

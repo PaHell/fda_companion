@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button, { ButtonVariant } from "$lib/controls/Button.svelte";
+  import Button, { ButtonAlignment, ButtonVariant } from "$lib/controls/Button.svelte";
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
   import { _ } from "svelte-i18n";
   import type { App } from "$src/app";
@@ -72,12 +72,14 @@
                 <Button
                     icon={icons[i]}
                     variant={ButtonVariant.Secondary}
+                    align={ButtonAlignment.Center}
                     disabled={value.length >= length}
                     on:click={() => enter(i)}/>
             {/each}
             <Button
                 icon={Icons.DeleteBack}
                 variant={ButtonVariant.Secondary}
+                align={ButtonAlignment.Center}
                 disabled={value.length === 0}
                 on:click={remove}/>
     </div>

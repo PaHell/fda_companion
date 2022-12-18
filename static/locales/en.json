@@ -4,6 +4,7 @@
       "select": {
         "none": "Nothing selected",
         "theme": "Theme",
+        "view_size": "Application view size",
         "language": "Language",
         "country": "Country",
         "role": "Role"

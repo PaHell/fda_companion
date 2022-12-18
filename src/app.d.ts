@@ -20,6 +20,10 @@ declare namespace App {
             iso2: string;
             name: string;
         }
+        interface ViewSize {
+            text: string;
+            class: string;
+        }
         interface Theme {
             text: string;
             class: string;
@@ -41,14 +45,14 @@ declare namespace App {
         }
         interface TableContext<T> {
             registerColumn: (name: string, width: string, css: string, sortKey: (keyof T) | null) => void;
-            getRowContext: (item: T, index: number, changed: () => void) => RowContext<T>;
+            getRowContext: (index: number, item: T) => RowContext<T>;
         }
         interface RowContext<T> {
             item: T;
             index: number;
             state: RowState;
             initialState: RowState;
-            changed: (state?: RowState) => void;
+            changed: (state: RowState) => void;
         }
     }
     namespace Models {

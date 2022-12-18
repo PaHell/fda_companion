@@ -8,10 +8,9 @@
   import Icon, { Icons } from "../general/Icon.svelte";
   import { _ } from "svelte-i18n";
 
-  type T = $$Generic<{}>;
+  type T = $$Generic<App.Models.DatabaseElement>;
   interface $$Slots {
     default: {
-      ctx: App.General.RowContext<T>;
     };
   }
   export let items: T[] = [];
@@ -48,10 +47,12 @@
       index: items.length - 1,
       state: RowState.Added,
       initialState: RowState.Added,
-      changed: () => {},
+      changed: () => {
+        onRowChanged(contexts[items.length - 1], RowState.Added);
+      },
     });
     items = items;
-    onRowChanged(item, items.length - 1, RowState.Added);
+    onRowChanged(contexts[items.length - 1], RowState.Added);
   }
 
   function sortByColumn(column: App.General.Column<T>) {
@@ -84,9 +85,8 @@
     console.warn("Save Changes", JSON.stringify(items));
   }
 
-  function onRowChanged(item: T, index: number, state: RowState) {
-    console.log("Table Changed", {item});
-    const context = contexts[index];
+  function onRowChanged(context: App.General.RowContext<T>, state: RowState) {
+    console.log("Table Changed", {item: context.item});
     context.state = state;
     if (state != RowState.Deleted) {
       context.initialState = state;
@@ -115,23 +115,20 @@
     columns = columns;
   }
 
-  function getRowContext(item: T, index: number, _changed: () => void) {
-    const changed = (state: RowState = RowState.Modified) => {
-      _changed();
-      onRowChanged(item, index, state);
-    };
-    if (contexts[index]) {
-      contexts[index].item = item;
-      //contexts[index].index = index;
-      contexts[index].changed = changed;
-      return contexts[index];
+  function getRowContext(index: number, item: T) {
+    const existing = contexts.find(ctx => ctx.item.id == item.id);
+    if (existing) {
+      existing.index = index;
+      return existing;
     }
     contexts[index] = {
-      item,
       index,
+      item,
       state: RowState.Unmodified,
       initialState: RowState.Unmodified,
-      changed,
+      changed: (state: RowState = RowState.Modified) => {
+        onRowChanged(contexts[index], state);
+      }
     };
     return contexts[index];
   }
@@ -142,7 +139,6 @@
     <table class="table">
       <thead>
         <tr>
-          <th class="state" />
           {#each columns as col}
             <th style="width: {col.width};">
               {#if col.sortKey}
@@ -169,19 +165,6 @@
         {#each items as item, index}
           <Row {item} {index}>
             <slot ctx={contexts[index]} />
-            <Column title="" width="2.25rem">
-              <Button
-                icon={contexts[index].state == RowState.Deleted ? Icons.UndoDelete : Icons.Delete}
-                variant={ButtonVariant.Secondary}
-                on:click={() => {
-                  contexts[index].changed(
-                    contexts[index].state == RowState.Deleted
-                      ? contexts[index].initialState
-                      : RowState.Deleted
-                  );
-                }}
-              />
-            </Column>
           </Row>
         {/each}
       </tbody>
@@ -250,9 +233,6 @@
       & > .text {
         @apply font-semibold;
       }
-      &.state {
-        @apply w-6;
-      }
     }
     & th,
     & td {
@@ -265,6 +245,7 @@
         @apply border-r;
       }
       &.state {
+        @apply w-6;
         & > div {
           @apply w-2 h-2 mx-auto rounded-full;
         }

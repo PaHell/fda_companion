@@ -12,8 +12,9 @@
     localeInitialized,
   } from "$src/lib/controls/locale/store";
   import FullscreenLoading from "$src/lib/general/FullscreenLoading.svelte";
-import { screenLock } from "$src/store";
-import ScreenLock from "$src/lib/ScreenLock.svelte";
+import { mobile } from "$lib/controls/view_size/store";
+import { screenLock } from "$lib/controls/screen_lock/store";
+import ScreenLock from "$src/lib/controls/screen_lock/ScreenLock.svelte";
 </script>
 
 <script lang="ts">
@@ -28,27 +29,27 @@ import ScreenLock from "$src/lib/ScreenLock.svelte";
     },
     {
       title: "Create Customer",
-      icon: Icons.Home,
+      icon: Icons.CreateCustomer,
       path: "/customers/create",
     },
     {
       title: "Customers",
-      icon: Icons.Home,
+      icon: Icons.Customer,
       path: "/customers/all",
     },
     {
       title: "Product Types",
-      icon: Icons.Home,
+      icon: Icons.ProductType,
       path: "/product_types",
     },
     {
       title: "Users",
-      icon: Icons.Home,
+      icon: Icons.User,
       path: "/users",
     },
     {
       title: "Settings",
-      icon: Icons.Home,
+      icon: Icons.Settings,
       path: "/settings",
     },
   ];
@@ -57,18 +58,24 @@ import ScreenLock from "$src/lib/ScreenLock.svelte";
 
   onMount(() => {
     currentPath = window.location.pathname;
+    navCollapsed = $mobile;
   });
 
   afterNavigate(({ to }) => {
     currentPath = to?.url?.pathname;
   });
+
+  function navigate(path: string) {
+    if ($mobile) navCollapsed = true;
+    goto(path);
+  }
 </script>
 
 <template>
   {#if $localeInitialized}
     <div id="main-layout" class:fullscreen={$screenLock.locked}>
       <header>
-        <Button icon={Icons.Menu} on:click={() => navCollapsed = !navCollapsed} />
+        <Button icon={Icons.NavbarCollapsed} on:click={() => navCollapsed = !navCollapsed} css={navCollapsed ? "collapsed" : ""} />
         <main>
             <p class="text font-bold">{import.meta.env.VITE_APP_NAME}</p>
         </main>
@@ -83,7 +90,7 @@ import ScreenLock from "$src/lib/ScreenLock.svelte";
             variant={currentPath === item.path
                 ? ButtonVariant.Secondary
                 : ButtonVariant.Transparent}
-              on:click={() => goto(item.path)}
+              on:click={() => navigate(item.path)}
               active={currentPath === item.path}
               />
           {/each}
@@ -118,11 +125,16 @@ import ScreenLock from "$src/lib/ScreenLock.svelte";
           }
 
         }
-        & > main {
-            @apply flex-1 flex justify-center items-center;
+        & > .button {
+          & > .icon {
+            @apply transition-all;
+          }
+          &.collapsed > .icon {
+            transform: rotateY(180deg);
+          }
         }
-        & > .button + .button {
-            @apply ml-2;
+        & > main {
+          @apply flex justify-center items-center;
         }
     }
 
@@ -132,7 +144,9 @@ import ScreenLock from "$src/lib/ScreenLock.svelte";
       & > nav {
         @apply w-[18rem] py-2 border-r overflow-hidden
         border-gray-300 dark:border-gray-800
+        bg-gray-100 dark:bg-gray-900
         transition-[width];
+        /* fixed nav bar on mobile */
 
         & > .button {
           @apply w-[17rem] mx-2 h-16;
@@ -163,7 +177,7 @@ import ScreenLock from "$src/lib/ScreenLock.svelte";
         & > nav {
           @apply w-14;
           & > .button {
-            @apply px-1 h-12;
+            @apply h-12;
             & > .text {
               @apply text-transparent !important;
             }
@@ -186,6 +200,22 @@ import ScreenLock from "$src/lib/ScreenLock.svelte";
         }
         & > main {
           @apply max-w-3xl;
+        }
+      }
+    }
+  }
+
+  .mobile #main-layout {
+    & > #content {
+      & > nav {
+        @apply fixed top-14 left-0;
+        height: calc(100vh - 3.5rem);
+      }
+      &.collapsed {
+        & > nav {
+          @apply w-0 border-0;
+        }
+        & > main {
         }
       }
     }

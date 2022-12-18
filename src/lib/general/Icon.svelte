@@ -1,7 +1,7 @@
 <script lang="ts" context="module">
   export enum Icons {
     Home = "home-line",
-    Settings = "settings-2-line",
+    Settings = "settings-line",
     Menu = "menu-2-line",
     FullScreen = "fullscreen-line",
     SelectDown = "arrow-drop-down-line",
@@ -26,6 +26,11 @@
     Number9 = "number-9",
     Number0 = "number-0",
     NumberPlaceholder = "asterisk",
+    NavbarCollapsed = "menu-fold-line",
+    CreateCustomer = "user-add-line",
+    Customer = "user-line",
+    ProductType = "store-line",
+    User = "customer-service-line",
   }
 </script>
 

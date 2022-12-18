@@ -1,9 +1,14 @@
 <script lang="ts" context="module">
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
   export enum ButtonVariant {
-    Primary = "pri",
-    Secondary = "sec",
-    Transparent = "trans",
+    Primary = "button-pri",
+    Secondary = "button-sec",
+    Transparent = "button-trans",
+  }
+  export enum ButtonAlignment {
+    Left = "button-left",
+    Center = "button-center",
+    Right = "button-right",
   }
 </script>
 
@@ -17,7 +22,7 @@
   export let active: boolean = false;
   export let css: string = "";
   export let disableTabIndex: boolean = false;
-  export let rtl: boolean = false;
+  export let align: ButtonAlignment = ButtonAlignment.Left;
 </script>
 
 <template>
@@ -26,8 +31,7 @@
     type="button"
     {disabled}
     class:active
-    class:rtl
-    class="button button-{variant} {css}"
+    class="button {variant} {align} {css}"
     tabindex={(disabled || disableTabIndex) ? -1 : 0}
   >
     {#if icon}
@@ -42,8 +46,8 @@
 
 <style global lang="postcss">
   .button {
-    @apply flex items-center justify-center flex-shrink-0
-        h-10 px-2 border rounded font-medium
+    @apply flex items-center justify-start flex-shrink-0
+        h-10 px-3 border rounded font-medium
         select-none outline-0
 		transition-all;
 
@@ -54,34 +58,34 @@
     & * {
       @apply border-inherit text-inherit transition-colors;
     }
+    & > *:not(:last-child) {
+      @apply mr-1;
+    }
     & > .icon {
-      &:first-child:not(:last-child) {
-        @apply ml-1;
+      &:first-child:last-child {
+        @apply -mx-1;
       }
     }
     & > .text {
-      @apply px-1 mb-[.5px] font-medium
+      @apply mb-[.5px] font-medium
 			overflow-ellipsis whitespace-nowrap overflow-hidden
 			text-left;
-
-      &:last-child:not(:first-child) {
-        @apply flex-1 pr-2;
-      }
-
     }
 
-    &.rtl {
+    &.button-center {
+      @apply justify-center;
+    }
+    &.button-right {
       @apply flex-row-reverse;
-      & > .text {
-        @apply text-right;
-        &:last-child {
-          @apply pr-1 pl-2;
+      & > * {
+        &:not(:last-child) {
+          @apply mr-0 ml-1;
         }
       }
+      & > .text {
+        @apply text-right;
+      }
       & > .icon {
-        &:first-child:not(:last-child) {
-          @apply mr-1 ml-0;
-        }
       }
     }
 
