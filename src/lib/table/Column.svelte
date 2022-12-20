@@ -20,8 +20,8 @@
   export let css: string = "";
   export let sortByKey: keyof T | null = null;
 
-  const context = getContext<App.General.RowContext<T>>("row");
-  if (context.index === 0) {
+  const index = getContext<number>("index");
+  if (index === 0) {
     const table = getContext<App.General.TableContext<T>>("table");
     table.registerColumn(title, width, css, sortByKey);
   }

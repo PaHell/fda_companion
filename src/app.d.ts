@@ -45,7 +45,7 @@ declare namespace App {
         }
         interface TableContext<T> {
             registerColumn: (name: string, width: string, css: string, sortKey: (keyof T) | null) => void;
-            getRowContext: (index: number, item: T) => RowContext<T>;
+            getRowContext: (item: T, changed: () => void) => RowContext<T>;
         }
         interface RowContext<T> {
             item: T;

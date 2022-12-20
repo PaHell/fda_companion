@@ -66,20 +66,19 @@
       columnSortedAsc = false;
     }
     // sort items
-    let _contexts = contexts;
-    items = [];
-    contexts = [];
-    _contexts = _contexts.sort((a, b) => {
+    items = items.sort((a, b) => {
       let score = 0;
-      const _a = String(a.item[key]);
-      const _b = String(b.item[key]);
+      const _a = String(a[key]);
+      const _b = String(b[key]);
       if (_a < _b) score = -1;
       else if (_a > _b) score = 1;
       return score * (columnSortedAsc ? 1 : -1);
     });
-    _contexts.forEach((ctx, index) => (ctx.index = index));
-    contexts = _contexts;
-    items = contexts.map((ctx) => ctx.item);
+    // update row indexes
+    items.forEach((item, index) => {
+      const ctx = contexts.find((ctx) => ctx.item.id === item.id);
+      if (ctx) ctx.index = index;
+    });
   }
 
   function saveChanges() {
@@ -98,7 +97,6 @@
         const count = contexts.filter((ctx) => ctx.state === state).length;
         return [state, count] as [RowState, number];
       });
-    items = contexts.map((ctx) => ctx.item);
   }
 
   function registerColumn(
@@ -116,18 +114,17 @@
     columns = columns;
   }
 
-  function getRowContext(index: number, item: T) {
+  function getRowContext(item: T, changed: () => void) {
     const existing = contexts.find(ctx => ctx.item.id == item.id);
-    if (existing) {
-      existing.index = index;
-      return existing;
-    }
+    if (existing) return existing;
+    const index = items.findIndex(i => i.id == item.id);
     contexts[index] = {
       index,
       item,
       state: RowState.Unmodified,
       initialState: RowState.Unmodified,
       changed: (state: RowState = RowState.Modified) => {
+        changed();
         onRowChanged(contexts[index], state);
       }
     };
@@ -163,9 +160,9 @@
         </tr>
       </thead>
       <tbody>
-        {#each items as item, index}
-          <Row {item} {index}>
-            <slot ctx={contexts[index]} />
+        {#each items as item (item.id)}
+          <Row {item} let:context>
+            <slot ctx={context} />
           </Row>
         {/each}
       </tbody>

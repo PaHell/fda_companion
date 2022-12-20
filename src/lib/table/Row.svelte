@@ -38,23 +38,24 @@
 <script lang="ts">
   type T = $$Generic;
   interface $$Slots {
-    default: {};
+    default: {
+      context: App.General.RowContext<T>;
+    };
   }
-  export let index: number = -1;
   export let item: T;
 
   const table = getContext<App.General.TableContext<T>>("table");
-  let context = table.getRowContext(index, item);
-  setContext<App.General.RowContext<T>>("row", context);
+  let context = table.getRowContext(item, changed);
+  setContext<number>("index", context.index);
 
-  $: {
-    console.warn("$$$ row", {item});
-    context = table.getRowContext(index, item);
-    setContext<App.General.RowContext<T>>("row", context);
+  function changed()
+  {
+    refreshContext();
   }
-    
-  function changed() {
-    console.log("changed", {item});
+  
+  function refreshContext() {
+    context = table.getRowContext(item, changed);
+    //setContext<App.General.RowContext<T>>("row", context);
   }
 
   function toggleDelete() {
@@ -71,7 +72,7 @@
     <Column title="" css="state" width="1.5rem">
       <div></div>
     </Column>
-    <slot />
+    <slot {context} />
     <Column title="" width="2.25rem">
       <Button
         icon={context.state == RowState.Deleted ? Icons.UndoDelete : Icons.Delete}
