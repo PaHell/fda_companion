@@ -21,7 +21,12 @@
           "placeholder": "Search..."
         },
         "username": {
-          "label": "Username"
+          "label": "Username",
+          "placeholder": "robert.habeck"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "gasumlage_22"
         },
         "product_type": {
           "label": "Product Type Name",
@@ -72,6 +77,23 @@
       "required": "This field is required",
       "email": "This field must be a valid email",
       "range": "This field must be between {0} and {1}"
+    }
+  },
+  "routes": {
+    "auth": {
+      "login": {
+        "title": "Login",
+        "login": "Login",
+        "reset_password": "Reset password",
+        "register": "Register",
+        "error": "Invalid username or password"
+      },
+      "register": {
+        "title": "Register",
+        "register": "Register",
+        "login": "Login",
+        "error": "Invalid username or password"
+      }
     }
   }
 }
