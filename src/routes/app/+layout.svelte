@@ -17,32 +17,32 @@ import ScreenLock from "$src/lib/controls/screen_lock/ScreenLock.svelte";
     {
       title: "Home",
       icon: Icons.Home,
-      path: "/",
+      path: "/app",
     },
     {
       title: "Create Customer",
       icon: Icons.CreateCustomer,
-      path: "/customers/create",
+      path: "/app/customers/create",
     },
     {
       title: "Customers",
       icon: Icons.Customer,
-      path: "/customers/all",
+      path: "/app/customers/all",
     },
     {
       title: "Product Types",
       icon: Icons.ProductType,
-      path: "/product_types",
+      path: "/app/product_types",
     },
     {
       title: "Users",
       icon: Icons.User,
-      path: "/users",
+      path: "/app/users",
     },
     {
       title: "Settings",
       icon: Icons.Settings,
-      path: "/settings",
+      path: "/app/settings",
     },
   ];
 

@@ -24,8 +24,8 @@
 
   export let position: OverlayPosition = OverlayPosition.Bottom;
   export let css: string = "";
+  export let opened: boolean = false;
 
-  let opened: boolean = false;
   let render: boolean = false;
 
   const pxSpaceOrigin = 8;
@@ -109,13 +109,10 @@
         let width = Math.min(Math.max(rect.width, pxMinW), pxMaxW);
         refMenu.style.width = width + "px";
         const widthAvail = window.innerWidth - rect.left - pxSpaceScreen;
-        console.log({ width, widthAvail });
         if (rect.left + width < widthAvail) {
           refMenu.style.left = rect.left + "px";
-          console.log("left", rect.left);
         } else {
           refMenu.style.left = (rect.right - width) + "px";
-          console.log("right", rect.right);
         }
         break;
       case OverlayPosition.Left:

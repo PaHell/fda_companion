@@ -11,6 +11,7 @@
   type T = $$Generic<App.Models.DatabaseElement>;
   interface $$Slots {
     default: {
+      ctx: App.General.RowContext<T>;
     };
   }
   export let items: T[] = [];
