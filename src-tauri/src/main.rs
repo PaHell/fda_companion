@@ -22,8 +22,8 @@ fn write_json_to_file(_json: String, _path: String){
 
 #[tauri::command]
 fn read_json_from_file(_path: String) -> String {
-    let _json = std::fs::read_to_string(&_path).unwrap();
-    _json.into();
+    let _json: String = std::fs::read_to_string(&_path).unwrap();
+    _json.into()
 }
 
 fn main() {
