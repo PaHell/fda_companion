@@ -80,6 +80,14 @@
     }
   },
   "routes": {
+    "app": {
+      "settings": {
+        "title": "Settings",
+        "general": "General",
+        "logout": "Logout",
+        "appearance": "Appearance"
+      }
+    },
     "auth": {
       "login": {
         "title": "Login",

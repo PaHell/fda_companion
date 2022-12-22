@@ -31,6 +31,8 @@
     Customer = "user-line",
     ProductType = "store-line",
     User = "customer-service-line",
+    DevTools = "code-s-slash-line",
+    Logout = "logout-box-r-line"
   }
 </script>
 
