@@ -82,6 +82,7 @@ import Overlay, { OverlayPosition } from "$src/lib/controls/Overlay.svelte";
     }
 
     user.set(_user);
+    refDevTools.close();
     onNavigate(window.location.pathname);
   }
 </script>

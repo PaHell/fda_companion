@@ -7,6 +7,7 @@
     import { ValidationRuleName } from "$src/lib/validate";
     import Button, { ButtonAlignment, ButtonVariant } from "$src/lib/controls/Button.svelte";
     import Checkbox from "$src/lib/controls/Checkbox.svelte";
+    import { invoke } from "@tauri-apps/api/tauri";
 
   // IMPORT
   // PROPS
@@ -27,6 +28,16 @@
   // EVENTS
   // HOOKS
   // FUNCTIONS
+  function create() {
+    console.log("createCustomer", input);
+    // tauri api invoke command
+    invoke("write_json_to_file", {
+      path: "customers.json",
+      data: input,
+    }).then((res) => {
+      console.log("res", res);
+    });
+  }
 </script>
 
 <template>
@@ -92,7 +103,7 @@
         text="Create"
         variant={ButtonVariant.Primary}
         align={ButtonAlignment.Center}
-        on:click={() => console.log(input)}
+        on:click={create}
         />
   </div>
 </template>

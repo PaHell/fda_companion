@@ -1,5 +1,6 @@
 <script lang="ts" context="module">
   import type { App } from "$src/app";
+  import Text from "$lib/general/Text.svelte";
 </script>
 
 <script lang="ts">
@@ -8,8 +9,8 @@
 <template>
   <div id="auth-layout">
     <header>
-      <img src="/logo.svg" alt="Logo"/>
-      <p class="text headline">{import.meta.env.VITE_APP_NAME}</p>
+      <Text/>
+      <p class="text headline secondary">{import.meta.env.VITE_APP_NAME}</p>
     </header>
     <main>
       <slot />
@@ -26,13 +27,16 @@
     min-h-screen;
     & > header {
       @apply flex flex-col items-center space-y-2;
-      & > img {
-        @apply w-24 h-24;
+      & > svg {
+        @apply h-12;
+        & > path {
+          @apply fill-accent-500;
+        }
       }
     }
     & > main {
       @apply flex flex-col
-      w-full max-w-xl p-4 my-6
+      w-full max-w-md py-8 px-4 my-6
       rounded-lg shadow-lg
       border border-gray-300 dark:border-gray-700
       bg-gray-100 dark:bg-gray-800;
