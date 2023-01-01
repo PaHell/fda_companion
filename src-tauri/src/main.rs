@@ -3,6 +3,7 @@
     windows_subsystem = "windows"
 )]
 
+
 use serde_json::{Number, Value};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -12,23 +13,25 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
-fn write_json_to_file(_json: String, _path: String){
+fn write_json_to_file(json: String, path: String){
     std::fs::write(
-        _path,
-        _json,
+        path,
+        json,
     )
     .unwrap();
 }
 
 #[tauri::command]
-fn read_json_from_file(_path: String) -> String {
-    let _json: String = std::fs::read_to_string(&_path).unwrap();
-    _json.into()
+fn read_json_from_file(path: String) -> String {
+    let json: String = std::fs::read_to_string(&path).unwrap();
+    json.into()
 }
 
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![write_json_to_file])
+        .invoke_handler(tauri::generate_handler![read_json_from_file])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

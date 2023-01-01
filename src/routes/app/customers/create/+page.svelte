@@ -33,9 +33,11 @@
     // tauri api invoke command
     invoke("write_json_to_file", {
       path: "customers.json",
-      data: input,
+      json: input,
     }).then((res) => {
       console.log("res", res);
+    }).catch((err) => {
+      console.log("err", err);
     });
   }
 </script>
