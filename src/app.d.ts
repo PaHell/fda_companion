@@ -54,6 +54,12 @@ declare namespace App {
             initialState: RowState;
             changed: (state: RowState) => void;
         }
+        interface ApiRequest<TInput, TOutput> {
+            method: Request.Method;
+            url: (...args : any[]) => string;
+        }
+
+
     }
     namespace Models {
 

@@ -8,7 +8,7 @@
     import Button, { ButtonAlignment, ButtonVariant } from "$src/lib/controls/Button.svelte";
     import Checkbox from "$src/lib/controls/Checkbox.svelte";
     import { invoke } from "@tauri-apps/api/tauri";
-    import { get } from "$src/lib/http";
+    import { Customer } from "$src/lib/api";
 
   // IMPORT
   // PROPS
@@ -31,12 +31,7 @@
   // FUNCTIONS
   async function create() {
     console.log("createCustomer", input);
-    // tauri api invoke command
-    await get("http://google.de");
-    invoke("write_json_to_file", {
-      path: "customers.json",
-      json: JSON.stringify(input, null, 2),
-    }).then((res) => {
+    Customer.create(input).then((res) => {
       console.log("res", res);
     }).catch((err) => {
       console.log("err", err);
