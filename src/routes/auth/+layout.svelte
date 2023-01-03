@@ -36,7 +36,7 @@
     }
     & > main {
       @apply flex flex-col
-      w-full max-w-md py-8 px-4 my-6
+      w-full max-w-md p-8 my-6
       rounded-lg shadow-lg
       border border-gray-300 dark:border-gray-700
       bg-gray-100 dark:bg-gray-800;

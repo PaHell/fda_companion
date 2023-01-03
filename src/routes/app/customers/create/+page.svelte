@@ -8,6 +8,7 @@
     import Button, { ButtonAlignment, ButtonVariant } from "$src/lib/controls/Button.svelte";
     import Checkbox from "$src/lib/controls/Checkbox.svelte";
     import { invoke } from "@tauri-apps/api/tauri";
+    import { get } from "$src/lib/http";
 
   // IMPORT
   // PROPS
@@ -28,12 +29,13 @@
   // EVENTS
   // HOOKS
   // FUNCTIONS
-  function create() {
+  async function create() {
     console.log("createCustomer", input);
     // tauri api invoke command
+    await get("http://google.de");
     invoke("write_json_to_file", {
       path: "customers.json",
-      json: input,
+      json: JSON.stringify(input, null, 2),
     }).then((res) => {
       console.log("res", res);
     }).catch((err) => {
@@ -46,7 +48,7 @@
   <div id="customer_create">
     <h1 class="text heading col-span-3">Create Customer</h1>
     <div class="col-span-3 hbox">
-      <PictureInput bind:value={input.image} css="flex-initial self-end"/>
+      <PictureInput bind:value={input.image} css="flex-initial self-start pt-5"/>
         <div class="flex-1 vbox">
           <TextInput
             bind:value={input.fname}
@@ -114,5 +116,13 @@
   #customer_create {
     @apply min-w-0 grid grid-cols-3 gap-4
     items-center;
+    & > .heading {
+      @apply pb-2;
+    }
+  }
+  .fullscreen #customer_create {
+    & > .heading {
+      @apply pb-4 text-center;
+    }
   }
 </style>

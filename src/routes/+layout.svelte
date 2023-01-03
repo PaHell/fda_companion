@@ -113,7 +113,7 @@ import Overlay, { OverlayPosition } from "$src/lib/controls/Overlay.svelte";
 
 <style global lang="postcss">
   .overlay-dev-tools {
-    @apply fixed right-4 z-50;
+    @apply fixed right-4 z-40;
     top: calc((100% - 2.5rem)/2);
     & > menu > main {
       @apply flex flex-col space-y-2

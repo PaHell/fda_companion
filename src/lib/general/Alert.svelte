@@ -21,14 +21,14 @@
 <template>
   <div class="alert alert-{variant} {css}" class:alert-transparent={transparent} class:alert-small={small}>
     {#if icon}
-    <Icon name={icon} />
+      <Icon name={icon} />
     {/if}
     {#if title}
       <p class="text">{title}</p>
     {/if}
     <div>
       {#if text}
-      <p class="text">{text}</p>
+        <p class="text">{text}</p>
       {/if}
       <slot/>
     </div>
@@ -43,8 +43,12 @@
         dark:border-gray-800 dark:bg-transparent
 		transition-all;
 
-    & > *:not(:last-child) {
-      @apply mr-1;
+    & > * {
+      @apply scale-0 opacity-50 origin-left; 
+      animation: alert 0.4s ease-in-out forwards;
+      &:not(:last-child) {
+        @apply mr-1;
+      }
     }
 
     & > .icon {
@@ -92,6 +96,11 @@
     &.alert-danger {
       @apply text-danger-light dark:text-danger-dark;
     }
+  }
 
+  @keyframes alert {
+    to {
+      @apply scale-100 opacity-100;
+    }
   }
 </style>

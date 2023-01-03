@@ -153,7 +153,7 @@
       @apply relative z-50;
     }
     & > menu {
-      @apply fixed z-40 overflow-hidden
+      @apply fixed z-50 overflow-hidden
       flex justify-items-stretch items-stretch
       shadow rounded;
       transition-timing-function: linear;
