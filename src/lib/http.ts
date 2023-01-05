@@ -7,8 +7,8 @@ async function writeFile(path: string, json: string) {
     });
 }
 
-async function readFile<T>(path: string): Promise<T> {
-    await invoke("read_json_from_file", { path }) as T;
+export async function readFile<T>(path: string): Promise<JSON> {
+    return JSON.parse(await invoke("read_json_from_file", { path })) as JSON;
 }
 
 const options : RequestInit = {

@@ -32,7 +32,6 @@
   async function create() {
     console.log("createCustomer", input);
     // tauri api invoke command
-    await get("http://google.de");
     invoke("write_json_to_file", {
       path: "customers.json",
       json: JSON.stringify(input, null, 2),
