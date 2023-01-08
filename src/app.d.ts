@@ -63,6 +63,48 @@ declare namespace App {
     }
     namespace Models {
 
+        class DatabaseElement {
+            id: string;
+        }
+
+        class RequestSuccess {
+            success: boolean;
+        }
+
+        class RequestError {
+            error: string;
+        }
+
+        namespace Auth {
+            interface Login {
+                username: string;
+                password: string;
+            }
+            interface Register {
+                username: string;
+                password: string;
+                fname: string;
+                lname: string;
+                password: string;
+            }
+            interface Token {
+                access_token: string;
+                refresh_token: string;
+            }
+        }
+
+        class User extends DatabaseElement {
+            username: string;
+            fname: string;
+            lname: string;
+            role_id: string;
+            _role?: Role;
+        }
+
+        class Role extends DatabaseElement {
+            name: string;
+        }
+
         interface Country {
             name: string;
             demonym: string;
@@ -83,10 +125,6 @@ declare namespace App {
             company: string;
         }
 
-        class DatabaseElement {
-            id: string;
-        }
-
         class Customer extends DatabaseElement {
             fname: string;
             lname: string;
@@ -101,18 +139,6 @@ declare namespace App {
         }
 
         class Company extends DatabaseElement {
-            name: string;
-        }
-
-        class User extends DatabaseElement {
-            username: string;
-            fname: string;
-            lname: string;
-            role_id: string;
-            _role?: Role;
-        }
-
-        class Role extends DatabaseElement {
             name: string;
         }
 
