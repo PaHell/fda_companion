@@ -6,19 +6,27 @@
   import { goto } from "$app/navigation";
   import { Auth } from "$src/lib/api";
   import Button, { ButtonAlignment, ButtonVariant } from "$src/lib/controls/Button.svelte";
-    import Alert, { AlertVariant } from "$src/lib/general/Alert.svelte";
+  import Alert, { AlertVariant } from "$src/lib/general/Alert.svelte";
+  import { setHeaders } from "$src/lib/http";
+  import { authenticated } from "$src/store";
+    import { redirectAuthed } from "$src/routes/+layout.svelte";
 
   let username: string = "";
   let password: string = "";
   let error: string = "";
-  let token: string = "";
+
+  if (import.meta.env.VITE_MODE === 'DEV') {
+    username = import.meta.env.VITE_LOGIN_USERNAME;
+    password = import.meta.env.VITE_LOGIN_PASSWORD;
+  }
 
   async function login() {
     console.log("login");
     Auth.login({ username, password })
-      .then((_token: App.Models.Auth.Token) => {
-        console.log({token});
-        token = JSON.stringify(_token, null, 2);
+      .then((resp: App.Models.Auth.Token) => {
+        setHeaders({ Authorization: `Bearer ${resp.token}` });
+        authenticated.set(true);
+        goto(redirectAuthed);
       })
       .catch((msg: App.Models.RequestError) => {
         console.log("error", msg);

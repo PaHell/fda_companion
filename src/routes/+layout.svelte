@@ -10,7 +10,7 @@
     import { afterNavigate, beforeNavigate, goto } from "$app/navigation";
     import type { AfterNavigate, BeforeNavigate } from "@sveltejs/kit";
     import { onMount } from "svelte";
-    import { authenticated, user } from "$src/store";
+    import { authenticated } from "$src/store";
     import type { App } from "$src/app";
     import Button from "$src/lib/controls/Button.svelte";
     import SelectLanguage from "$src/lib/controls/locale/SelectLanguage.svelte";
@@ -20,8 +20,8 @@
 
     const routeAuthed = "/app";
     const routeUnauthed = "/auth";
-    const redirectAuthed = "/app/customers/create";
-    const redirectUnauthed = "/auth/login";
+    export const redirectAuthed = "/app/customers/create";
+    export const redirectUnauthed = "/auth/login";
 </script>
 
 <script lang="ts">
@@ -55,38 +55,15 @@
     }
   }
 
-  function bypassAuth(admin: boolean) {
+  function bypassAuth() {
     authenticated.set(true);
-
-    const _user : App.Models.User = {
-      id: "1",
-      username: "jdoe",
-      fname: "John",
-      lname: "Doe",
-      role_id: "1",
-    };
-
-    if (admin) {
-      _user.role_id = "2";
-      _user._role = {
-        id: "2",
-        name: "Admin",
-      };
-    } else {
-      _user._role = {
-        id: "1",
-        name: "User",
-      };
-    }
-
-    user.set(_user);
     refDevTools.close();
     onNavigate(window.location.pathname);
   }
 </script>
 
 <template>
-  {#if import.meta.env.DEV}
+  {#if import.meta.env.VITE_MODE === 'DEV'}
     <Overlay bind:this={refDevTools} bind:opened={devToolsOpened} position={OverlayPosition.Bottom} css="overlay-dev-tools">
       <svelte:fragment slot="item">
         <Button icon={Icons.DevTools} active={devToolsOpened} on:click={refDevTools.toggleOpened}/>
@@ -96,8 +73,7 @@
         <SelectTheme/>
         <SelectLanguage/>
         {#if !$authenticated}
-          <Button text="Bypass Auth (Normal)" on:click={() => bypassAuth(false)}/>
-          <Button text="Bypass Auth (Admin)" on:click={() => bypassAuth(true)}/>
+          <Button text="Bypass Auth" on:click={() => bypassAuth()}/>
         {/if}
       </svelte:fragment>
     </Overlay>

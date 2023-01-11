@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { App } from "$src/app";
+    import { ProductType } from "$src/lib/api";
   import Button, { ButtonVariant } from "$src/lib/controls/Button.svelte";
     import Select from "$src/lib/controls/Select.svelte";
   import TextInput from "$src/lib/controls/TextInput.svelte";
@@ -12,24 +13,11 @@
   import { get } from "svelte/store";
 
   let selected : App.Models.ProductType[] = [];
-  let product_types: App.Models.ProductType[] = [
-    {
-      id: 1,
-      name: "Information Technology",
-    },
-    {
-      id: 2,
-      name: "Human Resources",
-    },
-    {
-      id: 3,
-      name: "Sales",
-    },
-    {
-      id: 4,
-      name: "Marketing",
-    },
-  ];
+  let product_types: App.Models.ProductType[] = [];
+
+  ProductType.index().then(resp => {
+    product_types = resp;
+  });
 
 </script>
 
