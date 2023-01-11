@@ -12,6 +12,11 @@
     import { onMount } from "svelte";
     import { authenticated, user } from "$src/store";
     import type { App } from "$src/app";
+    import Button from "$src/lib/controls/Button.svelte";
+    import SelectLanguage from "$src/lib/controls/locale/SelectLanguage.svelte";
+    import Overlay, { OverlayPosition } from "$src/lib/controls/Overlay.svelte";
+    import SelectTheme from "$src/lib/controls/theme/SelectTheme.svelte";
+    import { Icons } from "$src/lib/general/Icon.svelte";
 
     const routeAuthed = "/app";
     const routeUnauthed = "/auth";
@@ -20,13 +25,6 @@
 </script>
 
 <script lang="ts">
-    import Button from "$src/lib/controls/Button.svelte";
-    import SelectLanguage from "$src/lib/controls/locale/SelectLanguage.svelte";
-import Overlay, { OverlayPosition } from "$src/lib/controls/Overlay.svelte";
-    import SelectTheme from "$src/lib/controls/theme/SelectTheme.svelte";
-    import { Icons } from "$src/lib/general/Icon.svelte";
-
-
     let refDevTools: Overlay;
     let devToolsOpened = false;
     initLocale();

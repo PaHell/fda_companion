@@ -57,11 +57,11 @@ export async function http<T extends object>(
                     console.log("err", err);
                     throw err;
                 });
+            if (error.message.includes("fetch")) throw {
+                error: "messages.errors.fetch",
+            };
             else throw {
                 error: error.message,
             };
         }
-        throw {
-            error: "Unknown error",
-        } as App.Models.RequestError;
 }

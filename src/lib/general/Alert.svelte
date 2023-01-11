@@ -24,11 +24,11 @@
       <Icon name={icon} />
     {/if}
     {#if title}
-      <p class="text">{title}</p>
+      <p class="text">{$_(title)}</p>
     {/if}
     <div>
       {#if text}
-        <p class="text">{text}</p>
+        <p class="text">{$_(text)}</p>
       {/if}
       <slot/>
     </div>
@@ -40,7 +40,7 @@
     @apply flex items-start justify-center flex-shrink-0
         p-2 border rounded
         border-gray-300 bg-gray-100
-        dark:border-gray-800 dark:bg-transparent
+        dark:border-gray-700 dark:bg-gray-900
 		transition-all;
 
     & > * {
@@ -94,7 +94,11 @@
     }
 
     &.alert-danger {
-      @apply text-danger-light dark:text-danger-dark;
+      @apply border-danger-light
+          dark:border-danger-dark;
+      & > *:first-child {
+        @apply text-danger-light dark:text-danger-dark;
+      }
     }
   }
 

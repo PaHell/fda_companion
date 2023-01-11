@@ -79,6 +79,12 @@
       "range": "This field must be between {0} and {1}"
     }
   },
+  "messages": {
+    "errors": {
+      "error": "Error",
+      "fetch": "Error while fetching data"
+    }
+  },
   "routes": {
     "app": {
       "settings": {

@@ -38,4 +38,11 @@
       @apply mt-4 text-gray-300 dark:text-gray-800;
     }
   }
+
+  .fullscreen-loading > .logo > svg stop {
+    stop-color: theme('colors.gray.300');
+  }
+  .dark .fullscreen-loading > .logo > svg stop {
+    stop-color: theme('colors.gray.800');
+  }
 </style>

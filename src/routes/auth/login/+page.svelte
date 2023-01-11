@@ -6,7 +6,7 @@
   import { goto } from "$app/navigation";
   import { Auth } from "$src/lib/api";
   import Button, { ButtonAlignment, ButtonVariant } from "$src/lib/controls/Button.svelte";
-    import Alert from "$src/lib/general/Alert.svelte";
+    import Alert, { AlertVariant } from "$src/lib/general/Alert.svelte";
 
   let username: string = "";
   let password: string = "";
@@ -22,7 +22,7 @@
       })
       .catch((msg: App.Models.RequestError) => {
         console.log("error", msg);
-        error = JSON.stringify(msg, null, 2);
+        error = msg.error;
       });
   }
 </script>
@@ -30,10 +30,6 @@
 <template>
   <div class="flex flex-col space-y-4">
     <h1 class="text heading text-center">{$_("routes.auth.login.title")}</h1>
-    <p>{token}</p>
-    <Alert
-      text={error}
-      />
     <TextInput
       bind:value={username}
       name="username"
@@ -43,6 +39,13 @@
       name="password"
       type="password"
       />
+    {#if error}
+      <Alert
+        title="messages.errors.error"
+        text={error}
+        variant={AlertVariant.Danger}
+        />
+    {/if}
     <Button
       icon={Icons.Home}
       text="routes.auth.login.title"
@@ -50,22 +53,6 @@
       align={ButtonAlignment.Center}
       on:click={login}
       />
-      <div class="grid grid-cols-2 gap-4 items-center">
-        <Button
-          icon={Icons.Home}
-          text="routes.auth.login.reset_password"
-          variant={ButtonVariant.Secondary}
-          align={ButtonAlignment.Center}
-          on:click={() => goto("/auth/reset")}
-          />
-        <Button
-          icon={Icons.Home}
-          text="routes.auth.login.register"
-          variant={ButtonVariant.Secondary}
-          align={ButtonAlignment.Center}
-          on:click={() => goto("/auth/register")}
-          />
-      </div>
   </div>
 </template>
 
