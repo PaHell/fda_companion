@@ -17,6 +17,7 @@
     import Overlay, { OverlayPosition } from "$src/lib/controls/Overlay.svelte";
     import SelectTheme from "$src/lib/controls/theme/SelectTheme.svelte";
     import { Icons } from "$src/lib/general/Icon.svelte";
+    import { _ } from "svelte-i18n";
 
     const routeAuthed = "/app";
     const routeUnauthed = "/auth";
@@ -54,12 +55,6 @@
       console.log("no redirect");
     }
   }
-
-  function bypassAuth() {
-    authenticated.set(true);
-    refDevTools.close();
-    onNavigate(window.location.pathname);
-  }
 </script>
 
 <template>
@@ -69,12 +64,9 @@
         <Button icon={Icons.DevTools} active={devToolsOpened} on:click={refDevTools.toggleOpened}/>
       </svelte:fragment>
       <svelte:fragment slot="menu">
-        <p class="text text-center">Dev Tools</p>
+        <p class="text text-center">{$_("routes.dev_tools")}</p>
         <SelectTheme/>
         <SelectLanguage/>
-        {#if !$authenticated}
-          <Button text="Bypass Auth" on:click={() => bypassAuth()}/>
-        {/if}
       </svelte:fragment>
     </Overlay>
   {/if}

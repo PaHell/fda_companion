@@ -172,7 +172,7 @@
     <footer>
       <Button
         icon={Icons.Add}
-        text="Add"
+        text="lib.table.add"
         variant={ButtonVariant.Secondary}
         on:click={addItem}
       />
@@ -187,7 +187,7 @@
       {/each}
       <Button
         icon={Icons.SaveChanges}
-        text="Save"
+        text="lib.table.save"
         variant={ButtonVariant.Primary}
         on:click={saveChanges}
       />

@@ -103,7 +103,7 @@ declare namespace App {
             country_iso3: string;
             image: string;
             company: string;
-            product_types: DatabaseElement.id[];
+            product_groups: DatabaseElement.id[];
         }
 
         class ProductType extends DatabaseElement {

@@ -21,7 +21,7 @@
     <SelectLanguage />
     {#if $authenticated}
       <div>
-        <p class="text label"></p>
+        <p class="text label">&nbsp;</p>
         <Button icon={Icons.Logout} text="routes.app.settings.logout" css="w-full" on:click={logout}/>
       </div>
     {/if}

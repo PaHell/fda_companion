@@ -11,6 +11,8 @@
     import { Customer, ProductType } from "$src/lib/api";
     import Select from "$src/lib/controls/Select.svelte";
     import { onMount } from "svelte";
+    import Alert, { AlertVariant } from "$src/lib/general/Alert.svelte";
+    import { _ } from "svelte-i18n";
 
   // IMPORT
   // PROPS
@@ -26,12 +28,12 @@
     country_iso3: "",
     image: "",
     company: "",
-    product_types: [],
+    product_groups: [],
   };
   let productTypes: App.Models.ProductType[] = [];
   let selectedProductTypes: App.Models.ProductType[] = [];
   let country: App.Models.Country | undefined;
-  let acceptTerms = false;
+  let showSuccess = false;
 
   onMount(async () => {
     productTypes = await ProductType.index();
@@ -39,17 +41,34 @@
 
   async function create() {
     console.log("createCustomer", input);
-    Customer.create(input).then((res) => {
-      console.log("res", res);
-    }).catch((err) => {
-      console.log("err", err);
-    });
+    input.product_groups = selectedProductTypes.map((pt) => pt.id);
+    await Customer.create(input);
+    showSuccess = true;
+    input = {
+      id: 0,
+      fname: "",
+      lname: "",
+      street: "",
+      house_number: "",
+      postal_code: "",
+      city: "",
+      country_iso3: "",
+      image: "",
+      company: "",
+      product_groups: [],
+    };
   }
 </script>
 
 <template>
   <div id="customer_create">
-    <h1 class="text heading col-span-3">Create Customer</h1>
+    <h1 class="text heading col-span-3">{$_('routes.app.customers.create.title')}</h1>
+    {#if showSuccess}
+      <Alert
+        variant={AlertVariant.Success}
+        title="messages.success"
+        text="routes.app.customers.create.created"/>
+    {/if}
     <div class="col-span-3 hbox">
       <PictureInput bind:value={input.image} css="flex-initial self-start pt-5"/>
         <div class="flex-1 vbox">
@@ -69,7 +88,6 @@
           <TextInput
             bind:value={input.company}
             name="company"
-            disabled={true}
             icon={Icons.Home}
           />
         </div>
@@ -112,13 +130,17 @@
           </svelte:fragment>
         </Select>
         <div class="col-span-1"></div>
-      <Button
-        icon={Icons.Home}
-        text="Create"
-        variant={ButtonVariant.Primary}
-        align={ButtonAlignment.Center}
-        on:click={create}
-        />
+        <div>
+          <p class="text label">&nbsp;</p>
+          <Button
+            icon={Icons.Home}
+            text="routes.app.customers.create.create"
+            variant={ButtonVariant.Primary}
+            align={ButtonAlignment.Center}
+            on:click={create}
+            css="w-full"
+            />
+        </div>
   </div>
 </template>
 

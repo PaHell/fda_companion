@@ -8,6 +8,7 @@
   import Column from "$src/lib/table/Column.svelte";
   import { RowState } from "$src/lib/table/Row.svelte";
   import Table from "$src/lib/table/Table.svelte";
+    import { _ } from "svelte-i18n";
   import { onMount } from "svelte/internal";
 
   let selected : App.Models.ProductType[] = [];
@@ -20,7 +21,7 @@
 
 <template>
   <div id="product_types">
-    <h1 class="text heading col-span-2">All Product Types</h1>
+    <h1 class="text heading col-span-2">{$_("routes.app.product_types.title")}</h1>
     <Table bind:items={product_types} css="col-span-2" let:ctx>
       <Column title="ID" width="5rem" css="" sortByKey="id">
         <p class="text secondary font-mono text-right">{ctx.item.id ?? "-"}</p>

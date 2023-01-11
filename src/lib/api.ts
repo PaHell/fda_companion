@@ -12,7 +12,7 @@ export class Customer {
         return await http<App.Models.Customer[]>('GET', `/customers`);
     }
     static async create(customer: App.Models.Customer) {
-        return await http<App.Models.Customer>('POST', `/customers`, customer);
+        return await http<{}>('POST', `/customers`, customer);
     }
 }
 
