@@ -5,6 +5,7 @@
   import Button, { ButtonVariant } from "./Button.svelte";
   import Alert, { AlertVariant } from "../general/Alert.svelte";
     import { Webcam } from "../webcam";
+    import { _ } from "svelte-i18n";
 
   enum State {
     Init,
@@ -88,7 +89,7 @@
           <img id="photo" src={value} alt="" />
         {:else}
           <Icon name={Icons.Home} large />
-          <p class="text">No Image</p>
+          <p class="text">{$_("lib.controls.picture_input.none")}</p>
         {/if}
       </Button>
     </svelte:fragment>
@@ -98,29 +99,29 @@
       {/if}
       <video bind:this={video}>
         <track kind="captions" />
-        <p class="text">Video stream not available.</p>
+        <p class="text">{$_("lib.controls.picture_input.video_not_avail")}</p>
       </video>
       <footer>
         {#if currentState === State.Init}
-          <p class="text">Initializing...</p>
+          <p class="text">{$_("lib.controls.picture_input.init")}</p>
           {:else if currentState === State.Error}
-          <Alert variant={AlertVariant.Danger} icon={Icons.Home} title="Error!" text="Camera could not ne loaded." />
+          <Alert variant={AlertVariant.Danger} icon={Icons.Home} title="messages.errors.error" text="lib.controls.picture_input.cam_not_avail" />
         {:else if currentState === State.Streaming}
           <Button
-            text="Take photo"
+            text="lib.controls.picture_input.take_picture"
             icon={Icons.Home}
             variant={ButtonVariant.Primary}
             on:click={takePicture}
           />
         {:else if currentState === State.Viewing}
           <Button
-            text="Retake"
+            text="lib.controls.picture_input.retake"
             icon={Icons.Home}
             variant={ButtonVariant.Secondary}
             on:click={retake}
           />
           <Button
-            text="Save"
+            text="lib.controls.picture_input.save"
             icon={Icons.Home}
             variant={ButtonVariant.Primary}
             on:click={savePhoto}

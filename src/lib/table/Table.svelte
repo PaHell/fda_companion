@@ -105,6 +105,7 @@
     css: string,
     sortKey: keyof T | null
   ) {
+    if (columns.find(c => c.title == title)) return;
     columns.push({
       title,
       width,
@@ -157,6 +158,7 @@
               {/if}
             </th>
           {/each}
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -170,7 +172,7 @@
     <footer>
       <Button
         icon={Icons.Add}
-        text="Add"
+        text="lib.table.add"
         variant={ButtonVariant.Secondary}
         on:click={addItem}
       />
@@ -185,7 +187,7 @@
       {/each}
       <Button
         icon={Icons.SaveChanges}
-        text="Save"
+        text="lib.table.save"
         variant={ButtonVariant.Primary}
         on:click={saveChanges}
       />
@@ -227,6 +229,9 @@
     & th {
       &:first-child {
         @apply rounded-tl;
+      }
+      &:last-child {
+        @apply w-9;
       }
       & > .text {
         @apply font-semibold;

@@ -5,15 +5,15 @@ import { isMobile } from '$src/lib/helpers';
 
 export const sizes : App.General.ViewSize[] = [
     {
-      text: "Auto",
+      text: "lib.controls.view_sizes.auto",
       class: ""
     },
     {
-      text: "Mobile or Small/Medium Screen",
+      text: "lib.controls.view_sizes.mobile",
       class: "mobile"
     },
     {
-      text: "Desktop or Large Screen",	
+      text: "lib.controls.view_sizes.desktop",	
       class: "desktop"
     },
   ];

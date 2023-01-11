@@ -10,6 +10,16 @@
         "role": "Role",
         "product_types": "Product Types / Interests"
       },
+      "themes": {
+        "dark": "Dark",
+        "light": "Light",
+        "os": "Operating System Preference"
+      },
+      "view_sizes": {
+        "auto": "Auto",
+        "mobile": "Mobile or Small/Medium Screen",
+        "desktop": "Desktop or Large Screen"
+      },
       "text_input": {
         "search_country": {
           "placeholder": "Country or ISO-3"
@@ -61,6 +71,15 @@
           "label": "City",
           "placeholder": "New Haven"
         }
+      },
+      "picture_input": {
+        "none": "No image",
+        "init": "Initializing...",
+        "video_not_avail": "VideoStream not available",
+        "cam_not_avail": "Camera not available",
+        "take_picture": "Take Picture",
+        "retake": "Retake",
+        "save": "Save"
       }
     },
     "table": {
@@ -68,7 +87,9 @@
         "modified": "Modified",
         "added": "Added",
         "deleted": "Deleted"
-      }
+      },
+      "add": "Add",
+      "save": "Save"
     },
     "screen_lock": {
       "lock": "Lock Screen",
@@ -84,15 +105,30 @@
     "errors": {
       "error": "Error",
       "fetch": "Error while fetching data"
-    }
+    },
+    "success": "Success"
   },
   "routes": {
+    "dev_tools": "Dev Tools",
     "app": {
       "settings": {
         "title": "Settings",
         "general": "General",
         "logout": "Logout",
         "appearance": "Appearance"
+      },
+      "customers": {
+        "create": {
+          "title": "Create Customer",
+          "created": "Customer created",
+          "create": "Create"
+        },
+        "all": {
+          "title": "Customers"
+        }
+      },
+      "product_types": {
+        "title": "All Product Types"
       }
     },
     "auth": {

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { App } from "$src/app";
+    import { Customer } from "$src/lib/api";
   import Button, { ButtonVariant } from "$src/lib/controls/Button.svelte";
   import SelectCountry from "$src/lib/controls/country/SelectCountry.svelte";
   import Select from "$src/lib/controls/Select.svelte";
@@ -8,124 +9,32 @@
   import Column from "$src/lib/table/Column.svelte";
   import { RowState } from "$src/lib/table/Row.svelte";
   import Table from "$src/lib/table/Table.svelte";
+    import { onMount } from "svelte";
+    import { _ } from "svelte-i18n";
 
-  let customers: App.Models.Customer[] = [
-    {
-      id: "1",
-      fname: "Xi",
-      lname: "Jin Ping",
-      street: "Tsingato St",
-      house_number: "5",
-      postal_code: "45123",
-      city: "Beijing",
-      country_iso3: "CHN",
-      image: "https://picsum.photos/200/300",
-      company_id: "1",
-    },
-    {
-      id: "2",
-      fname: "Joe",
-      lname: "Biden",
-      street: "Main St",
-      house_number: "80a",
-      postal_code: "89345",
-      city: "Washington",
-      country_iso3: "USA",
-      image: "https://picsum.photos/200/300",
-      company_id: "2",
-    },
-    {
-      id: "3",
-      fname: "Olaf",
-      lname: "Scholz",
-      street: "Bundesstraße",
-      house_number: "42",
-      postal_code: "34598",
-      city: "Berlin",
-      country_iso3: "DEU",
-      image: "https://picsum.photos/200/300",
-      company_id: "3",
-    },
-    {
-      id: "4",
-      fname: "Vladimir",
-      lname: "Putin",
-      street: "Red Place",
-      house_number: "45/5",
-      postal_code: "12345",
-      city: "Moscow",
-      country_iso3: "RUS",
-      image: "https://picsum.photos/200/300",
-      company_id: "4",
-    },
-  ];
-  const companies: App.Models.Company[] = [
-    {
-      id: "1",
-      name: "Apple",
-    },
-    {
-      id: "2",
-      name: "Microsoft",
-    },
-    {
-      id: "3",
-      name: "Google",
-    },
-    {
-      id: "4",
-      name: "Amazon",
-    },
-    {
-      id: "5",
-      name: "Facebook",
-    },
-  ];
+  let customers: App.Models.Customer[] = [];
 
-  customers.forEach((customer) => {
-    customer._company = companies.find(
-      (company) => company.id == customer.company_id
-    );
+  onMount(async () => {
+    customers = await Customer.index();
   });
 </script>
 
 <template>
   <div id="users">
-    <h1 class="text heading col-span-2">All Customers</h1>
+    <h1 class="text heading col-span-2">{$_("routes.app.customers.all.title")}</h1>
 
     <Table bind:items={customers} css="col-span-2" let:ctx>
-      <Column title="ID" width="4rem" css="" sortByKey="id">
+      <Column title="ID" width="5rem" css="" sortByKey="id">
         <p class="text secondary font-mono text-right">{ctx.item.id ?? "-"}</p>
       </Column>
-      <Column title="First Name" sortByKey="fname">
-        <TextInput
-          value={ctx.item.fname}
-          on:change={(event) => {
-            ctx.item.fname = event.detail;
-            ctx.changed();
-          }}
-          name="first_name"
-          autofocus={ctx.state == RowState.Added}
-        />
+      <Column title="lib.controls.text_input.first_name.label" sortByKey="fname">
+        <p class="text">{ctx.item.fname}</p>
       </Column>
-      <Column title="Last Name" sortByKey="lname">
-        <TextInput
-          value={ctx.item.lname}
-          on:change={(event) => {
-            ctx.item.lname = event.detail;
-            ctx.changed();
-          }}
-          name="last_name"
-        />
+      <Column title="lib.controls.text_input.last_name.label" sortByKey="lname">
+        <p class="text">{ctx.item.lname}</p>
       </Column>
-      <Column title="Country" width="20%" sortByKey="country_iso3">
-        <SelectCountry
-          iso3={ctx.item.country_iso3}
-          on:change={(event) => {
-            ctx.item.country_iso3 = event.detail.item.iso3;
-            ctx.changed();
-          }}
-        />
+      <Column title="lib.controls.select.country" width="20%" sortByKey="country_iso3">
+        <p class="text">{ctx.item.country_iso3}</p>
       </Column>
       <Column
         title="Postal"
@@ -133,44 +42,20 @@
         css="font-mono"
         sortByKey="postal_code"
       >
-      <TextInput
-        value={ctx.item.postal_code}
-        on:change={(event) => {
-          ctx.item.postal_code = event.detail;
-          ctx.changed();
-        }}
-        type="number"
-        name="postal_code"
-        alignRight
-      />
+        <p class="text secondary font-mono text-right">{ctx.item.postal_code}</p>
       </Column>
       <Column title="Address" width="15%" sortByKey="street">
         <p class="text">
           <span class="font-semibold">{ctx.item.street}</span>
           <span class="font-mono">{ctx.item.house_number}</span>
+          <span>, {ctx.item.city}</span>
         </p>
       </Column>
-      <Column title="Company">
-        <Select
-          value={ctx.item._company}
-          name="country"
-          items={companies}
-          searchKeysOrdered={["name"]}
-          enableSearch={true}
-          searchName="search_company"
-          on:change={(event) => {
-            ctx.item._company = event.detail.item;
-            ctx.item.company_id = event.detail.item.id;
-            ctx.changed();
-          }}
-        >
-          <svelte:fragment slot="selected" let:item>
-            <p class="text">{item.name}</p>
-          </svelte:fragment>
-          <svelte:fragment slot="item" let:item>
-            <p class="text">{item.name}</p>
-          </svelte:fragment>
-        </Select>
+      <Column title="Company" sortByKey="company">
+        <p class="text">{ctx.item.company}</p>
+      </Column>
+      <Column title="Product Types">
+        <p class="text">{ctx.item.product_types?.join(', ')}</p>
       </Column>
     </Table>
   </div>

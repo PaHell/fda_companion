@@ -16,7 +16,7 @@ const defaultOptions : RequestInit = {
     method: 'GET', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
+    credentials: 'include', // include, *same-origin, omit
     headers: {
       'Content-Type': 'application/json'
       // 'Content-Type': 'application/x-www-form-urlencoded',
@@ -24,6 +24,13 @@ const defaultOptions : RequestInit = {
     redirect: 'follow', // manual, *follow, error
     referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
 };
+
+export function setHeaders(headers: {[key: string]: any}) {
+    defaultOptions.headers = {
+        ...defaultOptions.headers,
+        ...headers
+    };
+}
 
 export async function http<T extends object>(
     method: RequestInit["method"],
@@ -35,7 +42,7 @@ export async function http<T extends object>(
         const save = false && method === "GET";
         const sync = false && method === "POST";
         try {
-            const resp = await fetch(import.meta.env.VITE_APP_URL_BACKEND + url, {
+            const resp = await fetch(import.meta.env.VITE_URL_BACKEND + url, {
                 ...defaultOptions,
                 ...options,
                 method,

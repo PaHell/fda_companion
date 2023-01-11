@@ -80,29 +80,9 @@ declare namespace App {
                 username: string;
                 password: string;
             }
-            interface Register {
-                username: string;
-                password: string;
-                fname: string;
-                lname: string;
-                password: string;
-            }
             interface Token {
-                access_token: string;
-                refresh_token: string;
+                token: string;
             }
-        }
-
-        class User extends DatabaseElement {
-            username: string;
-            fname: string;
-            lname: string;
-            role_id: string;
-            _role?: Role;
-        }
-
-        class Role extends DatabaseElement {
-            name: string;
         }
 
         interface Country {
@@ -111,19 +91,6 @@ declare namespace App {
             flag: string;
             iso2: string;
             iso3: string;
-        }
-
-        class CustomerInput {
-            fname: string;
-            lname: string;
-            street: string;
-            house_number: string;
-            postal_code: string;
-            city: string;
-            country_iso3: string;
-            image: string;
-            company: string;
-            product_types: DatabaseElement.id[];
         }
 
         class Customer extends DatabaseElement {
@@ -135,12 +102,8 @@ declare namespace App {
             city: string;
             country_iso3: string;
             image: string;
-            company_id: string;
-            _company?: Company;
-        }
-
-        class Company extends DatabaseElement {
-            name: string;
+            company: string;
+            product_groups: DatabaseElement.id[];
         }
 
         class ProductType extends DatabaseElement {

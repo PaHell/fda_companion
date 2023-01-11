@@ -4,15 +4,15 @@ import type { App } from '$src/app';
 
 export const themes : App.General.Theme[] = [
     {
-      text: "Creepy Darkness",
+      text: "lib.controls.themes.dark",
       class: "dark"
     },
     {
-      text: "Eyeopening Brightness",
+      text: "lib.controls.themes.light",
       class: "light"
     },
     {
-      text: "Operating System Preference",
+      text: "lib.controls.themes.os",
       class: ""
     },
   ];

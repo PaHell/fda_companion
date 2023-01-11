@@ -5,12 +5,11 @@
     import Button from "$src/lib/controls/Button.svelte";
     import { Icons } from "$src/lib/general/Icon.svelte";
     import { _ } from "svelte-i18n";
-    import { authenticated, user } from "$src/store";
+    import { authenticated } from "$src/store";
     import { goto } from "$app/navigation";
 
     function logout() {
       authenticated.set(false);
-      user.set(null);
       goto("/");
     }
 </script>
@@ -20,9 +19,9 @@
     <h1 class="text heading col-span-2">{$_("routes.app.settings.title")}</h1>
     <h2 class="text headline col-span-2">{$_("routes.app.settings.general")}</h2>
     <SelectLanguage />
-    {#if $authenticated && $user}
+    {#if $authenticated}
       <div>
-        <p class="text label">Logged in as "{$user.username}" ({$user.fname} {$user.lname}, {$user._role?.name})</p>
+        <p class="text label">&nbsp;</p>
         <Button icon={Icons.Logout} text="routes.app.settings.logout" css="w-full" on:click={logout}/>
       </div>
     {/if}
