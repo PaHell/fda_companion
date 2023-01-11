@@ -13,8 +13,15 @@ fn greet(name: &str) -> String {
 
 #[tauri::command]
 fn write_json_to_file(path: &str, json: &str) {
-    let mut f = File::create(path).expect("Unable to create file");
+    //std::fs::remove_file(path).unwrap();
+    let mut f = std::fs::OpenOptions::new()
+        .read(true)
+        .write(true)
+        .create(true)
+        .open(path)
+        .unwrap();
     f.write_all(json.as_bytes()).expect("Unable to write data");
+    f.flush().expect("Unable to flush data");
 }
 
 #[tauri::command]

@@ -4,10 +4,10 @@
   import type { App } from "$src/app";
   import { _ } from "svelte-i18n";
   import { goto } from "$app/navigation";
-  import { Auth, ProductType } from "$src/lib/api";
+  import { Auth, Customer, ProductType } from "$src/lib/api";
   import Button, { ButtonAlignment, ButtonVariant } from "$src/lib/controls/Button.svelte";
   import Alert, { AlertVariant } from "$src/lib/general/Alert.svelte";
-  import { setHeaders } from "$src/lib/http";
+  import { readFile, setHeaders, writeFile } from "$src/lib/http";
   import { authenticated, productTypes } from "$src/store";
     import { redirectAuthed } from "$src/routes/+layout.svelte";
 
@@ -23,20 +23,15 @@
   async function login() {
     console.log("login");
     Auth.login({ username, password })
-      .then((resp: App.Models.Auth.Token) => {
+      .then(async (resp: App.Models.Auth.Token) => {
         setHeaders({ Authorization: `Bearer ${resp.token}` });
         authenticated.set(true);
         goto(redirectAuthed);
-        getProductTypes();
       })
       .catch((msg: App.Models.RequestError) => {
         console.log("error", msg);
         error = msg.error;
       });
-  }
-
-  async function getProductTypes() {
-    productTypes.set(await ProductType.index());
   }
 </script>
 
@@ -60,7 +55,6 @@
         />
     {/if}
     <Button
-      icon={Icons.Home}
       text="routes.auth.login.title"
       variant={ButtonVariant.Primary}
       align={ButtonAlignment.Center}

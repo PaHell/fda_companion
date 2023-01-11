@@ -1,14 +1,8 @@
 <script lang="ts">
-  import type { App } from "$src/app";
+    import type { App } from "$src/app";
     import { Customer } from "$src/lib/api";
-  import Button, { ButtonVariant } from "$src/lib/controls/Button.svelte";
-  import SelectCountry from "$src/lib/controls/country/SelectCountry.svelte";
-  import Select from "$src/lib/controls/Select.svelte";
-  import TextInput from "$src/lib/controls/TextInput.svelte";
-  import Icon, { Icons } from "$src/lib/general/Icon.svelte";
-  import Column from "$src/lib/table/Column.svelte";
-  import { RowState } from "$src/lib/table/Row.svelte";
-  import Table from "$src/lib/table/Table.svelte";
+    import Column from "$src/lib/table/Column.svelte";
+    import Table from "$src/lib/table/Table.svelte";
     import { onMount } from "svelte";
     import { _ } from "svelte-i18n";
 
@@ -22,7 +16,6 @@
 <template>
   <div id="users">
     <h1 class="text heading col-span-2">{$_("routes.app.customers.all.title")}</h1>
-
     <Table bind:items={customers} css="col-span-2" let:ctx>
       <Column title="ID" width="5rem" css="" sortByKey="id">
         <p class="text secondary font-mono text-right">{ctx.item.id ?? "-"}</p>

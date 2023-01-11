@@ -12,7 +12,17 @@
   },
   "tauri": {
     "allowlist": {
-      "all": true
+      "all": true,
+      "path": {
+        "all": true
+      },
+      "fs": {
+        "all": true,
+        "scope": [
+          "$HOME/fda_companion/",
+          "$HOME/fda_companion/*"
+        ]
+      }
     },
     "bundle": {
       "active": true,

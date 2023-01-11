@@ -1,14 +1,23 @@
 import { invoke } from "@tauri-apps/api/tauri";
 import type { App } from "../app";
+import { homeDir } from '@tauri-apps/api/path';
+import { createDir, removeFile } from '@tauri-apps/api/fs';
 
 export async function writeFile(path: string, json: any) {
+    const dir = await homeDir();
+    const folder = dir + "fda_companion";
+    await createDir(folder);
+    const _path = folder + path.replaceAll("/", "\\");
     await invoke("write_json_to_file", {
-      path,
+      path: _path,
       json: JSON.stringify(json, null, 2),
     });
 }
 
 export async function readFile<T>(path: string): Promise<T> {
+    const dir = await homeDir();
+    const folder = dir + "fda_companion";
+    await createDir(folder);
     return JSON.parse(await invoke("read_json_from_file", { path })) as T;
 }
 

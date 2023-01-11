@@ -1,3 +1,5 @@
+import { browser } from "$app/environment";
+
 export class Webcam {
   _stream : MediaStream | null = null;
   _video : HTMLVideoElement;
@@ -10,6 +12,7 @@ export class Webcam {
   }
 
   async createStream() : Promise<void> {
+    if (!browser) return;
     this._video.setAttribute("autoplay", "true");
     this._video.setAttribute("playsinline", "true");
     this._video.setAttribute("muted", "true");

@@ -16,6 +16,7 @@
     import Form from "$src/lib/controls/Form.svelte";
     import { productTypes } from "$src/store";
     import { readFile, writeFile } from "$src/lib/http";
+    import { removeFile } from "@tauri-apps/api/fs";
 
   // IMPORT
   // PROPS
@@ -39,9 +40,24 @@
   let allValid = false;
   let error = "";
 
-  setTimeout(() => {
-    allValid = true;
-  }, 2000)
+  onMount(async () => {
+    if (!$productTypes.length) await getProductTypes();
+    await syncCustomers();
+  });
+
+  async function syncCustomers() {
+    console.log("syncCustomers");
+    var customers = await readFile<App.Models.Customer[]>("/customers.json");
+    console.log("syncCustomers", customers);
+    customers.forEach(async (customer) => {
+      await Customer.create(customer);
+    });
+    await writeFile("/customers.json", []);
+  }
+
+  async function getProductTypes() {
+    productTypes.set(await ProductType.index());
+  }
 
   async function create() {
     console.log("createCustomer", input);
