@@ -13,6 +13,7 @@
 
   export let value: App.Models.Country | undefined = undefined;
   export let iso3: string | undefined = undefined;
+  export let required = false;
 
   const dispatch = createEventDispatcher<$$Events>();
 
@@ -46,6 +47,7 @@
     enableSearch={true}
     searchName="search_country"
     on:change={onChange}
+    {required}
   >
     <svelte:fragment slot="selected" let:item>
       <div class="flag">

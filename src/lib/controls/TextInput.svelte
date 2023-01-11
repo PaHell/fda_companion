@@ -2,12 +2,13 @@
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
   import {
     createEventDispatcher,
+    getContext,
     onMount,
     type ComponentConstructorOptions,
   } from "svelte";
   import Alert, { AlertVariant } from "../general/Alert.svelte";
   import { debounce } from "../helpers";
-  import { validate as _validate, type ValidationRuleName } from "../validate";
+  import { validate as _validate, ValidationRuleName } from "../validate";
   import { format, _ } from "svelte-i18n";
   import type { stringify } from "postcss";
 </script>
@@ -46,6 +47,9 @@
   let ref: HTMLInputElement | undefined;
   const dispatch = createEventDispatcher<$$Events>();
   const debouncedChange = debounce(() => onChange(), 100);
+
+  const form = getContext("form");
+
   // LIFECYCLE
   $: {
     if (document.activeElement !== ref) {
@@ -60,6 +64,10 @@
   onMount(() => {
     valueString = serialize(value);
     if (autofocus) focus();
+    if (rules[ValidationRuleName.Required]) {
+      ref?.setAttribute("required", "");
+      form?.(name, false);
+    } else form?.(name, true);
   });
   // USE
   function typeAction(node: HTMLInputElement) {
@@ -72,8 +80,10 @@
     const validChanged =
       (validationErrors.length === 0) !== (errors.length === 0);
     validationErrors = errors;
-    if (submit && validChanged)
+    if (submit && validChanged) {
       dispatch("validate", validationErrors.length === 0);
+      form?.(name, validationErrors.length === 0);
+    }
   }
 
   function onChange(submit = true) {
@@ -148,7 +158,7 @@
       </div>
     </div>
     {#if validationErrors.length > 0}
-      <Alert variant={AlertVariant.Danger} title="Error!" transparent small>
+      <Alert variant={AlertVariant.Danger} title="messages.errors.error" transparent small>
         {#each validationErrors as [error, ...args]}
           <p class="text">
             {$format(`lib.validation.${error}`, { values: args })}

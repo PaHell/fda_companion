@@ -32,7 +32,11 @@
     ProductType = "store-line",
     User = "customer-service-line",
     DevTools = "code-s-slash-line",
-    Logout = "logout-box-r-line"
+    Logout = "logout-box-r-line",
+    Company = "building-4-line",
+    NoImage = "image-add-fill",
+    TakePicture = "camera-lens-line",
+    Undo = "arrow-go-back-line"
   }
 </script>
 
