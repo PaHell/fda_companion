@@ -4,8 +4,6 @@
 )]
 
 use std::{fs::File, io::Write};
-use std::io::Read;
-use tauri::api::file;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
