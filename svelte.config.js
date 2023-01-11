@@ -13,7 +13,8 @@ const config = {
 
   kit: {
     adapter: staticAdapter({
-      out: '/public'
+      out: '/public',
+      fallback: 'index.html'
     }),
     alias: {
       '$src': 'src',
