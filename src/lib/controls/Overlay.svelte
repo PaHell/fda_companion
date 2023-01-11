@@ -84,13 +84,12 @@
         break;
       }
       case OverlayPosition.Left: {
-        const maxAvail = window.innerHeight - rect.right - pxSpaceOrigin - pxSpaceScreen;
-        const width = Math.min(maxAvail, pxMaxW) + "px";
-        refMenu.style.maxWidth = width;
-        //(refMenu.childNodes[0] as HTMLElement).style.width = width;
         break;
       }
       case OverlayPosition.Right: {
+        const maxAvail = window.innerHeight - rect.right - pxSpaceOrigin - pxSpaceScreen;	
+        const width = Math.min(maxAvail, pxMaxW) + "px";
+        refMenu.style.maxWidth = width;
         break;
       }
     }
@@ -114,14 +113,10 @@
         }
         break;
       case OverlayPosition.Left:
-        refMenu.style.top = rect.top + "px";
-        refMenu.style.left = (rect.right - pxSpaceOrigin) + "px";
-        refMenu.style.maxWidth = pxMaxW + "px";
         break;
       case OverlayPosition.Right:
-        refMenu.style.top = `${rect.top}px`;
-        refMenu.style.left = `calc(${rect.right}px + ${pxSpaceOrigin}rem)`;
-        //refMenu.style.width = `${maxWidth}rem`;
+        refMenu.style.top = rect.top + "px";
+        refMenu.style.left = (rect.right + pxSpaceOrigin) + "px";
         break;
     }
   }
@@ -171,6 +166,7 @@
       }
       &.overlay-left,
       &.overlay-right {
+        @apply max-w-0;
       }
     }
   }
