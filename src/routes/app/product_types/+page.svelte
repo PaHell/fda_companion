@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { App } from "$src/app";
   import Button, { ButtonVariant } from "$src/lib/controls/Button.svelte";
+    import Select from "$src/lib/controls/Select.svelte";
   import TextInput from "$src/lib/controls/TextInput.svelte";
   import { Icons } from "$src/lib/general/Icon.svelte";
   import Column from "$src/lib/table/Column.svelte";
@@ -10,6 +11,7 @@
   import { claim_text } from "svelte/internal";
   import { get } from "svelte/store";
 
+  let selected : App.Models.ProductType[] = [];
   let product_types: App.Models.ProductType[] = [
     {
       id: "1",
@@ -34,6 +36,20 @@
 <template>
   <div id="product_types">
     <h1 class="text heading col-span-2">All Product Types</h1>
+    <Select
+      bind:values={selected}
+      name="product_types"
+      items={product_types}
+      searchKeysOrdered={["name"]}
+      allowMultiple={true}
+    >
+      <svelte:fragment slot="selected" let:item>
+        <p class="text">{item.name}</p>
+      </svelte:fragment>
+      <svelte:fragment slot="item" let:item>
+        <p class="text">{item.name}</p>
+      </svelte:fragment>
+    </Select>
     <Table bind:items={product_types} css="col-span-2" let:ctx>
       <Column title="ID" width="4rem" css="" sortByKey="id">
         <p class="text secondary font-mono text-right">{ctx.item.id ?? "-"}</p>

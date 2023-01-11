@@ -8,8 +8,8 @@ async function writeFile(path: string, json: any) {
     });
 }
 
-async function readFile<T>(path: string): Promise<T> {
-    return await invoke("read_json_from_file", { path }) as T;
+export async function readFile<T>(path: string): Promise<JSON> {
+    return JSON.parse(await invoke("read_json_from_file", { path })) as JSON;
 }
 
 const defaultOptions : RequestInit = {
@@ -52,7 +52,7 @@ export async function http<T extends object>(
             if (save) readFile(filename + '.json')
                 .then((res) => {
                     console.log("res", res);
-                    return JSON.parse(res as string) as T;
+                    return JSON.parse(res as unknown as string) as T;
                 }).catch((err) => {
                     console.log("err", err);
                     throw err;

@@ -36,11 +36,13 @@
   // PROPS
   export let items: T[] = [];
   export let value: T | undefined = undefined;
+  export let values: T[] = [];
   export let none: string | undefined = undefined;
   export let index: number = -1;
   export let name: string;
   export let searchName: string = "search";
   export let hideLabel: boolean = false;
+  export let allowMultiple: boolean = false;
   export let enableSearch: boolean = false;
   export let searchKeysOrdered: (keyof T)[] = [];
   export let searchDebounce: number = 75;
@@ -64,8 +66,16 @@
   // FUNCTIONS
   function select(item: T, _index: number, userCall: boolean = true) {
     if (!refOverlay) return;
-    value = item;
-    index = _index;
+    if (allowMultiple) {
+      if (values.includes(item)) {
+        values = values.filter((v) => v != item);
+      } else {
+        values = [...values, item];
+      }
+    } else {
+      value = item;
+      index = _index;
+    }
     if (userCall) {
       dispatch("change", { item, index });
       refOverlay.toggleOpened();
@@ -96,6 +106,9 @@
         variant={ButtonVariant.Secondary}
         on:click={refOverlay.toggleOpened}
       >
+        {#if allowMultiple}
+          <Icon name={Icons.Add}/>
+        {/if}
         {#if value}
           <slot name="selected" item={value} {index} />
         {:else}

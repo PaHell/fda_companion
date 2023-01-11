@@ -24,7 +24,7 @@ export class User {
 
 export class Customer {
     static async get(id: number) {
-        return await http('GET', `/customers/{id}`);
+        return await http('GET', `/customers/${id}`);
     }
     static async index() {
         return await http('GET', `/customers`);

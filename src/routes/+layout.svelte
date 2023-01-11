@@ -20,7 +20,7 @@
 
     const routeAuthed = "/app";
     const routeUnauthed = "/auth";
-    const redirectAuthed = "/app";
+    const redirectAuthed = "/app/customers/create";
     const redirectUnauthed = "/auth/login";
 </script>
 

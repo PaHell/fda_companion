@@ -15,11 +15,6 @@ import ScreenLock from "$src/lib/controls/screen_lock/ScreenLock.svelte";
   let currentPath: string | undefined;
   const navItems: App.General.NavItem[] = [
     {
-      title: "Home",
-      icon: Icons.Home,
-      path: "/app",
-    },
-    {
       title: "Create Customer",
       icon: Icons.CreateCustomer,
       path: "/app/customers/create",
