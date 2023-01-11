@@ -105,6 +105,7 @@
     css: string,
     sortKey: keyof T | null
   ) {
+    if (columns.find(c => c.title == title)) return;
     columns.push({
       title,
       width,
@@ -157,6 +158,7 @@
               {/if}
             </th>
           {/each}
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -227,6 +229,9 @@
     & th {
       &:first-child {
         @apply rounded-tl;
+      }
+      &:last-child {
+        @apply w-9;
       }
       & > .text {
         @apply font-semibold;

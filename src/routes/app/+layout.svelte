@@ -30,11 +30,6 @@ import ScreenLock from "$src/lib/controls/screen_lock/ScreenLock.svelte";
       path: "/app/product_types",
     },
     {
-      title: "Users",
-      icon: Icons.User,
-      path: "/app/users",
-    },
-    {
       title: "Settings",
       icon: Icons.Settings,
       path: "/app/settings",

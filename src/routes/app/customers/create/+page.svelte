@@ -8,13 +8,15 @@
     import Button, { ButtonAlignment, ButtonVariant } from "$src/lib/controls/Button.svelte";
     import Checkbox from "$src/lib/controls/Checkbox.svelte";
     import { invoke } from "@tauri-apps/api/tauri";
-    import { Customer } from "$src/lib/api";
+    import { Customer, ProductType } from "$src/lib/api";
     import Select from "$src/lib/controls/Select.svelte";
+    import { onMount } from "svelte";
 
   // IMPORT
   // PROPS
   // DATA
-  let input: App.Models.CustomerInput = {
+  let input: App.Models.Customer = {
+    id: 0,
     fname: "",
     lname: "",
     street: "",
@@ -26,30 +28,15 @@
     company: "",
     product_types: [],
   };
-  let productTypes: App.Models.ProductType[] = [
-    {
-      id: 1,
-      name: "Information Technology",
-    },
-    {
-      id: 2,
-      name: "Human Resources",
-    },
-    {
-      id: 3,
-      name: "Sales",
-    },
-    {
-      id: 4,
-      name: "Marketing",
-    },
-  ];
+  let productTypes: App.Models.ProductType[] = [];
   let selectedProductTypes: App.Models.ProductType[] = [];
   let country: App.Models.Country | undefined;
   let acceptTerms = false;
-  // EVENTS
-  // HOOKS
-  // FUNCTIONS
+
+  onMount(async () => {
+    productTypes = await ProductType.index();
+  });
+
   async function create() {
     console.log("createCustomer", input);
     Customer.create(input).then((res) => {
@@ -124,15 +111,7 @@
             <p class="text flex-1">{item.name}</p>
           </svelte:fragment>
         </Select>
-        <div class="col-span-2"></div>
-        <Checkbox
-          icon={Icons.Home}
-          bind:value={acceptTerms}
-          css="col-span-2">
-          <p class="text">I accept the </p>
-          <a class="link" href="https://google.com" target="_BLANK">Terms and Conditions</a>
-          <p class="text">.</p>
-        </Checkbox>
+        <div class="col-span-1"></div>
       <Button
         icon={Icons.Home}
         text="Create"

@@ -8,49 +8,25 @@
   import Column from "$src/lib/table/Column.svelte";
   import { RowState } from "$src/lib/table/Row.svelte";
   import Table from "$src/lib/table/Table.svelte";
-  import { getContext } from "svelte";
-  import { claim_text } from "svelte/internal";
-  import { get } from "svelte/store";
+  import { onMount } from "svelte/internal";
 
   let selected : App.Models.ProductType[] = [];
   let product_types: App.Models.ProductType[] = [];
 
-  ProductType.index().then(resp => {
-    product_types = resp;
+  onMount(async () => {
+    product_types = await ProductType.index();
   });
-
 </script>
 
 <template>
   <div id="product_types">
     <h1 class="text heading col-span-2">All Product Types</h1>
-    <Select
-      bind:values={selected}
-      name="product_types"
-      items={product_types}
-      searchKeysOrdered={["name"]}
-      allowMultiple
-    >
-      <svelte:fragment slot="selected" let:items>
-        <p class="text flex-1">{items.map(i => i.name).join(', ')}</p>
-      </svelte:fragment>
-      <svelte:fragment slot="item" let:item>
-        <p class="text flex-1">{item.name}</p>
-      </svelte:fragment>
-    </Select>
     <Table bind:items={product_types} css="col-span-2" let:ctx>
-      <Column title="ID" width="4rem" css="" sortByKey="id">
+      <Column title="ID" width="5rem" css="" sortByKey="id">
         <p class="text secondary font-mono text-right">{ctx.item.id ?? "-"}</p>
       </Column>
-      <Column title="lib.controls.text_input.product_type.label">
-        <TextInput
-          value={ctx.item.name}
-          on:change={(event) => {
-            ctx.item.name = event.detail;
-            ctx.changed();
-          }}
-          name="product_type"
-        />
+      <Column title="lib.controls.text_input.product_type.label" sortByKey="name">
+        <p class="text">{ctx.item.name}</p>
       </Column>
     </Table>
   </div>

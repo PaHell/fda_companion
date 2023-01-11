@@ -7,26 +7,17 @@ export class Auth {
     }
 }
 
-export class User {
-    static async get(id: number) {
-        return await http<App.Models.User>('GET', `/users/${id}`);
-    }
-    static async index() {
-        return await http<App.Models.User[]>('GET', `/users`);
-    }
-}
-
 export class Customer {
     static async index() {
-        return await http<App.Models.Customer[]>('GET', `/Customer/get/all`);
+        return await http<App.Models.Customer[]>('GET', `/customers`);
     }
-    static async create(customer: App.Models.CustomerInput) {
-        return await http<App.Models.Customer>('POST', `/Customer/create/single`, customer);
+    static async create(customer: App.Models.Customer) {
+        return await http<App.Models.Customer>('POST', `/customers`, customer);
     }
 }
 
 export class ProductType {
     static async index() {
-        return await http<App.Models.ProductType[]>('GET', `/ProductGroup/get/all`);
+        return await http<App.Models.ProductType[]>('GET', `/product-groups`);
     }
 }
