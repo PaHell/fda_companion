@@ -7,7 +7,8 @@
         "view_size": "Application view size",
         "language": "Language",
         "country": "Country",
-        "role": "Role"
+        "role": "Role",
+        "product_types": "Product Types / Interests"
       },
       "text_input": {
         "search_country": {

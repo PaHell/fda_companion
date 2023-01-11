@@ -9,6 +9,7 @@
     import Checkbox from "$src/lib/controls/Checkbox.svelte";
     import { invoke } from "@tauri-apps/api/tauri";
     import { Customer } from "$src/lib/api";
+    import Select from "$src/lib/controls/Select.svelte";
 
   // IMPORT
   // PROPS
@@ -23,7 +24,27 @@
     country_iso3: "",
     image: "",
     company: "",
+    product_types: [],
   };
+  let productTypes: App.Models.ProductType[] = [
+    {
+      id: 1,
+      name: "Information Technology",
+    },
+    {
+      id: 2,
+      name: "Human Resources",
+    },
+    {
+      id: 3,
+      name: "Sales",
+    },
+    {
+      id: 4,
+      name: "Marketing",
+    },
+  ];
+  let selectedProductTypes: App.Models.ProductType[] = [];
   let country: App.Models.Country | undefined;
   let acceptTerms = false;
   // EVENTS
@@ -89,6 +110,21 @@
           bind:value={country}
           on:change={(e) => (input.country_iso3 = e.detail.item.iso3)}
         />
+        <Select
+          bind:values={selectedProductTypes}
+          name="product_types"
+          items={productTypes}
+          searchKeysOrdered={["name"]}
+          allowMultiple
+        >
+          <svelte:fragment slot="selected" let:items>
+            <p class="text flex-1">{items.map(i => i.name).join(', ')}</p>
+          </svelte:fragment>
+          <svelte:fragment slot="item" let:item>
+            <p class="text flex-1">{item.name}</p>
+          </svelte:fragment>
+        </Select>
+        <div class="col-span-2"></div>
         <Checkbox
           icon={Icons.Home}
           bind:value={acceptTerms}

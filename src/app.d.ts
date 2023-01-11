@@ -64,7 +64,7 @@ declare namespace App {
     namespace Models {
 
         class DatabaseElement {
-            id: string;
+            id: number;
         }
 
         class RequestSuccess {
@@ -123,6 +123,7 @@ declare namespace App {
             country_iso3: string;
             image: string;
             company: string;
+            product_types: DatabaseElement.id[];
         }
 
         class Customer extends DatabaseElement {

@@ -21,6 +21,7 @@
     selected: {
       item: T;
       index: number;
+      items: T[];
     };
     item: {
       item: T;
@@ -78,7 +79,7 @@
     }
     if (userCall) {
       dispatch("change", { item, index });
-      refOverlay.toggleOpened();
+      if (!allowMultiple) refOverlay.toggleOpened();
     }
   }
 
@@ -106,13 +107,12 @@
         variant={ButtonVariant.Secondary}
         on:click={refOverlay.toggleOpened}
       >
-        {#if allowMultiple}
-          <Icon name={Icons.Add}/>
-        {/if}
-        {#if value}
-          <slot name="selected" item={value} {index} />
+        {#if allowMultiple && values.length}
+        <slot name="selected" items={values} {index} />
+        {:else if value}
+          <slot name="selected" item={value} items={values} {index} />
         {:else}
-          <p class="text secondary">{$_(none ?? "lib.controls.select.none")}</p>
+        <p class="text secondary">{$_(none ?? "lib.controls.select.none")}</p>
         {/if}
         <Icon name={Icons.SelectDown} />
       </Button>
@@ -135,9 +135,9 @@
         {#each searchValue ? searchItems : items as item, index}
           <Button
             variant={ButtonVariant.Transparent}
-            active={item == value}
+            active={item == value || values.includes(item)}
             on:click={() => select(item, index)}
-          >
+            >
             <slot name="item" {item} {index} />
             <Icon name={Icons.SelectSelected} />
           </Button>

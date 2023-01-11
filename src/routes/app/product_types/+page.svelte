@@ -14,19 +14,19 @@
   let selected : App.Models.ProductType[] = [];
   let product_types: App.Models.ProductType[] = [
     {
-      id: "1",
+      id: 1,
       name: "Information Technology",
     },
     {
-      id: "2",
+      id: 2,
       name: "Human Resources",
     },
     {
-      id: "3",
+      id: 3,
       name: "Sales",
     },
     {
-      id: "4",
+      id: 4,
       name: "Marketing",
     },
   ];
@@ -41,13 +41,13 @@
       name="product_types"
       items={product_types}
       searchKeysOrdered={["name"]}
-      allowMultiple={true}
+      allowMultiple
     >
-      <svelte:fragment slot="selected" let:item>
-        <p class="text">{item.name}</p>
+      <svelte:fragment slot="selected" let:items>
+        <p class="text flex-1">{items.map(i => i.name).join(', ')}</p>
       </svelte:fragment>
       <svelte:fragment slot="item" let:item>
-        <p class="text">{item.name}</p>
+        <p class="text flex-1">{item.name}</p>
       </svelte:fragment>
     </Select>
     <Table bind:items={product_types} css="col-span-2" let:ctx>
