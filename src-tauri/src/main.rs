@@ -4,7 +4,6 @@
 )]
 
 use std::{fs::File, io::Write};
-use std::io::Read;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -19,9 +18,15 @@ fn write_json_to_file(path: &str, json: &str) {
 }
 
 #[tauri::command]
-fn read_json_from_file(path: &str) -> String {
-    let json: String = std::fs::read_to_string(&path).unwrap();
-    json.into()
+fn read_json_from_file(path: &str) -> Result<String, String> {
+    let file_exists = std::path::Path::new(path).exists();
+    if file_exists{
+        let json: String = std::fs::read_to_string(&path).unwrap();
+        Ok(json.into())
+    }
+    else{
+        Err("File not found".into())
+    }
 }
 
 fn main() {
