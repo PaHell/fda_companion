@@ -55,10 +55,10 @@
     },
     "windows": [
       {
-        "fullscreen": false,
+        "fullscreen": true,
         "height": 600,
         "resizable": true,
-        "title": "fda_companion",
+        "title": "FDA Companion",
         "width": 800
       }
     ]
