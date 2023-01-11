@@ -88,7 +88,7 @@
         {#if value}
           <img id="photo" src={value} alt="" />
         {:else}
-          <Icon name={Icons.Home} large />
+          <Icon name={Icons.NoImage} large />
           <p class="text">{$_("lib.controls.picture_input.none")}</p>
         {/if}
       </Button>
@@ -105,24 +105,24 @@
         {#if currentState === State.Init}
           <p class="text">{$_("lib.controls.picture_input.init")}</p>
           {:else if currentState === State.Error}
-          <Alert variant={AlertVariant.Danger} icon={Icons.Home} title="messages.errors.error" text="lib.controls.picture_input.cam_not_avail" />
+          <Alert variant={AlertVariant.Danger} title="messages.errors.error" text="lib.controls.picture_input.cam_not_avail" />
         {:else if currentState === State.Streaming}
           <Button
             text="lib.controls.picture_input.take_picture"
-            icon={Icons.Home}
+            icon={Icons.TakePicture}
             variant={ButtonVariant.Primary}
             on:click={takePicture}
           />
         {:else if currentState === State.Viewing}
           <Button
             text="lib.controls.picture_input.retake"
-            icon={Icons.Home}
+            icon={Icons.Undo}
             variant={ButtonVariant.Secondary}
             on:click={retake}
           />
           <Button
             text="lib.controls.picture_input.save"
-            icon={Icons.Home}
+            icon={Icons.SaveChanges}
             variant={ButtonVariant.Primary}
             on:click={savePhoto}
           />

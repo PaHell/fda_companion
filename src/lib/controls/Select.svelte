@@ -6,6 +6,7 @@
   import { default as Icon, Icons } from "$lib/general/Icon.svelte";
   import {
     createEventDispatcher,
+    getContext,
     onMount,
     SvelteComponent,
     type ComponentEvents,
@@ -48,6 +49,7 @@
   export let searchKeysOrdered: (keyof T)[] = [];
   export let searchDebounce: number = 75;
   export let disabled: boolean = false;
+  export let required: boolean = false;
   // REFS
   let refOverlay: SvelteComponent | undefined;
   let refSearch: SvelteComponent | undefined;
@@ -64,7 +66,14 @@
   // EVENTS
   const dispatch = createEventDispatcher<$$Events>();
   // LIFECYCLE
+  const form = getContext("form");
+  onMount(() => {
+    validate();
+  });
   // FUNCTIONS
+  function validate() {
+    if (form) form(name, !required || !!value || !!values.length);
+  }
   function select(item: T, _index: number, userCall: boolean = true) {
     if (!refOverlay) return;
     if (allowMultiple) {
@@ -77,6 +86,7 @@
       value = item;
       index = _index;
     }
+    validate();
     if (userCall) {
       dispatch("change", { item, index });
       if (!allowMultiple) refOverlay.toggleOpened();

@@ -83,7 +83,7 @@
     }
 
     &.alert-small {
-      @apply py-1;
+      @apply py-1 border-0;
       & > .icon {
         @apply text-[18px];
       }

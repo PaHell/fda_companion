@@ -13,6 +13,7 @@
     import { onMount } from "svelte";
     import Alert, { AlertVariant } from "$src/lib/general/Alert.svelte";
     import { _ } from "svelte-i18n";
+    import Form from "$src/lib/controls/Form.svelte";
 
   // IMPORT
   // PROPS
@@ -34,6 +35,7 @@
   let selectedProductTypes: App.Models.ProductType[] = [];
   let country: App.Models.Country | undefined;
   let showSuccess = false;
+  let allValid = false;
 
   onMount(async () => {
     productTypes = await ProductType.index();
@@ -61,7 +63,7 @@
 </script>
 
 <template>
-  <div id="customer_create">
+  <Form id="customer_create" bind:allValid>
     <h1 class="text heading col-span-3">{$_('routes.app.customers.create.title')}</h1>
     {#if showSuccess}
       <Alert
@@ -75,45 +77,66 @@
           <TextInput
             bind:value={input.fname}
             name="first_name"
-            icon={Icons.Home}
             rules={[
               [ValidationRuleName.Required],
-              [ValidationRuleName.Range, 2, 5]
+              [ValidationRuleName.Range, 2, 255]
             ]}
+            autofocus
           />
           <TextInput
             bind:value={input.lname}
+            rules={[
+              [ValidationRuleName.Required],
+              [ValidationRuleName.Range, 2, 255]
+            ]}
             name="last_name"
           />
           <TextInput
             bind:value={input.company}
             name="company"
-            icon={Icons.Home}
+            icon={Icons.Company}
           />
         </div>
     </div>
         <TextInput
           bind:value={input.street}
           name="street"
+          rules={[
+            [ValidationRuleName.Required],
+            [ValidationRuleName.Range, 2, 255]
+          ]}
           css="col-span-2"
           />
         <TextInput
           bind:value={input.house_number}
           name="house_number"
+          rules={[
+            [ValidationRuleName.Required],
+            [ValidationRuleName.Range, 1, 127]
+          ]}
           alignRight
         />
         <TextInput
           bind:value={input.postal_code}
           type="number"
           name="postal_code"
+          rules={[
+            [ValidationRuleName.Required],
+            [ValidationRuleName.Range, 2, 255]
+          ]}
         />
         <TextInput
           bind:value={input.city}
           name="city"
+          rules={[
+            [ValidationRuleName.Required],
+            [ValidationRuleName.Range, 2, 255]
+          ]}
         />
         <SelectCountry
           bind:value={country}
           on:change={(e) => (input.country_iso3 = e.detail.item.iso3)}
+          required
         />
         <Select
           bind:values={selectedProductTypes}
@@ -121,6 +144,7 @@
           items={productTypes}
           searchKeysOrdered={["name"]}
           allowMultiple
+          required
         >
           <svelte:fragment slot="selected" let:items>
             <p class="text flex-1">{items.map(i => i.name).join(', ')}</p>
@@ -133,21 +157,22 @@
         <div>
           <p class="text label">&nbsp;</p>
           <Button
-            icon={Icons.Home}
+            icon={Icons.Add}
             text="routes.app.customers.create.create"
             variant={ButtonVariant.Primary}
             align={ButtonAlignment.Center}
             on:click={create}
             css="w-full"
+            disabled={!allValid}
             />
         </div>
-  </div>
+  </Form>
 </template>
 
 <style global lang="postcss">
   #customer_create {
     @apply min-w-0 grid grid-cols-3 gap-4
-    items-center;
+    items-start;
     & > .heading {
       @apply pb-2;
     }
