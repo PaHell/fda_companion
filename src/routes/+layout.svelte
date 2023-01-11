@@ -18,6 +18,7 @@
     import SelectTheme from "$src/lib/controls/theme/SelectTheme.svelte";
     import { Icons } from "$src/lib/general/Icon.svelte";
     import { _ } from "svelte-i18n";
+    import { browser } from "$app/environment";
 
     const routeAuthed = "/app";
     const routeUnauthed = "/auth";
@@ -31,7 +32,7 @@
     initLocale();
 
   onMount(() => {
-    console.log("onMount");
+    if (!browser) return;
     if (window.location.pathname === "/") {
       goto(redirectUnauthed);
       return;
@@ -46,6 +47,7 @@
   });
 
   function onNavigate(url: string) {
+    if (!browser) return;
     console.log("onNavigate", url);
     if (url.startsWith(routeAuthed) && !$authenticated) {
       goto(redirectUnauthed);

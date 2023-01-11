@@ -100,6 +100,13 @@
         @apply text-danger-light dark:text-danger-dark;
       }
     }
+    &.alert-success {
+      @apply border-success-light
+          dark:border-success-dark;
+      & > *:first-child {
+        @apply text-success-light dark:text-success-dark;
+      }
+    }
   }
 
   @keyframes alert {

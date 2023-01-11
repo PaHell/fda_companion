@@ -55,7 +55,7 @@
         <p class="text">{ctx.item.company}</p>
       </Column>
       <Column title="Product Types">
-        <p class="text">{ctx.item.product_types?.join(', ')}</p>
+        <p class="text">{ctx.item.product_groups?.join(', ')}</p>
       </Column>
     </Table>
   </div>

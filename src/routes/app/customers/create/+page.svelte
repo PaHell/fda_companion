@@ -14,6 +14,8 @@
     import Alert, { AlertVariant } from "$src/lib/general/Alert.svelte";
     import { _ } from "svelte-i18n";
     import Form from "$src/lib/controls/Form.svelte";
+    import { productTypes } from "$src/store";
+    import { readFile, writeFile } from "$src/lib/http";
 
   // IMPORT
   // PROPS
@@ -31,46 +33,57 @@
     company: "",
     product_groups: [],
   };
-  let productTypes: App.Models.ProductType[] = [];
   let selectedProductTypes: App.Models.ProductType[] = [];
   let country: App.Models.Country | undefined;
   let showSuccess = false;
   let allValid = false;
+  let error = "";
 
-  onMount(async () => {
-    productTypes = await ProductType.index();
-  });
+  setTimeout(() => {
+    allValid = true;
+  }, 2000)
 
   async function create() {
     console.log("createCustomer", input);
+    showSuccess = false;
+    error = "";
     input.product_groups = selectedProductTypes.map((pt) => pt.id);
-    await Customer.create(input);
-    showSuccess = true;
-    input = {
-      id: 0,
-      fname: "",
-      lname: "",
-      street: "",
-      house_number: "",
-      postal_code: "",
-      city: "",
-      country_iso3: "",
-      image: "",
-      company: "",
-      product_groups: [],
-    };
+    Customer.create(input)
+      .then(() => {
+        showSuccess = true;
+        input = {
+          id: 0,
+          fname: "",
+          lname: "",
+          street: "",
+          house_number: "",
+          postal_code: "",
+          city: "",
+          country_iso3: "",
+          image: "",
+          company: "",
+          product_groups: [],
+        };
+        allValid = false;
+      })
+      .catch((msg) => {
+        console.error("error", msg);
+        error = msg.error;
+        readFile<App.Models.Customer[]>("/customers.json")
+          .then(customers => {
+            customers.push(input);
+            writeFile("/customers.json", JSON.stringify(customers));
+          })
+          .catch(err => {
+            writeFile("/customers.json", JSON.stringify([input]));
+          })
+      });
   }
 </script>
 
 <template>
   <Form id="customer_create" bind:allValid>
     <h1 class="text heading col-span-3">{$_('routes.app.customers.create.title')}</h1>
-    {#if showSuccess}
-      <Alert
-        variant={AlertVariant.Success}
-        title="messages.success"
-        text="routes.app.customers.create.created"/>
-    {/if}
     <div class="col-span-3 hbox">
       <PictureInput bind:value={input.image} css="flex-initial self-start pt-5"/>
         <div class="flex-1 vbox">
@@ -141,7 +154,7 @@
         <Select
           bind:values={selectedProductTypes}
           name="product_types"
-          items={productTypes}
+          items={$productTypes}
           searchKeysOrdered={["name"]}
           allowMultiple
           required
@@ -166,6 +179,20 @@
             disabled={!allValid}
             />
         </div>
+        {#if error}
+          <Alert
+            variant={AlertVariant.Danger}
+            title="messages.errors.error"
+            text={error}
+            css="col-span-3"/>
+        {/if}
+        {#if showSuccess}
+          <Alert
+            variant={AlertVariant.Success}
+            title="messages.success"
+            text="routes.app.customers.create.created"
+            css="col-span-3"/>
+        {/if}
   </Form>
 </template>
 
